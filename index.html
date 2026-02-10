@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LankaAds - Buy & Sell Anything in Sri Lanka</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#FF6B35', // Vibrant Orange
+                        secondary: '#004E89', // Trustworthy Blue
+                        background: '#F7F9FC',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-gray-800 font-sans">
+
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm transition-all duration-300">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-secondary flex items-center gap-2">
+                <span class="bg-primary text-white p-2 rounded-lg">LA</span> LankaAds
+            </a>
+            <div class="hidden md:flex gap-8 items-center font-medium">
+                <a href="listings.html" class="hover:text-primary transition">All Ads</a>
+                <a href="#" class="hover:text-primary transition">Categories</a>
+                <a href="#" class="hover:text-primary transition">About</a>
+            </div>
+            <a href="post-ad.html" class="bg-primary text-white px-6 py-2 rounded-full shadow-lg hover:bg-orange-600 hover:shadow-orange-500/30 transition transform hover:-translate-y-0.5 font-semibold">
+                + Post Your Ad
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative bg-gradient-to-r from-secondary to-blue-900 text-white py-24 overflow-hidden">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1556740738-b6a63e27c4df?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80')] bg-cover bg-center opacity-20"></div>
+        <div class="container mx-auto px-6 relative z-10 text-center">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 animate-fade-in-up">Buy & Sell Anything in <span class="text-primary">Sri Lanka</span></h1>
+            <p class="text-xl md:text-2xl text-gray-200 mb-10 max-w-2xl mx-auto">From vehicles to electronics, find the best deals or sell your items fast.</p>
+            
+            <!-- Search Bar -->
+            <div class="bg-white/20 backdrop-blur-md p-2 rounded-full max-w-3xl mx-auto flex shadow-2xl border border-white/30 transform hover:scale-[1.02] transition duration-300">
+                <input type="text" placeholder="What are you looking for?" class="bg-transparent flex-grow px-6 py-3 text-white placeholder-gray-200 outline-none text-lg">
+                <button class="bg-primary text-white px-8 py-3 rounded-full font-bold hover:bg-orange-600 transition shadow-lg">
+                    Search
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Categories Section -->
+    <section class="py-16 container mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center mb-12 text-secondary">Browse Categories</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+            <!-- Category Item -->
+            <a href="listings.html?category=Vehicles" class="group bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl transition border border-gray-100 flex flex-col items-center text-center cursor-pointer">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-3xl mb-4 group-hover:bg-primary group-hover:text-white transition duration-300">🚗</div>
+                <span class="font-semibold text-gray-700 group-hover:text-primary transition">Vehicles</span>
+            </a>
+             <a href="listings.html?category=Electronics" class="group bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl transition border border-gray-100 flex flex-col items-center text-center cursor-pointer">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-3xl mb-4 group-hover:bg-primary group-hover:text-white transition duration-300">📱</div>
+                <span class="font-semibold text-gray-700 group-hover:text-primary transition">Electronics</span>
+            </a>
+             <a href="listings.html?category=Property" class="group bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl transition border border-gray-100 flex flex-col items-center text-center cursor-pointer">
+                <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center text-3xl mb-4 group-hover:bg-primary group-hover:text-white transition duration-300">🏠</div>
+                <span class="font-semibold text-gray-700 group-hover:text-primary transition">Property</span>
+            </a>
+             <a href="listings.html?category=Fashion" class="group bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl transition border border-gray-100 flex flex-col items-center text-center cursor-pointer">
+                <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center text-3xl mb-4 group-hover:bg-primary group-hover:text-white transition duration-300">👕</div>
+                <span class="font-semibold text-gray-700 group-hover:text-primary transition">Fashion</span>
+            </a>
+             <a href="listings.html?category=Jobs" class="group bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl transition border border-gray-100 flex flex-col items-center text-center cursor-pointer">
+                <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center text-3xl mb-4 group-hover:bg-primary group-hover:text-white transition duration-300">💼</div>
+                <span class="font-semibold text-gray-700 group-hover:text-primary transition">Jobs</span>
+            </a>
+             <a href="listings.html?category=Services" class="group bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl transition border border-gray-100 flex flex-col items-center text-center cursor-pointer">
+                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center text-3xl mb-4 group-hover:bg-primary group-hover:text-white transition duration-300">🔧</div>
+                <span class="font-semibold text-gray-700 group-hover:text-primary transition">Services</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Latest Ads Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="flex justify-between items-end mb-10">
+                <div>
+                    <h2 class="text-3xl font-bold text-secondary">Latest Listings</h2>
+                    <p class="text-gray-500 mt-2">Fresh deals added today</p>
+                </div>
+                <a href="listings.html" class="text-primary font-semibold hover:underline flex items-center gap-1">View All <span>→</span></a>
+            </div>
+            
+            <!-- Grid Container for Ads -->
+            <div id="latest-ads-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Ads will be injected here by JS -->
+                <!-- Loading State / Fallback -->
+                <div class="col-span-full text-center py-12 text-gray-400">
+                    Loading latest ads...
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-secondary text-white py-12">
+        <div class="container mx-auto px-6 grid md:grid-cols-4 gap-8">
+            <div>
+                <div class="text-2xl font-bold mb-4 flex items-center gap-2">
+                    <span class="bg-primary text-white p-1 rounded">LA</span> LankaAds
+                </div>
+                <p class="text-gray-300 text-sm leading-relaxed">The best marketplace to buy and sell anything in Sri Lanka quickly and securely.</p>
+            </div>
+            <div>
+                <h3 class="font-bold text-lg mb-4">Quick Links</h3>
+                <ul class="space-y-2 text-gray-300">
+                    <li><a href="#" class="hover:text-primary">About Us</a></li>
+                    <li><a href="#" class="hover:text-primary">Contact Support</a></li>
+                    <li><a href="#" class="hover:text-primary">Terms & Conditions</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="font-bold text-lg mb-4">Categories</h3>
+                <ul class="space-y-2 text-gray-300">
+                    <li><a href="#" class="hover:text-primary">Vehicles</a></li>
+                    <li><a href="#" class="hover:text-primary">Electronics</a></li>
+                    <li><a href="#" class="hover:text-primary">Property</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="font-bold text-lg mb-4">Newsletter</h3>
+                <div class="flex">
+                    <input type="email" placeholder="Your email" class="bg-white/10 border-none outline-none px-4 py-2 rounded-l w-full text-white placeholder-gray-400">
+                    <button class="bg-primary px-4 py-2 rounded-r font-bold hover:bg-orange-600 transition">Go</button>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-white/10 mt-12 pt-8 text-center text-gray-400 text-sm">
+            &copy; 2026 LankaAds. All rights reserved.
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

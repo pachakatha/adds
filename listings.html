@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Listings - LankaAds</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#FF6B35',
+                        secondary: '#004E89',
+                        background: '#F7F9FC',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="bg-background text-gray-800 font-sans min-h-screen flex flex-col">
+
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-secondary flex items-center gap-2">
+                <span class="bg-primary text-white p-2 rounded-lg">LA</span> LankaAds
+            </a>
+            <div class="hidden md:flex gap-8 items-center font-medium">
+                <a href="listings.html" class="text-primary font-bold transition">All Ads</a>
+                <a href="#" class="hover:text-primary transition">Categories</a>
+            </div>
+            <a href="post-ad.html"
+                class="bg-primary text-white px-6 py-2 rounded-full shadow-lg hover:bg-orange-600 transition font-semibold">Post
+                Ad</a>
+        </div>
+    </nav>
+
+    <!-- Listings Header -->
+    <header class="bg-white border-b border-gray-200 py-8">
+        <div class="container mx-auto px-6">
+            <h1 class="text-3xl font-bold text-secondary mb-4">Browse All Listings</h1>
+
+            <!-- Filters -->
+            <div class="flex flex-wrap gap-4">
+                <button
+                    class="px-4 py-2 bg-gray-100 rounded-full hover:bg-primary hover:text-white transition text-sm font-medium active-filter"
+                    data-filter="all">All</button>
+                <button
+                    class="px-4 py-2 bg-gray-100 rounded-full hover:bg-primary hover:text-white transition text-sm font-medium"
+                    data-filter="Vehicles">Vehicles</button>
+                <button
+                    class="px-4 py-2 bg-gray-100 rounded-full hover:bg-primary hover:text-white transition text-sm font-medium"
+                    data-filter="Electronics">Electronics</button>
+                <button
+                    class="px-4 py-2 bg-gray-100 rounded-full hover:bg-primary hover:text-white transition text-sm font-medium"
+                    data-filter="Property">Property</button>
+                <button
+                    class="px-4 py-2 bg-gray-100 rounded-full hover:bg-primary hover:text-white transition text-sm font-medium"
+                    data-filter="Fashion">Fashion</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-6 py-12">
+        <div id="listings-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Items injected via JS -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="hidden text-center py-20">
+            <div class="text-6xl mb-4">🔍</div>
+            <h3 class="text-2xl font-bold text-gray-400">No ads found yet</h3>
+            <p class="text-gray-400 mb-6">Be the first to post something amazing!</p>
+            <a href="post-ad.html" class="text-primary font-bold hover:underline">Post an Ad Now</a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-secondary text-white py-8 mt-auto">
+        <div class="container mx-auto px-6 text-center text-sm text-gray-300">
+            &copy; 2026 LankaAds. All rights reserved.
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

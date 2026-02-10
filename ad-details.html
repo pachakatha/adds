@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ad Details - LankaAds</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#FF6B35',
+                        secondary: '#004E89',
+                        background: '#F7F9FC',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="bg-background text-gray-800 font-sans min-h-screen flex flex-col">
+
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-secondary flex items-center gap-2">
+                <span class="bg-primary text-white p-2 rounded-lg">LA</span> LankaAds
+            </a>
+            <a href="listings.html" class="text-gray-500 hover:text-primary transition font-medium">← Back to
+                Listings</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-12 flex-grow">
+
+        <div class="grid md:grid-cols-2 gap-12 bg-white p-8 rounded-3xl shadow-xl border border-gray-100">
+
+            <!-- Image Section -->
+            <div class="relative group h-[500px]">
+                <div class="absolute inset-0 bg-gray-100 rounded-2xl animate-pulse" id="image-skeleton"></div>
+                <img id="ad-image" src="" alt="Product Image"
+                    class="w-full h-full object-cover rounded-2xl shadow-lg transition duration-500 group-hover:scale-[1.01] hidden">
+                <div class="absolute top-4 left-4 bg-primary text-white px-4 py-1 rounded-full text-sm font-bold shadow-md"
+                    id="ad-category-tag">Category</div>
+            </div>
+
+            <!-- Details Section -->
+            <div class="flex flex-col justify-center">
+                <div class="mb-2 text-gray-400 text-sm flex items-center gap-2">
+                    <span>📅 Posted on <span id="ad-date">Today</span></span>
+                </div>
+
+                <h1 class="text-4xl font-bold text-secondary mb-4 leading-tight" id="ad-title">Loading...</h1>
+
+                <div class="text-3xl font-bold text-primary mb-8" id="ad-price">Rs. ---</div>
+
+                <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 mb-8">
+                    <h3 class="font-bold text-gray-800 mb-3">Description</h3>
+                    <p class="text-gray-600 leading-relaxed" id="ad-description">LOADING DESCRIPTION...</p>
+                </div>
+
+                <div class="border-t border-gray-100 pt-8">
+                    <h3 class="text-lg font-bold text-secondary mb-4 block">Seller Contact</h3>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="#" id="call-btn"
+                            class="bg-green-500 text-white px-8 py-4 rounded-xl font-bold shadow-lg hover:bg-green-600 transition flex items-center justify-center gap-2 flex-grow transform hover:-translate-y-1">
+                            📞 Call Seller
+                        </a>
+                        <button
+                            class="bg-white border-2 border-primary text-primary px-8 py-4 rounded-xl font-bold shadow-sm hover:bg-primary hover:text-white transition flex items-center justify-center gap-2 flex-grow transform hover:-translate-y-1">
+                            💬 Chat (Mock)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-secondary text-white py-8 mt-auto">
+        <div class="container mx-auto px-6 text-center text-sm text-gray-300">
+            &copy; 2026 LankaAds. All rights reserved.
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Inline logic for details page to get query param and render instantly
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            const ads = JSON.parse(localStorage.getItem('ads') || '[]');
+            const ad = ads.find(a => a.id == id);
+
+            if (ad) {
+                document.getElementById('ad-title').textContent = ad.title;
+                document.getElementById('ad-price').textContent = 'Rs. ' + parseInt(ad.price).toLocaleString();
+                document.getElementById('ad-description').textContent = ad.description;
+                document.getElementById('ad-category-tag').textContent = ad.category;
+                document.getElementById('call-btn').href = 'tel:' + ad.contact;
+                document.getElementById('call-btn').innerHTML = '📞 ' + ad.contact;
+                document.getElementById('ad-date').textContent = new Date(ad.date).toLocaleDateString();
+
+                if (ad.image) {
+                    document.getElementById('ad-image').src = ad.image;
+                    document.getElementById('ad-image').classList.remove('hidden');
+                    document.getElementById('image-skeleton').classList.add('hidden');
+                }
+            } else {
+                document.getElementById('ad-title').textContent = 'Ad Not Found';
+                document.getElementById('ad-description').textContent = 'Sorry, this listing does not exist.';
+            }
+        });
+    </script>
+</body>
+
+</html>

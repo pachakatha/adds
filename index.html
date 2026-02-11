@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LankaAds - Buy & Sell Anything in Sri Lanka</title>
+    <title>LankaAds | Buy & Sell Everything in Sri Lanka</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script>
@@ -11,11 +16,7 @@
             theme: {
                 extend: {
                     fontFamily: { sans: ['Poppins', 'sans-serif'] },
-                    colors: {
-                        primary: '#FF6B35', 
-                        secondary: '#004E89', 
-                        background: '#F7F9FC',
-                    }
+                    colors: { primary: '#FF6B35', secondary: '#004E89', background: '#F7F9FC' }
                 }
             }
         }
@@ -23,53 +24,128 @@
 </head>
 <body class="bg-background text-gray-800 font-sans">
 
-    <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+    <div class="bg-white border-b border-gray-100">
+        <div class="container mx-auto px-6 py-2 flex justify-end gap-4 text-sm font-medium">
+            <a href="login.html" class="text-secondary hover:text-primary transition border-r pr-4">Login</a>
+            <a href="login.html" class="text-secondary hover:text-primary transition">Sign Up</a>
+        </div>
+    </div>
+
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <a href="index.html" class="text-2xl font-bold text-secondary flex items-center gap-2">
-                <span class="bg-primary text-white p-2 rounded-lg">LA</span> LankaAds
+                <span class="bg-primary text-white p-2 rounded-lg text-xl">LA</span> LankaAds
             </a>
-            <div class="hidden md:flex gap-8 items-center font-medium">
-                <a href="listings.html" class="hover:text-primary transition">All Ads</a>
-                <a href="login.html" class="hover:text-primary transition">Login / Sign Up</a>
-            </div>
-            <a href="post-ad.html" class="bg-primary text-white px-6 py-2 rounded-full shadow-lg hover:bg-orange-600 transition font-semibold">
+            
+            <button onclick="checkAuthAndPost()" class="bg-primary text-white px-8 py-2 rounded-full shadow-lg hover:bg-orange-600 transition font-semibold transform hover:scale-105">
                 + Post Your Ad
-            </a>
+            </button>
         </div>
     </nav>
 
-    <header class="relative bg-gradient-to-r from-secondary to-blue-900 text-white py-24">
+    <header class="bg-secondary text-white py-16">
         <div class="container mx-auto px-6 text-center">
-            <h1 class="text-4xl md:text-6xl font-bold mb-6">Buy & Sell Anything in <span class="text-primary">Sri Lanka</span></h1>
-            <p class="text-xl text-gray-200 mb-10">From vehicles to electronics, find the best deals.</p>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">ලංකාවේ ඕනෑම දෙයක් විකුණන්න හෝ ගන්න</h1>
+            <p class="text-lg text-blue-100 mb-8">වාහන, ඉඩම්, ඉලෙක්ට්‍රොනික උපකරණ සහ තවත් බොහෝ දේ...</p>
+            
+            <div class="max-w-2xl mx-auto flex bg-white rounded-full p-1 shadow-xl">
+                <input type="text" placeholder="ඔබ සොයන්නේ කුමක්ද?" class="flex-grow px-6 py-3 rounded-full text-gray-800 outline-none">
+                <button class="bg-primary text-white px-8 py-3 rounded-full font-bold hover:bg-orange-600 transition">සොයන්න</button>
+            </div>
         </div>
     </header>
 
     <section class="py-16 container mx-auto px-6">
-        <h2 class="text-3xl font-bold text-center mb-12 text-secondary">Browse Categories</h2>
+        <h2 class="text-3xl font-bold text-center mb-12 text-secondary border-b-2 border-primary w-fit mx-auto pb-2">ප්‍රධාන වර්ගීකරණයන් (Categories)</h2>
+        
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-            <a href="listings.html?category=Vehicles" class="group bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl transition border border-gray-100 flex flex-col items-center text-center">
-                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-3xl mb-4 group-hover:bg-primary group-hover:text-white transition">🚗</div>
-                <span class="font-semibold text-gray-700">Vehicles</span>
+            <a href="listings.html?cat=vehicles" class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl transition text-center group border border-gray-50">
+                <div class="text-4xl mb-3 group-hover:scale-110 transition">🚗</div>
+                <span class="font-semibold block">වාහන (Vehicles)</span>
             </a>
-            <a href="listings.html?category=Electronics" class="group bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl transition border border-gray-100 flex flex-col items-center text-center">
-                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-3xl mb-4 group-hover:bg-primary group-hover:text-white transition">📱</div>
-                <span class="font-semibold text-gray-700">Electronics</span>
+            <a href="listings.html?cat=property" class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl transition text-center group border border-gray-50">
+                <div class="text-4xl mb-3 group-hover:scale-110 transition">🏠</div>
+                <span class="font-semibold block">ඉඩම් හා නිවාස</span>
             </a>
-            </div>
+            <a href="listings.html?cat=phones" class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl transition text-center group border border-gray-50">
+                <div class="text-4xl mb-3 group-hover:scale-110 transition">📱</div>
+                <span class="font-semibold block">ජංගම දුරකථන</span>
+            </a>
+            <a href="listings.html?cat=electronics" class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl transition text-center group border border-gray-50">
+                <div class="text-4xl mb-3 group-hover:scale-110 transition">💻</div>
+                <span class="font-semibold block">Electronic බඩු</span>
+            </a>
+            <a href="listings.html?cat=home" class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl transition text-center group border border-gray-50">
+                <div class="text-4xl mb-3 group-hover:scale-110 transition">🛋️</div>
+                <span class="font-semibold block">ගෘහ භාණ්ඩ</span>
+            </a>
+            <a href="listings.html?cat=jobs" class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl transition text-center group border border-gray-50">
+                <div class="text-4xl mb-3 group-hover:scale-110 transition">💼</div>
+                <span class="font-semibold block">රැකියා</span>
+            </a>
+            <a href="listings.html?cat=services" class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl transition text-center group border border-gray-50">
+                <div class="text-4xl mb-3 group-hover:scale-110 transition">🔧</div>
+                <span class="font-semibold block">විවිධ සේවා</span>
+            </a>
+            <a href="listings.html?cat=fashion" class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl transition text-center group border border-gray-50">
+                <div class="text-4xl mb-3 group-hover:scale-110 transition">👗</div>
+                <span class="font-semibold block">ඇඳුම් පැළඳුම්</span>
+            </a>
+            <a href="listings.html?cat=education" class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl transition text-center group border border-gray-50">
+                <div class="text-4xl mb-3 group-hover:scale-110 transition">📚</div>
+                <span class="font-semibold block">අධ්‍යාපනය</span>
+            </a>
+            <a href="listings.html?cat=animals" class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl transition text-center group border border-gray-50">
+                <div class="text-4xl mb-3 group-hover:scale-110 transition">🐕</div>
+                <span class="font-semibold block">සතුන්</span>
+            </a>
+            <a href="listings.html?cat=sports" class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl transition text-center group border border-gray-50">
+                <div class="text-4xl mb-3 group-hover:scale-110 transition">⚽</div>
+                <span class="font-semibold block">ක්‍රීඩා භාණ්ඩ</span>
+            </a>
+            <a href="listings.html?cat=other" class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl transition text-center group border border-gray-50">
+                <div class="text-4xl mb-3 group-hover:scale-110 transition">📦</div>
+                <span class="font-semibold block">වෙනත් දේ</span>
+            </a>
+        </div>
     </section>
 
-    <section class="py-16 bg-gray-50">
+    <section class="py-12 bg-gray-50">
         <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold text-secondary mb-10">Latest Listings</h2>
-            <div id="latest-ads-container" class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <p>Loading ads...</p>
+            <h3 class="text-2xl font-bold mb-8">අලුත්ම දැන්වීම් (Latest Ads)</h3>
+            <div id="latest-ads" class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <p class="text-gray-400">පෝස්ට් ඇතුළත් කර නොමැත.</p>
             </div>
         </div>
     </section>
 
-    <footer class="bg-secondary text-white py-12 text-center">
-        &copy; 2026 LankaAds. All rights reserved.
+    <footer class="bg-secondary text-white py-10 mt-12">
+        <div class="container mx-auto px-6 text-center text-sm">
+            <p>&copy; 2026 LankaAds.lk | Developed with ❤️</p>
+        </div>
     </footer>
+
+    <script>
+        // Firebase Config (ඔබේ එකම භාවිතා කරන්න)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
+            authDomain: "add-ink.firebaseapp.com",
+            projectId: "add-ink",
+            storageBucket: "add-ink.firebasestorage.app",
+            messagingSenderId: "752189116425",
+            appId: "1:752189116425:web:0acf6e7b3f6b3629e3e8d8"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        function checkAuthAndPost() {
+            const user = firebase.auth().currentUser;
+            if (user) {
+                window.location.href = "post-ad.html";
+            } else {
+                alert("දැන්වීමක් ඇතුළත් කිරීමට පෙර කරුණාකර Login වන්න.");
+                window.location.href = "login.html";
+            }
+        }
+    </script>
 </body>
 </html>

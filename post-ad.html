@@ -1,41 +1,85 @@
-<script>
-    async function publishPost() {
-        const user = auth.currentUser;
-        if (!user) { alert("කරුණාකර ලොග් වන්න"); return; }
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>දැන්වීමක් පළ කරන්න | LankaAds</title>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="max-w-lg mx-auto my-10 bg-white p-8 rounded-3xl shadow-lg">
+        <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">නව දැන්වීමක් පළ කරන්න</h2>
+        <div class="space-y-4">
+            <input type="text" id="postTitle" placeholder="දැන්වීමේ මාතෘකාව" class="w-full p-4 bg-gray-50 rounded-xl outline-none border">
+            <select id="postCategory" class="w-full p-4 bg-gray-50 rounded-xl outline-none border">
+                <option value="Vehicles">වාහන</option>
+                <option value="Electronics">විදුලි උපකරණ</option>
+                <option value="Property">ඉඩම්/නිවාස</option>
+                <option value="Other">වෙනත්</option>
+            </select>
+            <textarea id="postDesc" placeholder="විස්තරය" rows="4" class="w-full p-4 bg-gray-50 rounded-xl outline-none border"></textarea>
+            
+            <div class="bg-orange-50 p-4 rounded-xl border border-orange-200">
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="featuredCheckbox" class="w-5 h-5 accent-orange-500">
+                    <span class="font-bold text-orange-800 text-sm">Premium කරන්න (රු. 500 / දින 5)</span>
+                </label>
+            </div>
+            <button onclick="publishPost()" id="publishBtn" class="w-full bg-orange-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-orange-600 transition">පළ කරන්න</button>
+        </div>
+    </div>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
+            authDomain: "add-ink.firebaseapp.com",
+            projectId: "add-ink",
+            storageBucket: "add-ink.firebasestorage.app",
+            messagingSenderId: "752189116425",
+            appId: "1:752189116425:web:0acf6e7b3f6b3629e3e8d8"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
 
-        const title = document.getElementById('postTitle').value;
-        const category = document.getElementById('postCategory').value;
-        const desc = document.getElementById('postDesc').value;
-        const isFeatured = document.getElementById('featuredCheckbox').checked;
-        const btn = document.getElementById('publishBtn');
+        async function publishPost() {
+            const user = auth.currentUser;
+            if (!user) { alert("කරුණාකර ලොග් වන්න"); return; }
+            const title = document.getElementById('postTitle').value;
+            const category = document.getElementById('postCategory').value;
+            const desc = document.getElementById('postDesc').value;
+            const isFeatured = document.getElementById('featuredCheckbox').checked;
+            const btn = document.getElementById('publishBtn');
 
-        if (!title || !desc) { alert("විස්තර ඇතුළත් කරන්න"); return; }
+            if (!title || !desc) { alert("විස්තර ඇතුළත් කරන්න"); return; }
+            btn.disabled = true;
+            btn.innerText = "Processing...";
 
-        btn.disabled = true;
-        btn.innerText = "Processing...";
+            try {
+                await db.collection("posts").add({
+                    title: title,
+                    category: category,
+                    description: desc,
+                    userId: user.uid,
+                    userEmail: user.email,
+                    isFeatured: false, 
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
 
-        try {
-            const postRef = await db.collection("posts").add({
-                title: title,
-                category: category,
-                description: desc,
-                userId: user.uid,
-                userEmail: user.email,
-                isFeatured: false, // ඔබ රිසිට් එක බලා මෙය True කරන තෙක් False වේ
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            if (isFeatured) {
-                // Premium නම් ගෙවීම් පිටුවට යවන්න (Email එක සහ Post Title එකත් සමඟ)
-                const url = `payment.html?email=${encodeURIComponent(user.email)}&title=${encodeURIComponent(title)}`;
-                window.location.href = url;
-            } else {
-                alert("දැන්වීම සාර්ථකව පළ කළා!");
-                window.location.href = "index.html";
+                if (isFeatured) {
+                    window.location.href = `payment.html?email=${encodeURIComponent(user.email)}&title=${encodeURIComponent(title)}`;
+                } else {
+                    alert("දැන්වීම පළ කළා!");
+                    window.location.href = "index.html";
+                }
+            } catch (e) {
+                alert("දෝෂයකි: " + e.message);
+                btn.disabled = false;
+                btn.innerText = "පළ කරන්න";
             }
-        } catch (e) {
-            alert("දෝෂයකි: " + e.message);
-            btn.disabled = false;
         }
-    }
-</script>
+    </script>
+</body>
+</html>

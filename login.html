@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Sign Up | Adds.ink</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f4f4f4; }
+        .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); width: 300px; text-align: center; }
+        input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+        button { width: 100%; padding: 10px; margin: 5px 0; cursor: pointer; border: none; border-radius: 5px; color: white; }
+        .btn-login { background-color: #28a745; }
+        .btn-signup { background-color: #007bff; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Adds.ink</h2>
+    <input type="email" id="email" placeholder="Email එක ඇතුළත් කරන්න">
+    <input type="password" id="password" placeholder="Password එක ඇතුළත් කරන්න">
+    
+    <button class="btn-login" onclick="logIn()">Login (ඇතුල් වන්න)</button>
+    <button class="btn-signup" onclick="signUp()">Sign Up (ලියාපදිංචි වන්න)</button>
+    <p id="message" style="color: red; font-size: 13px;"></p>
+</div>
+
+<script>
+    // ඔබේ Firebase Config එක මෙන්න
+    const firebaseConfig = {
+        apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
+        authDomain: "add-ink.firebaseapp.com",
+        projectId: "add-ink",
+        storageBucket: "add-ink.firebasestorage.app",
+        messagingSenderId: "752189116425",
+        appId: "1:752189116425:web:0acf6e7b3f6b3629e3e8d8",
+        measurementId: "G-CFSC5LY1CS"
+    };
+
+    // Firebase Initialize කිරීම
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // ලියාපදිංචි වීමේ (Sign Up) ක්‍රියාවලිය
+    function signUp() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            alert("සාර්ථකව ලියාපදිංචි වුණා! දැන් ඔබට Login විය හැක.");
+        })
+        .catch((error) => {
+            document.getElementById('message').innerText = "වැරදීමක්: " + error.message;
+        });
+    }
+
+    // ඇතුල් වීමේ (Login) ක්‍රියාවලිය
+    function logIn() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            alert("සාර්ථකව ඇතුල් වුණා (Login Success)!");
+            window.location.href = "index.html"; // සාර්ථක නම් හෝම් පේජ් එකට යනවා
+        })
+        .catch((error) => {
+            document.getElementById('message').innerText = "වැරදීමක්: " + error.message;
+        });
+    }
+</script>
+
+</body>
+</html>

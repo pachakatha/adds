@@ -22,24 +22,33 @@
     </nav>
 
     <div class="container mx-auto px-4 max-w-2xl">
-        <div class="bg-white rounded-[2rem] p-8 shadow-xl border border-gray-100">
-            <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-                📢 අලුත් දැන්වීමක් පළ කරන්න
-            </h2>
+        <div class="bg-white rounded-[2rem] p-8 shadow-xl border border-gray-100 mb-10">
+            <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">📢 අලුත් දැන්වීමක් පළ කරන්න</h2>
 
             <div class="space-y-5">
                 <div>
                     <label class="block text-xs font-bold text-gray-400 mb-2 uppercase ml-2">දැන්වීමේ මාතෘකාව</label>
-                    <input type="text" id="postTitle" placeholder="උදා: Toyota Corolla 2018 for sale" class="w-full p-4 bg-gray-50 rounded-2xl border-2 border-transparent focus:border-orange-500/20 outline-none transition">
+                    <input type="text" id="postTitle" placeholder="උදා: Toyota Corolla 2018" class="w-full p-4 bg-gray-50 rounded-2xl border-2 border-transparent focus:border-orange-500/20 outline-none transition">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 mb-2 uppercase ml-2">ප්‍රභේදය (Category)</label>
+                    <select id="postCategory" class="w-full p-4 bg-gray-50 rounded-2xl border-2 border-transparent focus:border-orange-500/20 outline-none transition">
+                        <option value="Vehicles">Vehicles (වාහන)</option>
+                        <option value="Electronics">Electronics (විදුලි උපකරණ)</option>
+                        <option value="Property">Property (ඉඩම්/නිවාස)</option>
+                        <option value="Services">Services (සේවා)</option>
+                        <option value="Other">Other (වෙනත්)</option>
+                    </select>
                 </div>
 
                 <div>
                     <label class="block text-xs font-bold text-gray-400 mb-2 uppercase ml-2">විස්තරය</label>
-                    <textarea id="postDesc" rows="4" placeholder="භාණ්ඩය හෝ සේවාව ගැන විස්තර ලියන්න..." class="w-full p-4 bg-gray-50 rounded-2xl border-2 border-transparent focus:border-orange-500/20 outline-none transition"></textarea>
+                    <textarea id="postDesc" rows="4" placeholder="වැඩිදුර විස්තර මෙහි ලියන්න..." class="w-full p-4 bg-gray-50 rounded-2xl border-2 border-transparent focus:border-orange-500/20 outline-none transition"></textarea>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-gray-400 mb-2 uppercase ml-2">පින්තූරයක් එක් කරන්න</label>
+                    <label class="block text-xs font-bold text-gray-400 mb-2 uppercase ml-2">පින්තූරයක් ඇතුළත් කරන්න</label>
                     <input type="file" id="postImage" accept="image/*" class="w-full p-3 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
                 </div>
 
@@ -48,20 +57,17 @@
                         <input type="checkbox" id="featuredCheckbox" class="w-6 h-6 accent-orange-500">
                         <div>
                             <span class="block text-sm font-bold text-orange-800">මෙම දැන්වීම Premium (Featured) කරන්න</span>
-                            <span class="text-[10px] text-orange-600 block mt-1 leading-tight italic">Premium දැන්වීම් අනෙක් ඒවාට වඩා ඉහළින් සහ විශේෂිතව දිස්වේ.</span>
+                            <span class="text-[10px] text-orange-600 block mt-1 leading-tight italic">Premium දැන්වීම් රු. 500.00 කි. එය ඉහළින්ම පෙන්වයි.</span>
                         </div>
                     </label>
                 </div>
 
-                <button onclick="publishPost()" id="publishBtn" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-bold text-lg hover:bg-black transition-all shadow-lg active:scale-[0.98] mt-4">
-                    දැන්වීම පළ කරන්න
-                </button>
+                <button onclick="publishPost()" id="publishBtn" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-bold text-lg hover:bg-black transition-all shadow-lg mt-4">දැන්වීම පළ කරන්න</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
             authDomain: "add-ink.firebaseapp.com",
@@ -75,14 +81,91 @@
         const db = firebase.firestore();
         const storage = firebase.storage();
 
-        // පෝස්ට් එකක් පල කිරීමේ Function එක
         async function publishPost() {
             const user = auth.currentUser;
-            if (!user) {
-                alert("කරුණාකර ලොග් වන්න!");
-                return;
-            }
+            if (!user) { alert("කරුණාකර ලොග් වන්න!"); return; }
 
             const title = document.getElementById('postTitle').value;
+            const category = document.getElementById('postCategory').value;
             const desc = document.getElementById('postDesc').value;
             const imageFile = document.getElementById('postImage').files[0];
+            const isFeatured = document.getElementById('featuredCheckbox').checked;
+            const btn = document.getElementById('publishBtn');
+
+            if (!title || !desc) { alert("මාතෘකාව සහ විස්තරය අනිවාර්යයි!"); return; }
+
+            btn.disabled = true;
+            btn.innerText = "පළ කරමින්...";
+
+            try {
+                let imageUrl = "";
+                // 1. Photo Upload
+                if (imageFile) {
+                    const storageRef = storage.ref(`posts/${Date.now()}_${imageFile.name}`);
+                    await storageRef.put(imageFile);
+                    imageUrl = await storageRef.getDownloadURL();
+                }
+
+                // 2. Save to Firestore
+                const postRef = await db.collection("posts").add({
+                    title: title,
+                    category: category,
+                    description: desc,
+                    imageUrl: imageUrl,
+                    userId: user.uid,
+                    userEmail: user.email,
+                    isFeatured: isFeatured,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                // 3. If Featured, go to Payment
+                if (isFeatured) {
+                    redirectToPayHere(postRef.id, user.email);
+                } else {
+                    alert("දැන්වීම සාර්ථකව පළ කරන ලදී!");
+                    window.location.href = "index.html";
+                }
+
+            } catch (error) {
+                alert("දෝෂයකි: " + error.message);
+                btn.disabled = false;
+                btn.innerText = "දැන්වීම පළ කරන්න";
+            }
+        }
+
+        function redirectToPayHere(orderId, email) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'https://sandbox.payhere.lk/pay/checkout'; // සැබෑ ගෙවීම් සඳහා https://www.payhere.lk/pay/checkout යොදන්න
+
+            const fields = {
+                merchant_id: '121XXXX', // ඔබේ Merchant ID එක මෙතනට දාන්න
+                return_url: window.location.origin + '/index.html',
+                cancel_url: window.location.origin + '/add-post.html',
+                notify_url: 'https://yourserver.com/notify',
+                order_id: orderId,
+                items: 'Premium Ad Listing',
+                amount: '500.00',
+                currency: 'LKR',
+                first_name: email.split('@')[0],
+                last_name: '',
+                email: email,
+                phone: '0770000000',
+                address: 'SL',
+                city: 'Colombo',
+                country: 'Sri Lanka'
+            };
+
+            for (const key in fields) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = fields[key];
+                form.appendChild(input);
+            }
+            document.body.appendChild(form);
+            form.submit();
+        }
+    </script>
+</body>
+</html>

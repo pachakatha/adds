@@ -3,126 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LankaAds | ලංකාවේ අංක 1 වෙළඳ පොළ</title>
-    
+    <title>LankaAds | Home</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
     <style>
-        :root { --primary-red: #ff4757; --dark-blue: #2f3542; }
-        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, sans-serif; }
-        
-        /* Navigation */
-        .navbar { background: white !important; box-shadow: 0 2px 10px rgba(0,0,0,0.1); padding: 12px 0; }
-        .navbar-brand { font-weight: 800; color: var(--primary-red) !important; font-size: 1.6rem; }
-        
-        /* Profile Button Styling */
-        .profile-dropdown img { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-red); }
-        .dropdown-toggle::after { display: none; } /* Arrow එක අයින් කිරීමට */
-
-        .btn-post-ad { background-color: var(--primary-red); color: white !important; font-weight: bold; padding: 10px 22px; border-radius: 8px; text-decoration: none; transition: 0.3s; margin-left: 15px; }
-        .btn-post-ad:hover { background-color: #e03d4a; transform: translateY(-2px); }
-
-        /* Hero Section */
-        .hero { background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1555421689-491a97ff2040?q=80&w=1200'); background-size: cover; padding: 70px 0; color: white; text-align: center; }
-        .search-group { max-width: 750px; margin: 30px auto; background: white; padding: 8px; border-radius: 12px; display: flex; gap: 5px; }
-        .search-group input { border: none; flex-grow: 1; padding: 12px 20px; outline: none; font-size: 1rem; border-radius: 8px; }
-        .btn-search { background: var(--primary-red); color: white; border: none; padding: 10px 25px; border-radius: 8px; font-weight: bold; }
-
-        /* Categories */
-        .cat-box { background: white; padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #eee; transition: 0.3s; text-decoration: none; color: var(--dark-blue); display: block; }
-        .cat-box:hover { border-color: var(--primary-red); color: var(--primary-red); transform: translateY(-3px); }
-        .cat-box i { font-size: 2rem; margin-bottom: 8px; display: block; }
-
-        /* Ads */
-        .ad-card { border: none; border-radius: 12px; transition: 0.3s; background: white; box-shadow: 0 3px 10px rgba(0,0,0,0.05); overflow: hidden; }
+        :root { --primary-red: #ff4757; }
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', sans-serif; }
+        .navbar { background: white !important; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .navbar-brand { font-weight: 800; color: var(--primary-red) !important; }
+        .hero { background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1555421689-491a97ff2040?q=80&w=1200'); background-size: cover; padding: 60px 0; color: white; text-align: center; }
+        .search-group { max-width: 700px; margin: 20px auto; background: white; padding: 8px; border-radius: 12px; display: flex; }
+        .search-group input { border: none; flex-grow: 1; padding: 10px; outline: none; }
+        .ad-card { border: none; border-radius: 12px; transition: 0.3s; box-shadow: 0 3px 10px rgba(0,0,0,0.05); overflow: hidden; background: white; }
         .ad-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .ad-img { height: 160px; object-fit: cover; width: 100%; }
         .price { color: var(--primary-red); font-weight: 800; }
+        .profile-img { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--primary-red); }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg">
+    <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
             <a class="navbar-brand" href="index.html">LANKAADS</a>
-            
             <div class="ms-auto d-flex align-items-center">
-                <div id="auth-buttons">
-                    <a href="login.html" class="text-dark text-decoration-none fw-bold me-3">Login</a>
-                    <a href="login.html" class="btn btn-outline-dark fw-bold" style="border-radius: 8px;">Sign Up</a>
-                </div>
-
-                <div class="dropdown profile-dropdown d-none" id="user-profile">
-                    <a class="dropdown-toggle d-flex align-items-center text-decoration-none text-dark" href="#" role="button" data-bs-toggle="dropdown">
-                        <span class="me-2 fw-bold d-none d-md-block">මගේ ගිණුම</span>
-                        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="User">
+                <div class="dropdown me-3">
+                    <a class="dropdown-toggle d-flex align-items-center text-decoration-none text-dark" href="#" data-bs-toggle="dropdown">
+                        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="profile-img me-2">
+                        <span class="d-none d-md-block fw-bold">මගේ ගිණුම</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow border-0">
                         <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user me-2"></i> Profile</a></li>
                         <li><a class="dropdown-item" href="my-ads.html"><i class="fas fa-list me-2"></i> My Ads</a></li>
-                        <li><a class="dropdown-item" href="payment.html"><i class="fas fa-wallet me-2"></i> Payments</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
                     </ul>
                 </div>
-
-                <a href="post-ad.html" class="btn-post-ad"><i class="fas fa-plus-circle"></i> POST AD</a>
+                <a href="post-ad.html" class="btn btn-danger fw-bold" style="border-radius: 8px;">POST AD</a>
             </div>
         </div>
     </nav>
 
     <div class="hero">
-        <div class="container text-white text-center">
-            <h1 class="fw-bold">ලංකාවේ ඕනෑම දෙයක් විකුණන්න හෝ මිලදී ගන්න</h1>
+        <div class="container">
+            <h2 class="fw-bold">ලංකාවේ ඕනෑම දෙයක් ඉක්මනින් විකුණා ගන්න</h2>
             <div class="search-group">
                 <input type="text" placeholder="ඔබ සොයන්නේ කුමක්ද?">
-                <button class="btn-search">සොයන්න</button>
+                <button class="btn btn-danger px-4 rounded-3">සොයන්න</button>
             </div>
         </div>
     </div>
 
     <div class="container my-5">
-        <h5 class="fw-bold mb-4">කැටගරි අනුව සොයන්න</h5>
-        <div class="row g-3">
-            <div class="col-4 col-md-2"><a href="#" class="cat-box"><i class="fas fa-car text-primary"></i>වාහන</a></div>
-            <div class="col-4 col-md-2"><a href="#" class="cat-box"><i class="fas fa-mobile-alt text-success"></i>Phones</a></div>
-            <div class="col-4 col-md-2"><a href="#" class="cat-box"><i class="fas fa-home text-warning"></i>දේපල</a></div>
-            <div class="col-4 col-md-2"><a href="#" class="cat-box"><i class="fas fa-briefcase text-info"></i>රැකියා</a></div>
-            <div class="col-4 col-md-2"><a href="#" class="cat-box"><i class="fas fa-dog text-danger"></i>සතුන්</a></div>
-            <div class="col-4 col-md-2"><a href="#" class="cat-box"><i class="fas fa-ellipsis-h text-muted"></i>වෙනත්</a></div>
+        <h4 class="fw-bold mb-4">නවතම දැන්වීම්</h4>
+        <div class="row g-4" id="adsContainer">
+            <div class="text-center">පෝස්ට් පූරණය වෙමින් පවතී...</div>
         </div>
     </div>
 
-    <div class="container mb-5">
-        <h5 class="fw-bold mb-4">අලුත්ම පෝස්ට්</h5>
-        <div class="row g-4">
-            <div class="col-md-3 col-6">
-                <div class="card ad-card">
-                    <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=400" class="ad-img" alt="ad">
-                    <div class="card-body">
-                        <h6 class="fw-bold small">iPhone 13 Pro</h6>
-                        <p class="price mb-0">Rs. 185,000</p>
-                    </div>
-                </div>
-            </div>
-            </div>
-    </div>
-
     <script>
-        // මේක test එකක් විදිහට පාවිච්චි කරන්න. 
-        // ඇත්තටම ලොග් වුණාම මේ variable එක true කරන්න Backend එකෙන්.
-        let isLoggedIn = true; // මේක false කළොත් Login බටන් පෙනේවි. true කළොත් Profile බටන් එක පෙනේවි.
+        // ඔයාගේ Firebase Config එක
+        const firebaseConfig = {
+          apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
+          authDomain: "add-ink.firebaseapp.com",
+          projectId: "add-ink",
+          storageBucket: "add-ink.firebasestorage.app",
+          messagingSenderId: "752189116425",
+          appId: "1:752189116425:web:3aa935b30b1b9154e3e8d8",
+          measurementId: "G-Q8R7HZVJB0"
+        };
 
-        if (isLoggedIn) {
-            document.getElementById('auth-buttons').classList.add('d-none');
-            document.getElementById('user-profile').classList.remove('d-none');
-        }
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-        function logout() {
-            alert("ඔබ ගිණුමෙන් ඉවත් විය.");
-            location.reload(); // පිටුව නැවත පූරණය කරයි
-        }
+        // Database එකෙන් පෝස්ට් ටික ගමු
+        db.collection("ads").orderBy("createdAt", "desc").onSnapshot((querySnapshot) => {
+            let container = document.getElementById('adsContainer');
+            container.innerHTML = "";
+            
+            if (querySnapshot.empty) {
+                container.innerHTML = "<div class='text-center'>තවම කිසිදු දැන්වීමක් පල කර නොමැත.</div>";
+                return;
+            }
+
+            querySnapshot.forEach((doc) => {
+                let ad = doc.data();
+                container.innerHTML += `
+                    <div class="col-md-3 col-6">
+                        <div class="card ad-card h-100">
+                            <img src="https://via.placeholder.com/300x200?text=LankaAds" class="card-img-top">
+                            <div class="card-body">
+                                <h6 class="fw-bold mb-1">${ad.title}</h6>
+                                <p class="price mb-0">Rs. ${parseFloat(ad.price).toLocaleString()}</p>
+                                <small class="text-muted"><i class="fas fa-map-marker-alt"></i> Sri Lanka</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

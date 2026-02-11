@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile | LankaAds</title>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+<div class="container mx-auto p-6">
+    <div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg text-center">
+        <h2 class="text-2xl font-bold text-secondary mb-6">පරිශීලක පැතිකඩ (Profile)</h2>
+        
+        <div class="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl text-gray-500">
+            👤
+        </div>
+        
+        <p class="text-lg font-semibold" id="user-email">Loading...</p>
+        <p class="text-sm text-gray-500" id="user-id"></p>
+        
+        <button onclick="logOut()" class="mt-6 bg-red-500 text-white px-4 py-2 rounded font-semibold hover:bg-red-600">
+            Logout
+        </button>
+    </div>
+</div>
+
+<script>
+    // Firebase Config (ඔබේ API Keys)
+    const firebaseConfig = {
+        apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
+        authDomain: "add-ink.firebaseapp.com",
+        projectId: "add-ink",
+        storageBucket: "add-ink.firebasestorage.app",
+        messagingSenderId: "752189116425",
+        appId: "1:752189116425:web:0acf6e7b3f6b3629e3e8d8"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // ලොග් වී සිටින පරිශීලකයා පරීක්ෂා කිරීම
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            // තොරතුරු පෙන්වීම
+            document.getElementById('user-email').innerText = user.email;
+            document.getElementById('user-id').innerText = "ID: " + user.uid;
+        } else {
+            // ලොග් වී නැත්නම් login පිටුවට යවන්න
+            window.location.href = "login.html";
+        }
+    });
+
+    // Logout function
+    function logOut() {
+        auth.signOut().then(() => {
+            window.location.href = "index.html";
+        });
+    }
+</script>
+</body>
+</html>

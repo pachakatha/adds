@@ -4,20 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LankaAds - Buy & Sell Anything in Sri Lanka</title>
-    
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
-
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Poppins', 'sans-serif'],
-                    },
+                    fontFamily: { sans: ['Poppins', 'sans-serif'] },
                     colors: {
                         primary: '#FF6B35', 
                         secondary: '#004E89', 
@@ -30,88 +23,53 @@
 </head>
 <body class="bg-background text-gray-800 font-sans">
 
-    <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm transition-all duration-300">
+    <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <a href="index.html" class="text-2xl font-bold text-secondary flex items-center gap-2">
                 <span class="bg-primary text-white p-2 rounded-lg">LA</span> LankaAds
             </a>
             <div class="hidden md:flex gap-8 items-center font-medium">
                 <a href="listings.html" class="hover:text-primary transition">All Ads</a>
-                <a href="login.html" id="auth-link" class="hover:text-primary transition border-l pl-8">Login / Sign Up</a>
+                <a href="login.html" class="hover:text-primary transition">Login / Sign Up</a>
             </div>
-            <button onclick="checkAuthAndRedirect()" class="bg-primary text-white px-6 py-2 rounded-full shadow-lg hover:bg-orange-600 transition font-semibold">
+            <a href="post-ad.html" class="bg-primary text-white px-6 py-2 rounded-full shadow-lg hover:bg-orange-600 transition font-semibold">
                 + Post Your Ad
-            </button>
+            </a>
         </div>
     </nav>
 
-    <header class="relative bg-gradient-to-r from-secondary to-blue-900 text-white py-24 overflow-hidden">
-        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1556740738-b6a63e27c4df?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80')] bg-cover bg-center opacity-20"></div>
-        <div class="container mx-auto px-6 relative z-10 text-center">
+    <header class="relative bg-gradient-to-r from-secondary to-blue-900 text-white py-24">
+        <div class="container mx-auto px-6 text-center">
             <h1 class="text-4xl md:text-6xl font-bold mb-6">Buy & Sell Anything in <span class="text-primary">Sri Lanka</span></h1>
-            <p class="text-xl md:text-2xl text-gray-200 mb-10 max-w-2xl mx-auto">From vehicles to electronics, find the best deals or sell your items fast.</p>
-            
-            <div class="bg-white/20 backdrop-blur-md p-2 rounded-full max-w-3xl mx-auto flex shadow-2xl border border-white/30 transform hover:scale-[1.02] transition duration-300">
-                <input type="text" placeholder="What are you looking for?" class="bg-transparent flex-grow px-6 py-3 text-white placeholder-gray-200 outline-none text-lg">
-                <button class="bg-primary text-white px-8 py-3 rounded-full font-bold hover:bg-orange-600 transition">Search</button>
-            </div>
+            <p class="text-xl text-gray-200 mb-10">From vehicles to electronics, find the best deals.</p>
         </div>
     </header>
 
     <section class="py-16 container mx-auto px-6">
         <h2 class="text-3xl font-bold text-center mb-12 text-secondary">Browse Categories</h2>
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-            <a href="#" class="group bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl transition flex flex-col items-center">
-                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-3xl mb-4 group-hover:bg-primary transition">🚗</div>
+            <a href="listings.html?category=Vehicles" class="group bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl transition border border-gray-100 flex flex-col items-center text-center">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-3xl mb-4 group-hover:bg-primary group-hover:text-white transition">🚗</div>
                 <span class="font-semibold text-gray-700">Vehicles</span>
+            </a>
+            <a href="listings.html?category=Electronics" class="group bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl transition border border-gray-100 flex flex-col items-center text-center">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-3xl mb-4 group-hover:bg-primary group-hover:text-white transition">📱</div>
+                <span class="font-semibold text-gray-700">Electronics</span>
             </a>
             </div>
     </section>
 
-    <footer class="bg-secondary text-white py-12">
-        <div class="container mx-auto px-6 text-center text-gray-400 text-sm">
-            &copy; 2026 LankaAds. All rights reserved.
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-secondary mb-10">Latest Listings</h2>
+            <div id="latest-ads-container" class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <p>Loading ads...</p>
+            </div>
         </div>
+    </section>
+
+    <footer class="bg-secondary text-white py-12 text-center">
+        &copy; 2026 LankaAds. All rights reserved.
     </footer>
-
-    <script>
-        // Firebase Configuration (ඔබේ API Keys)
-        const firebaseConfig = {
-            apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
-            authDomain: "add-ink.firebaseapp.com",
-            projectId: "add-ink",
-            storageBucket: "add-ink.firebasestorage.app",
-            messagingSenderId: "752189116425",
-            appId: "1:752189116425:web:0acf6e7b3f6b3629e3e8d8"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-
-        // පරිශීලකයා ලොග් වී ඇත්දැයි බලා නම මාරු කිරීම
-        auth.onAuthStateChanged(user => {
-            const authLink = document.getElementById('auth-link');
-            if (user) {
-                authLink.innerText = "My Profile (" + user.email.split('@')[0] + ")";
-                authLink.href = "#"; // පසුව Profile පිටුවට ලින්ක් කළ හැක
-            } else {
-                authLink.innerText = "Login / Sign Up";
-                authLink.href = "login.html";
-            }
-        });
-
-        // "+ Post Your Ad" බොත්තම එබූ විට ක්‍රියාත්මක වන function එක
-        function checkAuthAndRedirect() {
-            const user = auth.currentUser;
-            if (user) {
-                // ලොග් වී ඇත්නම් ad එක දාන පිටුවට (post-ad.html) යවන්න
-                window.location.href = "post-ad.html";
-            } else {
-                // ලොග් වී නැත්නම් alert එකක් දී login පිටුවට යවන්න
-                alert("Please Login first to post an advertisement!");
-                window.location.href = "login.html";
-            }
-        }
-    </script>
 </body>
 </html>

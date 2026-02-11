@@ -3,119 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Post Your Ad | LankaAds</title>
+    <title>Post Your Ad | LankaAds Premium</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 
     <style>
-        body { background-color: #f4f7f6; padding: 40px 0; font-family: 'Segoe UI', sans-serif; }
-        .form-card { background: white; padding: 35px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: none; }
-        .btn-submit { background-color: #ff4757; color: white; font-weight: bold; padding: 12px; border: none; transition: 0.3s; }
-        .btn-submit:hover { background-color: #e03d4a; transform: translateY(-2px); }
-        .form-label { font-weight: 600; color: #2f3542; }
+        body { background-color: #f0f2f5; font-family: 'Inter', sans-serif; color: #1c1e21; }
+        .navbar { background: white; border-bottom: 1px solid #ddd; }
+        .main-card { background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 40px; border: none; }
+        
+        /* Image Upload Area */
+        .upload-area { border: 2px dashed #ccd0d5; border-radius: 12px; padding: 30px; text-align: center; cursor: pointer; transition: 0.3s; background: #f9fafb; }
+        .upload-area:hover { border-color: #ff4757; background: #fff5f5; }
+        .upload-icon { font-size: 35px; color: #ff4757; margin-bottom: 10px; }
+        .preview-img { width: 100%; max-height: 250px; object-fit: cover; border-radius: 10px; display: none; margin-top: 15px; }
+
+        /* Premium Switch Styling */
+        .premium-box { background: #fff9db; border: 1px solid #fab005; border-radius: 12px; padding: 15px; margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between; }
+        .form-check-input:checked { background-color: #fab005; border-color: #fab005; }
+
+        .btn-post { background: #ff4757; color: white; border: none; padding: 14px; border-radius: 10px; font-weight: 700; font-size: 1.1rem; transition: 0.3s; }
+        .btn-post:hover { background: #e03d4a; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255, 71, 87, 0.3); }
+        .form-control { border-radius: 8px; padding: 12px; border: 1px solid #ddd; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-md-7 col-lg-6 mx-auto">
-                <div class="form-card">
-                    <div class="text-center mb-4">
-                        <h2 class="fw-bold text-danger">LANKAADS</h2>
-                        <p class="text-muted">ඔබේ දැන්වීම නොමිලේ පල කරන්න</p>
+<nav class="navbar navbar-light py-3">
+    <div class="container text-center">
+        <a class="navbar-brand fw-bold text-danger mx-auto" href="index.html" style="font-size: 1.8rem; letter-spacing: -1px;">LANKAADS</a>
+    </div>
+</nav>
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-7 mx-auto">
+            <div class="main-card shadow-lg">
+                <h3 class="fw-bold mb-4 text-center">ඔබේ දැන්වීම පල කරන්න</h3>
+                
+                <form id="adForm">
+                    <div class="mb-4 text-center">
+                        <label class="form-label fw-bold d-block text-start">භාණ්ඩයේ පින්තූරයක් එක් කරන්න</label>
+                        <div class="upload-area" id="uploadArea" onclick="document.getElementById('imageFile').click()">
+                            <i class="fas fa-camera upload-icon"></i>
+                            <p class="mb-0 fw-semibold text-muted">පින්තූරය තෝරන්න (Click to upload)</p>
+                            <input type="file" id="imageFile" hidden accept="image/*">
+                            <img id="imagePreview" class="preview-img img-fluid">
+                        </div>
                     </div>
 
-                    <form id="adForm">
-                        <div class="mb-3">
-                            <label class="form-label">දැන්වීමේ මාතෘකාව (Title)</label>
-                            <input type="text" class="form-control" id="title" placeholder="උදා: iPhone 15 Pro Max" required>
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label class="form-label fw-bold">දැන්වීමේ මාතෘකාව</label>
+                            <input type="text" class="form-control" id="title" placeholder="උදා: iPhone 13 Pro" required>
                         </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">මිල (Rs.)</label>
-                            <input type="number" class="form-control" id="price" placeholder="මිල ඇතුළත් කරන්න" required>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-bold">මිල (Rs.)</label>
+                            <input type="number" class="form-control" id="price" placeholder="මිල" required>
                         </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">විස්තරය (Description)</label>
-                            <textarea class="form-control" id="desc" rows="4" placeholder="භාණ්ඩය ගැන විස්තරයක් ඇතුළත් කරන්න..." required></textarea>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label">ස්ථානය (Location)</label>
-                            <input type="text" class="form-control" id="location" placeholder="උදා: කොළඹ" required>
-                        </div>
-
-                        <button type="submit" id="submitBtn" class="btn btn-submit w-100 rounded-3">
-                            <i class="fas fa-bullhorn me-2"></i> පල කරන්න (Post Ad)
-                        </button>
-                    </form>
-
-                    <div class="text-center mt-4">
-                        <a href="index.html" class="text-secondary text-decoration-none small">
-                            <i class="fas fa-arrow-left me-1"></i> ආපසු මුල් පිටුවට
-                        </a>
                     </div>
-                </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">විස්තරය (Description)</label>
+                        <textarea class="form-control" id="desc" rows="3" placeholder="භාණ්ඩයේ තත්ත්වය..." required></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">ස්ථානය (Location)</label>
+                        <input type="text" class="form-control" id="location" placeholder="උදා: ගම්පහ, කොළඹ" required>
+                    </div>
+
+                    <div class="premium-box">
+                        <div>
+                            <h6 class="mb-0 fw-bold"><i class="fas fa-crown text-warning me-2"></i>Premium Ad එකක් ලෙස පල කරන්න</h6>
+                            <small class="text-muted">වැඩි පිරිසකට පෙන්වීමට මෙය තෝරන්න</small>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="premiumSwitch" style="width: 50px; height: 25px; cursor: pointer;">
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="btn btn-post w-100 shadow-sm">
+                        <i class="fas fa-plus-circle me-2"></i> පල කරන්න (Post Ad)
+                    </button>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        // ඔබේ Firebase Config තොරතුරු
-        const firebaseConfig = {
-          apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
-          authDomain: "add-ink.firebaseapp.com",
-          projectId: "add-ink",
-          storageBucket: "add-ink.firebasestorage.app",
-          messagingSenderId: "752189116425",
-          appId: "1:752189116425:web:3aa935b30b1b9154e3e8d8",
-          measurementId: "G-Q8R7HZVJB0"
-        };
+<script>
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
+      authDomain: "add-ink.firebaseapp.com",
+      projectId: "add-ink",
+      storageBucket: "add-ink.firebasestorage.app",
+      messagingSenderId: "752189116425",
+      appId: "1:752189116425:web:3aa935b30b1b9154e3e8d8",
+      measurementId: "G-Q8R7HZVJB0"
+    };
 
-        // Firebase ආරම්භ කිරීම
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const storage = firebase.storage();
 
-        // Form එක Submit කරන විට
-        document.getElementById('adForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const btn = document.getElementById('submitBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> පල වෙමින් පවතී...';
+    // Premium Switch එක Click කළ විට payment.html වෙත යන්න
+    document.getElementById('premiumSwitch').addEventListener('change', function() {
+        if(this.checked) {
+            if(confirm("Premium දැන්වීමක් පල කිරීමට ගෙවීම් සිදුකළ යුතුය. ඔබව Payment පිටුවට යොමු කරන්නද?")) {
+                window.location.href = 'payment.html';
+            } else {
+                this.checked = false; // Cancel කළොත් switch එක off කරන්න
+            }
+        }
+    });
 
-            // දත්ත ලබා ගැනීම
-            const title = document.getElementById('title').value;
-            const price = document.getElementById('price').value;
-            const desc = document.getElementById('desc').value;
-            const locationName = document.getElementById('location').value;
+    // Image Preview function
+    document.getElementById('imageFile').onchange = e => {
+        const [file] = e.target.files;
+        if (file) {
+            const preview = document.getElementById('imagePreview');
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = 'block';
+            document.querySelector('.upload-icon').style.display = 'none';
+            document.querySelector('.upload-area p').style.display = 'none';
+        }
+    }
 
-            // Firebase Firestore එකට දත්ත යැවීම
-            db.collection("ads").add({
-                title: title,
-                price: price,
-                description: desc,
-                location: locationName,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp() // පල කළ වේලාව
-            })
-            .then(() => {
-                alert("ඔබේ දැන්වීම සාර්ථකව පල කරන ලදී!");
-                window.location.href = 'index.html'; // සාර්ථක වූ පසු මුල් පිටුවට යන්න
-            })
-            .catch((error) => {
-                alert("වැරැද්දක් සිදුවුණා: " + error.message);
-                btn.disabled = false;
-                btn.innerText = "පල කරන්න (Post Ad)";
+    // Submit Action
+    document.getElementById('adForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('submitBtn');
+        const file = document.getElementById('imageFile').files[0];
+        
+        if (!file) return alert("කරුණාකර පින්තූරයක් ඇතුළත් කරන්න!");
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> ඇඩ් එක පල වෙමින් පවතී...';
+
+        try {
+            // 1. Upload Image
+            const storageRef = storage.ref('ad_images/' + Date.now() + "_" + file.name);
+            await storageRef.put(file);
+            const imageUrl = await storageRef.getDownloadURL();
+
+            // 2. Save Data
+            await db.collection("ads").add({
+                title: document.getElementById('title').value,
+                price: document.getElementById('price').value,
+                description: document.getElementById('desc').value,
+                location: document.getElementById('location').value,
+                imageUrl: imageUrl,
+                isPremium: document.getElementById('premiumSwitch').checked,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
-        });
-    </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            alert("දැන්වීම සාර්ථකව පල කරන ලදී!");
+            window.location.href = 'index.html';
+
+        } catch (error) {
+            alert("වැරැද්දක් සිදුවුණා: " + error.message);
+            btn.disabled = false;
+            btn.innerText = "පල කරන්න (Post Ad)";
+        }
+    };
+</script>
+
 </body>
 </html>

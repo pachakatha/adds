@@ -3,61 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>දැන්වීමක් පළ කරන්න | LankaAds</title>
+    <title>LankaAds | Post Ad</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
-<body class="bg-slate-50 font-sans">
+<body class="bg-gray-100 font-sans">
 
-    <nav class="bg-white shadow-sm px-6 py-4 mb-8">
-        <a href="index.html" class="text-2xl font-bold text-secondary italic">
-            <span class="bg-orange-500 text-white px-2 rounded-lg not-italic">LA</span> LankaAds
-        </a>
-    </nav>
+    <div class="max-w-lg mx-auto my-10 bg-white p-8 rounded-3xl shadow-lg">
+        <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">නව දැන්වීමක් පළ කරන්න</h2>
+        
+        <div class="space-y-4">
+            <input type="text" id="postTitle" placeholder="දැන්වීමේ මාතෘකාව" class="w-full p-4 bg-gray-50 rounded-xl border-none focus:ring-2 focus:ring-orange-400 outline-none">
+            
+            <select id="postCategory" class="w-full p-4 bg-gray-50 rounded-xl border-none outline-none">
+                <option value="Vehicles">වාහන (Vehicles)</option>
+                <option value="Electronics">විදුලි උපකරණ (Electronics)</option>
+                <option value="Property">ඉඩම්/නිවාස (Property)</option>
+                <option value="Other">වෙනත්</option>
+            </select>
 
-    <div class="container mx-auto px-4 max-w-2xl">
-        <div class="bg-white rounded-[2rem] p-8 shadow-xl border border-gray-100 mb-10">
-            <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">📢 අලුත් දැන්වීමක් පළ කරන්න</h2>
+            <textarea id="postDesc" placeholder="විස්තරය" rows="4" class="w-full p-4 bg-gray-50 rounded-xl border-none outline-none"></textarea>
 
-            <div class="space-y-5">
-                <div>
-                    <label class="block text-xs font-bold text-gray-400 mb-2 uppercase ml-2">දැන්වීමේ මාතෘකාව</label>
-                    <input type="text" id="postTitle" placeholder="උදා: මෝටර් සයිකල් විකිණීමට" class="w-full p-4 bg-gray-50 rounded-2xl border-2 border-transparent focus:border-orange-500/20 outline-none transition">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-gray-400 mb-2 uppercase ml-2">ප්‍රභේදය (Category)</label>
-                    <select id="postCategory" class="w-full p-4 bg-gray-50 rounded-2xl border-2 border-transparent focus:border-orange-500/20 outline-none transition">
-                        <option value="Vehicles">Vehicles (වාහන)</option>
-                        <option value="Electronics">Electronics (විදුලි උපකරණ)</option>
-                        <option value="Property">Property (ඉඩම්/නිවාස)</option>
-                        <option value="Services">Services (සේවා)</option>
-                        <option value="Other">Other (වෙනත්)</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-gray-400 mb-2 uppercase ml-2">විස්තරය</label>
-                    <textarea id="postDesc" rows="4" placeholder="වැඩිදුර විස්තර මෙහි ලියන්න..." class="w-full p-4 bg-gray-50 rounded-2xl border-2 border-transparent focus:border-orange-500/20 outline-none transition"></textarea>
-                </div>
-
-                <div class="p-5 bg-orange-50 border border-orange-100 rounded-[1.5rem] mt-6">
-                    <label class="flex items-center gap-4 cursor-pointer">
-                        <input type="checkbox" id="featuredCheckbox" class="w-6 h-6 accent-orange-500">
-                        <div>
-                            <span class="block text-sm font-bold text-orange-800">Premium (Featured) කරන්න</span>
-                            <span class="text-[11px] text-orange-700 block mt-1 leading-tight font-medium">දින 5ක් සඳහා රු. 500.00 කි. දැන්වීම වටේට රන්වන් පැහැති තීරුවක් (Gold Border) දිස්වේ.</span>
-                        </div>
-                    </label>
-                </div>
-
-                <button onclick="publishPost()" id="publishBtn" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-bold text-lg hover:bg-black transition-all shadow-lg mt-4">දැන්වීම පළ කරන්න</button>
+            <div class="bg-orange-50 p-4 rounded-xl border border-orange-200">
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="featuredCheckbox" class="w-5 h-5 accent-orange-500">
+                    <span class="font-bold text-orange-800 text-sm">Premium කරන්න (රු. 500 / දින 5)</span>
+                </label>
             </div>
+
+            <button onclick="publishPost()" id="publishBtn" class="w-full bg-orange-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-orange-600 transition">පළ කරන්න</button>
         </div>
     </div>
 
@@ -76,7 +54,7 @@
 
         async function publishPost() {
             const user = auth.currentUser;
-            if (!user) { alert("කරුණාකර ලොග් වන්න!"); return; }
+            if (!user) { alert("කරුණාකර ලොග් වන්න"); return; }
 
             const title = document.getElementById('postTitle').value;
             const category = document.getElementById('postCategory').value;
@@ -84,42 +62,69 @@
             const isFeatured = document.getElementById('featuredCheckbox').checked;
             const btn = document.getElementById('publishBtn');
 
-            if (!title || !desc) { alert("මාතෘකාව සහ විස්තරය අනිවාර්යයි!"); return; }
+            if (!title || !desc) { alert("විස්තර ඇතුළත් කරන්න"); return; }
 
             btn.disabled = true;
-            btn.innerText = "පළ කරමින්...";
+            btn.innerText = "Processing...";
 
             try {
-                // 1. Save to Firestore
+                // 1. Save to Database
                 const postRef = await db.collection("posts").add({
                     title: title,
                     category: category,
                     description: desc,
-                    imageUrl: "", // පින්තූර නොමැත
                     userId: user.uid,
                     userEmail: user.email,
-                    isFeatured: isFeatured, 
-                    featuredUntil: isFeatured ? firebase.firestore.Timestamp.fromDate(new Date(Date.now() + 5 * 24 * 60 * 60 * 1000)) : null, // දින 5ක් සඳහා
+                    isFeatured: isFeatured,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
-                // 2. If Featured, handle Payment
+                // 2. Check if Payment needed
                 if (isFeatured) {
-                    // ගෙවීම සාර්ථක වූ පසු දත්ත සමුදාය යාවත්කාලීන කිරීමට තර්කනය මෙහි ඇතුළත් කළ යුතුය
-                    alert("Premium දැන්වීම සඳහා රු. 500 ක් iPay හරහා ගෙවීමට ඔබේ බැංකු යෙදුමෙන් 0779341033 ට ගෙවන්න.");
-                    
-                    // iPay සඳහා සැබෑ API සම්බන්ධතාවය यहाँ සක්‍රීය කරන්න
-                    window.location.href = "index.html"; // දැනට මුල් පිටුවට යයි
+                    startPayment(postRef.id, user.email);
                 } else {
-                    alert("දැන්වීම සාර්ථකව පළ කරන ලදී!");
+                    alert("දැන්වීම පළ කළා!");
                     window.location.href = "index.html";
                 }
-
-            } catch (error) {
-                alert("දෝෂයකි: " + error.message);
+            } catch (e) {
+                alert("දෝෂයකි: " + e.message);
                 btn.disabled = false;
-                btn.innerText = "දැන්වීම පළ කරන්න";
             }
+        }
+
+        function startPayment(orderId, email) {
+            // PayHere Sandbox Checkout (පරීක්ෂා කිරීමට)
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'https://sandbox.payhere.lk/pay/checkout';
+
+            const data = {
+                merchant_id: '121XXXX', // ඔබේ සැබෑ Merchant ID එක මෙතනට දාන්න
+                return_url: window.location.origin + '/index.html',
+                cancel_url: window.location.origin + '/add-post.html',
+                notify_url: 'https://your-server.com/notify',
+                order_id: orderId,
+                items: 'Premium Ad',
+                amount: '500.00',
+                currency: 'LKR',
+                first_name: 'Customer',
+                last_name: '',
+                email: email,
+                phone: '0779341033',
+                address: 'No Address',
+                city: 'Colombo',
+                country: 'Sri Lanka'
+            };
+
+            for (const key in data) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = data[key];
+                form.appendChild(input);
+            }
+            document.body.appendChild(form);
+            form.submit();
         }
     </script>
 </body>

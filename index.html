@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LankaAds | Sri Lanka's Marketplace</title>
+    <title>LankaAds | ශ්‍රී ලංකාවේ ඔබේ වෙළඳපොළ</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
@@ -25,10 +25,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Poppins', sans-serif; }
+        
+        /* පසුබිම් පින්තූරය - ඔබට කැමති එකක් දාගත හැක */
+        .hero-bg {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1596541505358-1f486a605f6c?q=80&w=1600');
+            background-size: cover;
+            background-position: center;
+        }
+
         .premium-card {
             border: 2px solid #FFD700;
             background: linear-gradient(145deg, #ffffff, #fffdf0);
-            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.1);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.15);
         }
         .premium-tag {
             background: linear-gradient(90deg, #f59e0b, #fbbf24);
@@ -37,7 +45,7 @@
 </head>
 <body class="bg-gray-50">
 
-    <nav class="bg-white sticky top-0 z-50 border-b border-gray-100 shadow-sm">
+    <nav class="bg-white/95 backdrop-blur-sm sticky top-0 z-50 border-b border-gray-100 shadow-sm">
         <div class="container mx-auto px-6 py-3 flex justify-between items-center">
             <h1 class="text-3xl font-bold text-dark tracking-tighter">Lanka<span class="text-primary">Ads</span></h1>
             <div id="authButtons" class="flex items-center gap-3">
@@ -45,34 +53,55 @@
         </div>
     </nav>
 
-    <div class="bg-white border-b border-gray-100">
-        <div class="container mx-auto px-6 py-8 text-center">
-            <h2 class="text-4xl font-bold text-dark">ඔබට අවශ්‍ය දේ <span class="text-primary">සොයන්න</span></h2>
-            <div class="mt-6 flex flex-col md:flex-row justify-center gap-3 max-w-3xl mx-auto">
-                <input type="text" id="searchInput" onkeyup="filterAds()" placeholder="Toyota, iPhone..." class="flex-1 p-4 rounded-full border border-gray-200 outline-none focus:ring-2 focus:ring-primary/50">
-                <select id="categoryFilter" onchange="filterAds()" class="p-4 rounded-full border border-gray-200 bg-white outline-none focus:ring-2 focus:ring-primary/50">
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 py-20 text-center">
+            <h2 class="text-4xl md:text-5xl font-bold leading-tight">ලංකාවේ අංක එකේ <span class="text-primary">වෙළඳපොළ</span></h2>
+            <p class="text-gray-200 mt-4 max-w-lg mx-auto text-lg">ඔබේ බඩු බාහිරාදිය විශ්වාසයෙන් විකුණන්න සහ මිලදී ගන්න.</p>
+            
+            <div class="mt-10 flex flex-col md:flex-row justify-center gap-3 max-w-3xl mx-auto bg-white/10 p-3 rounded-full backdrop-blur-sm">
+                <input type="text" id="searchInput" onkeyup="filterAds()" placeholder="Toyota, iPhone, House..." class="flex-1 p-4 rounded-full text-dark outline-none">
+                <select id="categoryFilter" onchange="filterAds()" class="p-4 rounded-full text-dark bg-white outline-none">
                     <option value="All">සියලුම වර්ග</option>
                     <option value="Vehicles">වාහන</option>
                     <option value="Electronics">ඉලෙක්ට්‍රොනික</option>
                     <option value="Property">නිවාස/ඉඩම්</option>
+                    <option value="Jobs">රැකියා</option>
+                    <option value="Services">සේවා</option>
                 </select>
+                <a href="post-ad.html" class="bg-primary text-white px-8 py-4 rounded-full font-semibold hover:bg-orange-600 transition flex items-center justify-center">
+                    + දැන්වීමක් දමන්න
+                </a>
             </div>
-            
-            <div class="flex justify-center gap-6 mt-8 text-sm text-gray-600 flex-wrap">
-                <span class="cursor-pointer hover:text-primary">🚗 වාහන</span>
-                <span class="cursor-pointer hover:text-primary">📱 ෆෝන්</span>
-                <span class="cursor-pointer hover:text-primary">🏠 ඉඩම්</span>
-                <span class="cursor-pointer hover:text-primary">🛠️ සේවා</span>
-            </div>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-6 py-10">
+        <h3 class="text-xl font-bold text-dark mb-6">ප්‍රධාන වර්ගීකරණයන්</h3>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+            <button onclick="setCategory('Vehicles')" class="bg-white p-5 rounded-2xl border border-gray-100 hover:border-primary text-center transition">
+                <span class="text-3xl">🚗</span><p class="text-sm font-semibold mt-2">වාහන</p>
+            </button>
+            <button onclick="setCategory('Electronics')" class="bg-white p-5 rounded-2xl border border-gray-100 hover:border-primary text-center transition">
+                <span class="text-3xl">📱</span><p class="text-sm font-semibold mt-2">ඉලෙක්ට්‍රොනික</p>
+            </button>
+            <button onclick="setCategory('Property')" class="bg-white p-5 rounded-2xl border border-gray-100 hover:border-primary text-center transition">
+                <span class="text-3xl">🏠</span><p class="text-sm font-semibold mt-2">ඉඩම්/නිවාස</p>
+            </button>
+            <button onclick="setCategory('Home')" class="bg-white p-5 rounded-2xl border border-gray-100 hover:border-primary text-center transition">
+                <span class="text-3xl">🛋️</span><p class="text-sm font-semibold mt-2">ගෘහ භාණ්ඩ</p>
+            </button>
+            <button onclick="setCategory('Jobs')" class="bg-white p-5 rounded-2xl border border-gray-100 hover:border-primary text-center transition">
+                <span class="text-3xl">💼</span><p class="text-sm font-semibold mt-2">රැකියා</p>
+            </button>
+            <button onclick="setCategory('Services')" class="bg-white p-5 rounded-2xl border border-gray-100 hover:border-primary text-center transition">
+                <span class="text-3xl">🛠️</span><p class="text-sm font-semibold mt-2">සේවා</p>
+            </button>
         </div>
     </div>
 
     <div class="container mx-auto px-6 py-10">
         <div class="flex justify-between items-center mb-8">
             <h3 class="text-2xl font-bold text-dark">නවතම දැන්වීම්</h3>
-            <a href="post-ad.html" class="bg-dark text-white px-6 py-3 rounded-full font-semibold hover:bg-gray-800 transition text-sm flex items-center gap-2">
-                + දැන්වීමක් දමන්න
-            </a>
         </div>
         
         <div id="adsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -81,7 +110,7 @@
     </div>
 
     <script>
-        // Firebase Config (ඔබේ config දමන්න)
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
             authDomain: "add-ink.firebaseapp.com",
@@ -96,7 +125,7 @@
 
         let allAds = [];
 
-        // 1. Auth Status - Profile/Login Button
+        // Auth Status
         auth.onAuthStateChanged(user => {
             const authDiv = document.getElementById('authButtons');
             if (user) {
@@ -108,12 +137,12 @@
             } else {
                 authDiv.innerHTML = `
                     <a href="login.html" class="text-sm text-dark font-medium hover:text-primary">Login</a>
-                    <a href="signup.html" class="bg-primary text-white px-5 py-2 rounded-full text-sm font-semibold hover:bg-orange-600 transition">Sign Up</a>
+                    <a href="signup.html" class="bg-dark text-white px-5 py-2 rounded-full text-sm font-semibold hover:bg-gray-800 transition">Sign Up</a>
                 `;
             }
         });
 
-        // 2. Fetch Ads
+        // Fetch Ads
         function fetchAds() {
             db.collection("posts").orderBy("isFeatured", "desc").orderBy("createdAt", "desc")
             .onSnapshot(snapshot => {
@@ -122,7 +151,7 @@
             });
         }
 
-        // 3. Render Ads with Premium Look
+        // Render Ads
         function renderAds(ads) {
             const grid = document.getElementById('adsGrid');
             grid.innerHTML = "";
@@ -156,7 +185,7 @@
             });
         }
 
-        // 4. Search & Filter
+        // Filter by text and category
         function filterAds() {
             const searchText = document.getElementById('searchInput').value.toLowerCase();
             const category = document.getElementById('categoryFilter').value;
@@ -168,6 +197,12 @@
             });
 
             renderAds(filtered);
+        }
+
+        // Quick Category Filter
+        function setCategory(cat) {
+            document.getElementById('categoryFilter').value = cat;
+            filterAds();
         }
 
         window.onload = fetchAds;

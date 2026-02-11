@@ -8,8 +8,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
-
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-storage-compat.js"></script> <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
@@ -56,11 +55,21 @@
                 </div>
 
                 <div>
+                    <label class="block font-semibold mb-2">දුරකථන අංකය (Phone Number)</label>
+                    <input type="tel" id="phone" placeholder="07XXXXXXXX" class="w-full p-4 border rounded-xl outline-none focus:ring-2 focus:ring-primary">
+                </div>
+
+                <div>
                     <label class="block font-semibold mb-2">විස්තරය (Description)</label>
                     <textarea id="description" placeholder="ඔබේ භාණ්ඩය පිළිබඳ විස්තරය..." class="w-full p-4 border rounded-xl outline-none focus:ring-2 focus:ring-primary" rows="6"></textarea>
                 </div>
 
-                <button onclick="postAd()" class="w-full bg-primary text-white p-4 rounded-xl font-bold text-lg hover:bg-orange-600 transition shadow-md">
+                <div>
+                    <label class="block font-semibold mb-2">පින්තූරයක් එක් කරන්න (Image)</label>
+                    <input type="file" id="image" accept="image/*" class="w-full p-4 border rounded-xl outline-none">
+                </div>
+
+                <button onclick="postAd()" id="submitBtn" class="w-full bg-primary text-white p-4 rounded-xl font-bold text-lg hover:bg-orange-600 transition shadow-md">
                     දැන්වීම පළ කරන්න (Submit Ad)
                 </button>
             </div>
@@ -80,21 +89,19 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
+        const storage = firebase.storage();
 
         // **Session Management**: පරිශීලකයා ලොග් වී සිටීදැයි පරීක්ෂා කිරීම
         auth.onAuthStateChanged(user => {
             if (!user) {
-                // ලොග් වී නැත්නම් login පිටුවට යවන්න
                 alert("දැන්වීම් ඇතුළත් කිරීමට කරුණාකර ලොග් වන්න.");
                 window.location.href = "login.html";
             }
         });
 
-        // පෝස්ට් එක database එකට දැමීම
-        function postAd() {
+        // පෝස්ට් එක database එකට සහ පින්තූරය Storage එකට දැමීම
+        async function postAd() {
             const user = auth.currentUser;
-            
-            // ලොග් වී නැත්නම් ක්‍රියාත්මක වීම නතර කරන්න
             if (!user) {
                 alert("කරුණාකර ලොග් වන්න.");
                 window.location.href = "login.html";
@@ -103,30 +110,45 @@
 
             const title = document.getElementById('title').value;
             const category = document.getElementById('category').value;
+            const phone = document.getElementById('phone').value;
             const description = document.getElementById('description').value;
+            const imageFile = document.getElementById('image').files[0];
+            const submitBtn = document.getElementById('submitBtn');
 
             // දත්ත හිස් දැයි පරීක්ෂා කිරීම
-            if (title === "" || description === "") {
-                alert("කරුණාකර මාතෘකාව සහ විස්තරය ඇතුළත් කරන්න.");
+            if (title === "" || description === "" || phone === "" || !imageFile) {
+                alert("කරුණාකර සියලුම විස්තර සහ පින්තූරයක් ඇතුළත් කරන්න.");
                 return;
             }
 
-            // Database එකට දත්ත ඇතුළත් කිරීම
-            db.collection("posts").add({
-                title: title,
-                category: category,
-                description: description,
-                userId: user.uid, // පරිශීලකයාගේ ID එක
-                userEmail: user.email,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            })
-            .then(() => {
+            submitBtn.innerText = "පළ වෙමින් පවතී...";
+            submitBtn.disabled = true;
+
+            try {
+                // 1. පින්තූරය Firebase Storage එකට Upload කිරීම
+                const storageRef = storage.ref(`ad_images/${Date.now()}_${imageFile.name}`);
+                const snapshot = await storageRef.put(imageFile);
+                const imageUrl = await snapshot.ref.getDownloadURL();
+
+                // 2. Database එකට දත්ත ඇතුළත් කිරීම (පින්තූරයේ URL එකද සහිතව)
+                await db.collection("posts").add({
+                    title: title,
+                    category: category,
+                    phone: phone,
+                    description: description,
+                    imageUrl: imageUrl, // පින්තූරයේ ලින්ක් එක
+                    userId: user.uid,
+                    userEmail: user.email,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
                 alert("දැන්වීම සාර්ථකව පළ කරන ලදී!");
-                window.location.href = "index.html"; // මුල් පිටුවට යවන්න
-            })
-            .catch((error) => {
+                window.location.href = "index.html"; 
+            } catch (error) {
                 alert("වැරදීමක් සිදුවිය: " + error.message);
-            });
+                submitBtn.innerText = "දැන්වීම පළ කරන්න";
+                submitBtn.disabled = false;
+            }
         }
     </script>
 </body>

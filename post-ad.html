@@ -3,83 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>දැන්වීමක් පළ කරන්න | LankaAds</title>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Post Your Ad | LankaAds</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+    <style>
+        body { background-color: #f4f7f6; padding: 40px 0; font-family: 'Segoe UI', sans-serif; }
+        .form-card { background: white; padding: 35px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: none; }
+        .btn-submit { background-color: #ff4757; color: white; font-weight: bold; padding: 12px; border: none; transition: 0.3s; }
+        .btn-submit:hover { background-color: #e03d4a; transform: translateY(-2px); }
+        .form-label { font-weight: 600; color: #2f3542; }
+    </style>
 </head>
-<body class="bg-gray-100 font-sans">
-    <div class="max-w-lg mx-auto my-10 bg-white p-8 rounded-3xl shadow-lg">
-        <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">නව දැන්වීමක් පළ කරන්න</h2>
-        <div class="space-y-4">
-            <input type="text" id="postTitle" placeholder="දැන්වීමේ මාතෘකාව" class="w-full p-4 bg-gray-50 rounded-xl outline-none border">
-            <select id="postCategory" class="w-full p-4 bg-gray-50 rounded-xl outline-none border">
-                <option value="Vehicles">වාහන</option>
-                <option value="Electronics">විදුලි උපකරණ</option>
-                <option value="Property">ඉඩම්/නිවාස</option>
-                <option value="Other">වෙනත්</option>
-            </select>
-            <textarea id="postDesc" placeholder="විස්තරය" rows="4" class="w-full p-4 bg-gray-50 rounded-xl outline-none border"></textarea>
-            
-            <div class="bg-orange-50 p-4 rounded-xl border border-orange-200">
-                <label class="flex items-center gap-3 cursor-pointer">
-                    <input type="checkbox" id="featuredCheckbox" class="w-5 h-5 accent-orange-500">
-                    <span class="font-bold text-orange-800 text-sm">Premium කරන්න (රු. 500 / දින 5)</span>
-                </label>
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7 col-lg-6 mx-auto">
+                <div class="form-card">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold text-danger">LANKAADS</h2>
+                        <p class="text-muted">ඔබේ දැන්වීම නොමිලේ පල කරන්න</p>
+                    </div>
+
+                    <form id="adForm">
+                        <div class="mb-3">
+                            <label class="form-label">දැන්වීමේ මාතෘකාව (Title)</label>
+                            <input type="text" class="form-control" id="title" placeholder="උදා: iPhone 15 Pro Max" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">මිල (Rs.)</label>
+                            <input type="number" class="form-control" id="price" placeholder="මිල ඇතුළත් කරන්න" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">විස්තරය (Description)</label>
+                            <textarea class="form-control" id="desc" rows="4" placeholder="භාණ්ඩය ගැන විස්තරයක් ඇතුළත් කරන්න..." required></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">ස්ථානය (Location)</label>
+                            <input type="text" class="form-control" id="location" placeholder="උදා: කොළඹ" required>
+                        </div>
+
+                        <button type="submit" id="submitBtn" class="btn btn-submit w-100 rounded-3">
+                            <i class="fas fa-bullhorn me-2"></i> පල කරන්න (Post Ad)
+                        </button>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <a href="index.html" class="text-secondary text-decoration-none small">
+                            <i class="fas fa-arrow-left me-1"></i> ආපසු මුල් පිටුවට
+                        </a>
+                    </div>
+                </div>
             </div>
-            <button onclick="publishPost()" id="publishBtn" class="w-full bg-orange-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-orange-600 transition">පළ කරන්න</button>
         </div>
     </div>
+
     <script>
+        // ඔබේ Firebase Config තොරතුරු
         const firebaseConfig = {
-            apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
-            authDomain: "add-ink.firebaseapp.com",
-            projectId: "add-ink",
-            storageBucket: "add-ink.firebasestorage.app",
-            messagingSenderId: "752189116425",
-            appId: "1:752189116425:web:0acf6e7b3f6b3629e3e8d8"
+          apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
+          authDomain: "add-ink.firebaseapp.com",
+          projectId: "add-ink",
+          storageBucket: "add-ink.firebasestorage.app",
+          messagingSenderId: "752189116425",
+          appId: "1:752189116425:web:3aa935b30b1b9154e3e8d8",
+          measurementId: "G-Q8R7HZVJB0"
         };
+
+        // Firebase ආරම්භ කිරීම
         firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
         const db = firebase.firestore();
 
-        async function publishPost() {
-            const user = auth.currentUser;
-            if (!user) { alert("කරුණාකර ලොග් වන්න"); return; }
-            const title = document.getElementById('postTitle').value;
-            const category = document.getElementById('postCategory').value;
-            const desc = document.getElementById('postDesc').value;
-            const isFeatured = document.getElementById('featuredCheckbox').checked;
-            const btn = document.getElementById('publishBtn');
-
-            if (!title || !desc) { alert("විස්තර ඇතුළත් කරන්න"); return; }
+        // Form එක Submit කරන විට
+        document.getElementById('adForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
             btn.disabled = true;
-            btn.innerText = "Processing...";
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> පල වෙමින් පවතී...';
 
-            try {
-                await db.collection("posts").add({
-                    title: title,
-                    category: category,
-                    description: desc,
-                    userId: user.uid,
-                    userEmail: user.email,
-                    isFeatured: false, 
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
+            // දත්ත ලබා ගැනීම
+            const title = document.getElementById('title').value;
+            const price = document.getElementById('price').value;
+            const desc = document.getElementById('desc').value;
+            const locationName = document.getElementById('location').value;
 
-                if (isFeatured) {
-                    window.location.href = `payment.html?email=${encodeURIComponent(user.email)}&title=${encodeURIComponent(title)}`;
-                } else {
-                    alert("දැන්වීම පළ කළා!");
-                    window.location.href = "index.html";
-                }
-            } catch (e) {
-                alert("දෝෂයකි: " + e.message);
+            // Firebase Firestore එකට දත්ත යැවීම
+            db.collection("ads").add({
+                title: title,
+                price: price,
+                description: desc,
+                location: locationName,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp() // පල කළ වේලාව
+            })
+            .then(() => {
+                alert("ඔබේ දැන්වීම සාර්ථකව පල කරන ලදී!");
+                window.location.href = 'index.html'; // සාර්ථක වූ පසු මුල් පිටුවට යන්න
+            })
+            .catch((error) => {
+                alert("වැරැද්දක් සිදුවුණා: " + error.message);
                 btn.disabled = false;
-                btn.innerText = "පළ කරන්න";
-            }
-        }
+                btn.innerText = "පල කරන්න (Post Ad)";
+            });
+        });
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

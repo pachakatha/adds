@@ -2,62 +2,157 @@
 <html lang="si">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile | LankaAds</title>
+    
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 font-sans">
-
-<div class="container mx-auto p-6">
-    <div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg text-center">
-        <h2 class="text-2xl font-bold text-secondary mb-6">පරිශීලක පැතිකඩ (Profile)</h2>
-        
-        <div class="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl text-gray-500">
-            👤
-        </div>
-        
-        <p class="text-lg font-semibold" id="user-email">Loading...</p>
-        <p class="text-sm text-gray-500" id="user-id"></p>
-        
-        <button onclick="logOut()" class="mt-6 bg-red-500 text-white px-4 py-2 rounded font-semibold hover:bg-red-600">
-            Logout
-        </button>
-    </div>
-</div>
-
-<script>
-    // Firebase Config (ඔබේ API Keys)
-    const firebaseConfig = {
-        apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
-        authDomain: "add-ink.firebaseapp.com",
-        projectId: "add-ink",
-        storageBucket: "add-ink.firebasestorage.app",
-        messagingSenderId: "752189116425",
-        appId: "1:752189116425:web:0acf6e7b3f6b3629e3e8d8"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-
-    // ලොග් වී සිටින පරිශීලකයා පරීක්ෂා කිරීම
-    auth.onAuthStateChanged(user => {
-        if (user) {
-            // තොරතුරු පෙන්වීම
-            document.getElementById('user-email').innerText = user.email;
-            document.getElementById('user-id').innerText = "ID: " + user.uid;
-        } else {
-            // ලොග් වී නැත්නම් login පිටුවට යවන්න
-            window.location.href = "login.html";
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Poppins', 'sans-serif'] },
+                    colors: { primary: '#FF6B35', secondary: '#004E89', background: '#F7F9FC' }
+                }
+            }
         }
-    });
+    </script>
+</head>
+<body class="bg-background font-sans text-gray-800">
 
-    // Logout function
-    function logOut() {
-        auth.signOut().then(() => {
-            window.location.href = "index.html";
+    <nav class="bg-white shadow-sm px-6 py-4 flex justify-between items-center sticky top-0 z-50">
+        <a href="index.html" class="text-2xl font-bold text-secondary flex items-center gap-2">
+            <span class="bg-primary text-white p-2 rounded-lg">LA</span> LankaAds
+        </a>
+        <button onclick="logout()" class="text-red-500 font-semibold hover:underline">Logout</button>
+    </nav>
+
+    <div class="container mx-auto px-4 py-10 max-w-4xl">
+        <div class="bg-white rounded-3xl p-8 shadow-xl mb-8 border border-gray-100">
+            <div class="flex flex-col md:flex-row items-center gap-6">
+                <div class="w-24 h-24 bg-secondary text-white rounded-full flex items-center justify-center text-4xl font-bold">
+                    <span id="user-initial">U</span>
+                </div>
+                <div class="flex-grow text-center md:text-left">
+                    <h2 id="user-email" class="text-2xl font-bold text-secondary">Loading...</h2>
+                    <p id="user-id" class="text-xs text-gray-400 mt-1">ID: ...</p>
+                    
+                    <div id="verify-section" class="mt-4 flex flex-wrap gap-2 justify-center md:justify-start">
+                        <span id="status-badge" class="px-4 py-1 rounded-full text-xs font-bold">Checking...</span>
+                        <button id="verify-btn" onclick="sendVerification()" class="hidden bg-primary text-white px-4 py-1 rounded-full text-xs font-bold hover:bg-orange-600 transition">Verify Email</button>
+                    </div>
+                </div>
+                <a href="post-ad.html" class="bg-primary text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:shadow-orange-200 transition">+ New Ad</a>
+            </div>
+        </div>
+
+        <h3 class="text-xl font-bold text-secondary mb-6 flex items-center gap-2">
+            <span class="text-2xl">📋</span> මගේ දැන්වීම් (My Ads)
+        </h3>
+        <div id="my-ads-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <p class="col-span-full text-center text-gray-400 italic py-10">දැන්වීම් පූරණය වෙමින් පවතී...</p>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
+            authDomain: "add-ink.firebaseapp.com",
+            projectId: "add-ink",
+            storageBucket: "add-ink.firebasestorage.app",
+            messagingSenderId: "752189116425",
+            appId: "1:752189116425:web:0acf6e7b3f6b3629e3e8d8"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Profile විස්තර සහ පළ කළ පෝස්ට් පෙන්වීම
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                document.getElementById('user-email').innerText = user.email;
+                document.getElementById('user-id').innerText = "UID: " + user.uid;
+                document.getElementById('user-initial').innerText = user.email.charAt(0).toUpperCase();
+
+                // Email Verification Status
+                const badge = document.getElementById('status-badge');
+                const vBtn = document.getElementById('verify-btn');
+                
+                if (user.emailVerified) {
+                    badge.innerText = "✅ Email Verified";
+                    badge.className = "px-4 py-1 rounded-full text-xs font-bold bg-green-100 text-green-600";
+                    vBtn.classList.add('hidden');
+                } else {
+                    badge.innerText = "❌ Email Unverified";
+                    badge.className = "px-4 py-1 rounded-full text-xs font-bold bg-red-100 text-red-600";
+                    vBtn.classList.remove('hidden');
+                }
+
+                loadMyAds(user.uid);
+            } else {
+                window.location.href = "login.html";
+            }
         });
-    }
-</script>
+
+        // Email Verification Link එකක් යැවීම
+        function sendVerification() {
+            auth.currentUser.sendEmailVerification().then(() => {
+                alert("Verification link එක ඔබගේ email එකට යවන ලදී. කරුණාකර Inbox පරීක්ෂා කරන්න.");
+            }).catch(err => alert("Error: " + err.message));
+        }
+
+        // පරිශීලකයා පළ කළ පෝස්ට් ලැයිස්තුව පෙන්වීම
+        async function loadMyAds(uid) {
+            const grid = document.getElementById('my-ads-grid');
+            try {
+                const snapshot = await db.collection("posts")
+                                         .where("userId", "==", uid)
+                                         .orderBy("timestamp", "desc")
+                                         .get();
+                
+                grid.innerHTML = "";
+                if (snapshot.empty) {
+                    grid.innerHTML = "<p class='col-span-full text-center text-gray-500 bg-white p-10 rounded-3xl'>ඔබ තවමත් දැන්වීම් පළ කර නැත.</p>";
+                    return;
+                }
+
+                snapshot.forEach(doc => {
+                    const ad = doc.data();
+                    const card = `
+                        <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-50">
+                            <span class="text-[10px] font-bold text-primary bg-orange-50 px-2 py-1 rounded-md uppercase">${ad.category}</span>
+                            <h4 class="font-bold text-secondary mt-2">${ad.title}</h4>
+                            <p class="text-xs text-gray-400 mt-1">📞 ${ad.phone}</p>
+                            <div class="mt-4 flex gap-2">
+                                <button onclick="deleteAd('${doc.id}')" class="text-red-500 text-xs font-bold hover:underline">Delete Ad</button>
+                            </div>
+                        </div>
+                    `;
+                    grid.innerHTML += card;
+                });
+            } catch (err) {
+                console.error(err);
+                grid.innerHTML = "දැන්වීම් පූරණය කිරීමේදී දෝෂයක් ඇතිවිය.";
+            }
+        }
+
+        // දැන්වීම් ඉවත් කිරීම
+        function deleteAd(id) {
+            if (confirm("මෙම දැන්වීම ඉවත් කිරීමට ඔබට සහතිකද?")) {
+                db.collection("posts").doc(id).delete().then(() => {
+                    alert("දැන්වීම සාර්ථකව ඉවත් කළා.");
+                    location.reload();
+                });
+            }
+        }
+
+        function logout() {
+            auth.signOut().then(() => window.location.href = "index.html");
+        }
+    </script>
 </body>
 </html>

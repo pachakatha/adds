@@ -2,7 +2,8 @@
 <html lang="si">
 <head>
     <meta charset="UTF-8">
-    <title>Login & Sign Up | Adds.ink</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login/Sign Up | Adds.ink</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
@@ -12,19 +13,29 @@
         .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); width: 300px; text-align: center; }
         input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
         button { width: 100%; padding: 10px; margin: 5px 0; cursor: pointer; border: none; border-radius: 5px; color: white; font-weight: bold; }
-        .btn-login { background-color: #28a745; }
-        .btn-signup { background-color: #007bff; }
+        .btn-main { background-color: #007bff; }
+        .toggle-btn { background: none; color: #007bff; border: none; cursor: pointer; text-decoration: underline; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Adds.ink</h2>
-    <input type="email" id="email" placeholder="Email එක ඇතුළත් කරන්න">
-    <input type="password" id="password" placeholder="Password එක ඇතුළත් කරන්න">
+    <h2 id="form-title">Login</h2>
     
-    <button class="btn-login" onclick="logIn()">Login (ඇතුල් වන්න)</button>
-    <button class="btn-signup" onclick="signUp()">Sign Up (ලියාපදිංචි වන්න)</button>
+    <div id="login-form">
+        <input type="email" id="login-email" placeholder="Email"><br>
+        <input type="password" id="login-password" placeholder="Password"><br>
+        <button class="btn-main" onclick="logIn()">Login (ඇතුල් වන්න)</button>
+        <p>ගිණුමක් නැද්ද? <button class="toggle-btn" onclick="toggleForms()">Sign Up වන්න</button></p>
+    </div>
+
+    <div id="signup-form" class="hidden">
+        <input type="email" id="signup-email" placeholder="Email"><br>
+        <input type="password" id="signup-password" placeholder="Password"><br>
+        <button class="btn-main" onclick="signUp()">Sign Up (ලියාපදිංචි වන්න)</button>
+        <p>ගිණුමක් තිබේද? <button class="toggle-btn" onclick="toggleForms()">Login වන්න</button></p>
+    </div>
     
     <p id="message" style="color: red; font-size: 13px;"></p>
 </div>
@@ -44,17 +55,28 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
+    // Form එක මාරු කරන (Toggle) කාර්යය
+    function toggleForms() {
+        document.getElementById('login-form').classList.toggle('hidden');
+        document.getElementById('signup-form').classList.toggle('hidden');
+        const title = document.getElementById('form-title');
+        title.innerText = title.innerText === "Login" ? "Sign Up" : "Login";
+        document.getElementById('message').innerText = "";
+    }
+
+    // ලියාපදිංචි වීමේ (Sign Up) ක්‍රියාවලිය
     function signUp() {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
+        const email = document.getElementById('signup-email').value;
+        const password = document.getElementById('signup-password').value;
         auth.createUserWithEmailAndPassword(email, password)
-        .then(() => alert("ලියාපදිංචි වුණා!"))
+        .then(() => alert("සාර්ථකව ලියාපදිංචි වුණා!"))
         .catch((error) => document.getElementById('message').innerText = error.message);
     }
 
+    // ඇතුල් වීමේ (Login) ක්‍රියාවලිය
     function logIn() {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
         auth.signInWithEmailAndPassword(email, password)
         .then(() => window.location.href = "index.html")
         .catch((error) => document.getElementById('message').innerText = error.message);

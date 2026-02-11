@@ -3,88 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Post Ad | LankaAds</title>
+    <title>දැන්වීමක් පළ කරන්න | LankaAds</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-storage-compat.js"></script>
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Poppins', 'sans-serif'] },
-                    colors: { primary: '#FF6B35', secondary: '#004E89', background: '#F7F9FC' }
-                }
-            }
-        }
-    </script>
-    <style>
-        .glass-morphism {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
-<body class="bg-slate-50 text-gray-800 font-sans">
+<body class="bg-slate-50 font-sans">
 
-    <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="index.html" class="text-2xl font-bold text-secondary flex items-center gap-2">
-                <span class="bg-primary text-white p-2 rounded-xl">LA</span> LankaAds
-            </a>
-            <a href="index.html" class="text-sm font-semibold text-gray-500 hover:text-primary transition">මෙනුවට (Back)</a>
-        </div>
+    <nav class="bg-white shadow-sm px-6 py-4 mb-8">
+        <a href="index.html" class="text-2xl font-bold text-secondary italic">
+            <span class="bg-orange-500 text-white px-2 rounded-lg not-italic">LA</span> LankaAds
+        </a>
     </nav>
 
-    <div class="container mx-auto px-6 py-12">
-        <div class="max-w-xl mx-auto glass-morphism p-10 rounded-[2rem] shadow-2xl shadow-orange-100">
-            <div class="text-center mb-10">
-                <h2 class="text-3xl font-extrabold text-secondary">දැන්වීම පළ කරන්න</h2>
-                <p class="text-gray-400 mt-2">ඔබේ විස්තර නිවැරදිව ඇතුළත් කරන්න</p>
-            </div>
-            
-            <div class="space-y-6">
-                <div class="relative">
-                    <label class="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">දැන්වීමේ මාතෘකාව</label>
-                    <input type="text" id="title" placeholder="උදා: iPhone 13 Pro Max" class="w-full mt-1 p-4 bg-gray-50 border-2 border-transparent focus:border-primary focus:bg-white rounded-2xl outline-none transition-all">
+    <div class="container mx-auto px-4 max-w-2xl">
+        <div class="bg-white rounded-[2rem] p-8 shadow-xl border border-gray-100">
+            <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                📢 අලුත් දැන්වීමක් පළ කරන්න
+            </h2>
+
+            <div class="space-y-5">
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 mb-2 uppercase ml-2">දැන්වීමේ මාතෘකාව</label>
+                    <input type="text" id="postTitle" placeholder="උදා: Toyota Corolla 2018 for sale" class="w-full p-4 bg-gray-50 rounded-2xl border-2 border-transparent focus:border-orange-500/20 outline-none transition">
                 </div>
 
                 <div>
-                    <label class="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">වර්ගීකරණය</label>
-                    <select id="category" class="w-full mt-1 p-4 bg-gray-50 border-2 border-transparent focus:border-primary focus:bg-white rounded-2xl outline-none transition-all">
-                        <option value="vehicles">🚗 වාහන (Vehicles)</option>
-                        <option value="electronics">📱 ඉලෙක්ට්‍රොනික (Electronics)</option>
-                        <option value="property">🏠 දේපල (Property)</option>
-                        <option value="home">🛋️ නිවහන (Home & Garden)</option>
-                        <option value="fashion">👕 විලාසිතා (Fashion)</option>
-                        <option value="services">🛠️ සේවා (Services)</option>
-                        <option value="jobs">💼 රැකියා (Jobs)</option>
-                        <option value="other">✨ වෙනත් (Other)</option>
-                    </select>
+                    <label class="block text-xs font-bold text-gray-400 mb-2 uppercase ml-2">විස්තරය</label>
+                    <textarea id="postDesc" rows="4" placeholder="භාණ්ඩය හෝ සේවාව ගැන විස්තර ලියන්න..." class="w-full p-4 bg-gray-50 rounded-2xl border-2 border-transparent focus:border-orange-500/20 outline-none transition"></textarea>
                 </div>
 
                 <div>
-                    <label class="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">දුරකථන අංකය</label>
-                    <input type="tel" id="phone" placeholder="071 234 5678" class="w-full mt-1 p-4 bg-gray-50 border-2 border-transparent focus:border-primary focus:bg-white rounded-2xl outline-none transition-all">
+                    <label class="block text-xs font-bold text-gray-400 mb-2 uppercase ml-2">පින්තූරයක් එක් කරන්න</label>
+                    <input type="file" id="postImage" accept="image/*" class="w-full p-3 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
                 </div>
 
-                <div>
-                    <label class="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">වැඩි විස්තර</label>
-                    <textarea id="description" placeholder="භාණ්ඩය ගැන විස්තරයක් ලියන්න..." class="w-full mt-1 p-4 bg-gray-50 border-2 border-transparent focus:border-primary focus:bg-white rounded-2xl outline-none transition-all" rows="4"></textarea>
+                <div class="p-5 bg-orange-50 border border-orange-100 rounded-[1.5rem] mt-6">
+                    <label class="flex items-center gap-4 cursor-pointer">
+                        <input type="checkbox" id="featuredCheckbox" class="w-6 h-6 accent-orange-500">
+                        <div>
+                            <span class="block text-sm font-bold text-orange-800">මෙම දැන්වීම Premium (Featured) කරන්න</span>
+                            <span class="text-[10px] text-orange-600 block mt-1 leading-tight italic">Premium දැන්වීම් අනෙක් ඒවාට වඩා ඉහළින් සහ විශේෂිතව දිස්වේ.</span>
+                        </div>
+                    </label>
                 </div>
 
-                <button onclick="postAd()" id="submitBtn" class="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white p-5 rounded-2xl font-bold text-lg hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-orange-200">
-                    පෝස්ට් එක පළ කරන්න 🚀
+                <button onclick="publishPost()" id="publishBtn" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-bold text-lg hover:bg-black transition-all shadow-lg active:scale-[0.98] mt-4">
+                    දැන්වීම පළ කරන්න
                 </button>
             </div>
         </div>
     </div>
 
     <script>
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
             authDomain: "add-ink.firebaseapp.com",
@@ -96,47 +73,16 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
+        const storage = firebase.storage();
 
-        auth.onAuthStateChanged(user => {
-            if (!user) {
-                window.location.href = "login.html";
-            }
-        });
-
-        async function postAd() {
+        // පෝස්ට් එකක් පල කිරීමේ Function එක
+        async function publishPost() {
             const user = auth.currentUser;
-            const title = document.getElementById('title').value;
-            const category = document.getElementById('category').value;
-            const phone = document.getElementById('phone').value;
-            const description = document.getElementById('description').value;
-            const btn = document.getElementById('submitBtn');
-
-            if (!title || !phone || !description) {
-                alert("කරුණාකර සියලු විස්තර ඇතුළත් කරන්න.");
+            if (!user) {
+                alert("කරුණාකර ලොග් වන්න!");
                 return;
             }
 
-            btn.disabled = true;
-            btn.innerHTML = "පළ වෙමින් පවතී... 🔄";
-
-            try {
-                await db.collection("posts").add({
-                    title,
-                    category,
-                    phone,
-                    description,
-                    userId: user.uid,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
-
-                alert("දැන්වීම සාර්ථකව පළ විය! ✅");
-                window.location.href = "index.html";
-            } catch (err) {
-                alert("වැරදීමක් සිදුවිය: " + err.message);
-                btn.disabled = false;
-                btn.innerText = "පෝස්ට් එක පළ කරන්න 🚀";
-            }
-        }
-    </script>
-</body>
-</html>
+            const title = document.getElementById('postTitle').value;
+            const desc = document.getElementById('postDesc').value;
+            const imageFile = document.getElementById('postImage').files[0];

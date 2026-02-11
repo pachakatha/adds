@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LankaAds | නවීන දැන්වීම් පුවරුව</title>
+    <title>LankaAds | Sri Lanka's Marketplace</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
@@ -15,8 +15,8 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#FF6B6B', // සිත්ගන්නා රතු/තැඹිලි පැහැයක්
-                        secondary: '#4ECDC4',
+                        primary: '#FF7F00', // LankaAds Orange
+                        dark: '#1A1A1A',
                     }
                 }
             }
@@ -28,56 +28,60 @@
         .premium-card {
             border: 2px solid #FFD700;
             background: linear-gradient(145deg, #ffffff, #fffdf0);
-            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.15);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.1);
         }
         .premium-tag {
-            background: linear-gradient(90deg, #FFD700, #FFAB00);
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
         }
     </style>
 </head>
 <body class="bg-gray-50">
 
-    <nav class="bg-white sticky top-0 z-50 border-b border-gray-100">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <h1 class="text-3xl font-extrabold text-gray-900 tracking-tighter">Lanka<span class="text-primary">Ads</span></h1>
-            <div id="authButtons" class="space-x-3 text-sm font-medium">
+    <nav class="bg-white sticky top-0 z-50 border-b border-gray-100 shadow-sm">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-3xl font-bold text-dark tracking-tighter">Lanka<span class="text-primary">Ads</span></h1>
+            <div id="authButtons" class="flex items-center gap-3">
                 </div>
         </div>
     </nav>
 
     <div class="bg-white border-b border-gray-100">
-        <div class="container mx-auto px-6 py-12 text-center">
-            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">ඔබට අවශ්‍ය දේ <span class="text-primary">සොයාගන්න.</span></h2>
-            <p class="text-gray-600 mt-4 max-w-lg mx-auto">ශ්‍රී ලංකාවේ විශ්වාසවන්තම දැන්වීම් අඩවිය හරහා පහසුවෙන් බඩු බාහිරාදිය මිලදී ගන්න සහ විකුණන්න.</p>
-            
-            <div class="mt-10 flex flex-col md:flex-row justify-center gap-4 max-w-2xl mx-auto">
-                <input type="text" id="searchInput" onkeyup="filterAds()" placeholder="උදා: Toyota, iPhone..." class="flex-1 p-4 rounded-full border border-gray-200 focus:ring-2 focus:ring-primary/50 outline-none shadow-inner bg-gray-50">
-                <select id="categoryFilter" onchange="filterAds()" class="p-4 rounded-full border border-gray-200 bg-white focus:ring-2 focus:ring-primary/50 outline-none text-gray-600">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <h2 class="text-4xl font-bold text-dark">ඔබට අවශ්‍ය දේ <span class="text-primary">සොයන්න</span></h2>
+            <div class="mt-6 flex flex-col md:flex-row justify-center gap-3 max-w-3xl mx-auto">
+                <input type="text" id="searchInput" onkeyup="filterAds()" placeholder="Toyota, iPhone..." class="flex-1 p-4 rounded-full border border-gray-200 outline-none focus:ring-2 focus:ring-primary/50">
+                <select id="categoryFilter" onchange="filterAds()" class="p-4 rounded-full border border-gray-200 bg-white outline-none focus:ring-2 focus:ring-primary/50">
                     <option value="All">සියලුම වර්ග</option>
                     <option value="Vehicles">වාහන</option>
                     <option value="Electronics">ඉලෙක්ට්‍රොනික</option>
                     <option value="Property">නිවාස/ඉඩම්</option>
                 </select>
-                <a href="add-post.html" class="bg-gray-900 text-white px-8 py-4 rounded-full font-semibold hover:bg-gray-700 transition flex items-center justify-center">
-                    + දැන්වීම් දමන්න
-                </a>
+            </div>
+            
+            <div class="flex justify-center gap-6 mt-8 text-sm text-gray-600 flex-wrap">
+                <span class="cursor-pointer hover:text-primary">🚗 වාහන</span>
+                <span class="cursor-pointer hover:text-primary">📱 ෆෝන්</span>
+                <span class="cursor-pointer hover:text-primary">🏠 ඉඩම්</span>
+                <span class="cursor-pointer hover:text-primary">🛠️ සේවා</span>
             </div>
         </div>
     </div>
 
     <div class="container mx-auto px-6 py-10">
         <div class="flex justify-between items-center mb-8">
-            <h3 class="text-2xl font-bold text-gray-800">නවතම දැන්වීම්</h3>
-            <span class="text-sm text-gray-500 font-medium">දැන්වීම් <span id="adCount">0</span> ක් ඇත</span>
+            <h3 class="text-2xl font-bold text-dark">නවතම දැන්වීම්</h3>
+            <a href="post-ad.html" class="bg-dark text-white px-6 py-3 rounded-full font-semibold hover:bg-gray-800 transition text-sm flex items-center gap-2">
+                + දැන්වීමක් දමන්න
+            </a>
         </div>
         
-        <div id="adsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            <p class="text-gray-400 py-20 col-span-full text-center">දැන්වීම් පූරණය වෙමින් පවතී...</p>
+        <div id="adsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <p class="text-gray-400 py-10 col-span-full text-center">දැන්වීම් පූරණය වෙමින් පවතී...</p>
         </div>
     </div>
 
     <script>
-        // Firebase Config
+        // Firebase Config (ඔබේ config දමන්න)
         const firebaseConfig = {
             apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
             authDomain: "add-ink.firebaseapp.com",
@@ -92,27 +96,33 @@
 
         let allAds = [];
 
-        // Auth Status
+        // 1. Auth Status - Profile/Login Button
         auth.onAuthStateChanged(user => {
             const authDiv = document.getElementById('authButtons');
             if (user) {
-                authDiv.innerHTML = `<span class="text-gray-600">${user.email}</span> <button onclick="auth.signOut()" class="text-primary font-semibold ml-2">Log Out</button>`;
+                authDiv.innerHTML = `
+                    <span class="text-sm text-gray-600">${user.email}</span>
+                    <a href="profile.html" class="bg-gray-100 text-dark px-4 py-2 rounded-full text-sm font-semibold">Profile</a>
+                    <button onclick="auth.signOut()" class="text-sm text-red-500">Log Out</button>
+                `;
             } else {
-                authDiv.innerHTML = `<a href="login.html" class="text-gray-600 hover:text-primary">Login</a> <a href="signup.html" class="bg-primary text-white px-5 py-2 rounded-full hover:bg-red-600 transition">Sign Up</a>`;
+                authDiv.innerHTML = `
+                    <a href="login.html" class="text-sm text-dark font-medium hover:text-primary">Login</a>
+                    <a href="signup.html" class="bg-primary text-white px-5 py-2 rounded-full text-sm font-semibold hover:bg-orange-600 transition">Sign Up</a>
+                `;
             }
         });
 
-        // දත්ත ගැනීම
+        // 2. Fetch Ads
         function fetchAds() {
             db.collection("posts").orderBy("isFeatured", "desc").orderBy("createdAt", "desc")
             .onSnapshot(snapshot => {
                 allAds = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderAds(allAds);
-                document.getElementById('adCount').innerText = allAds.length;
             });
         }
 
-        // දර්ශනය කිරීම (Rendering)
+        // 3. Render Ads with Premium Look
         function renderAds(ads) {
             const grid = document.getElementById('adsGrid');
             grid.innerHTML = "";
@@ -125,21 +135,20 @@
             ads.forEach(ad => {
                 const isPremium = ad.isFeatured === true;
                 const card = `
-                    <div class="bg-white p-5 rounded-3xl transition-all duration-300 hover:shadow-xl border border-gray-100 flex flex-col ${isPremium ? 'premium-card' : ''}">
+                    <div class="bg-white p-4 rounded-2xl transition-all duration-300 hover:shadow-lg border border-gray-100 flex flex-col ${isPremium ? 'premium-card' : ''}">
                         
-                        <div class="bg-gray-200 h-48 rounded-2xl mb-4 flex items-center justify-center text-gray-400 font-bold">
-                            No Image
+                        <div class="relative bg-gray-200 h-40 rounded-xl mb-4 overflow-hidden">
+                            <img src="${ad.imageUrl || 'https://via.placeholder.com/300x200?text=No+Image'}" class="w-full h-full object-cover">
+                            ${isPremium ? '<span class="absolute top-2 right-2 premium-tag text-dark text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">Premium</span>' : ''}
                         </div>
                         
-                        ${isPremium ? '<span class="premium-tag text-black text-[10px] font-bold px-3 py-1 rounded-full mb-3 self-start uppercase tracking-wider">Premium Ad</span>' : ''}
-                        
                         <span class="text-[11px] font-semibold text-primary uppercase tracking-widest">${ad.category || 'Other'}</span>
-                        <h3 class="text-lg font-bold text-gray-900 mt-1 line-clamp-2 leading-snug">${ad.title}</h3>
-                        <p class="text-sm text-gray-600 mt-2 line-clamp-3 flex-grow">${ad.description}</p>
+                        <h3 class="text-md font-bold text-dark mt-1 line-clamp-2 leading-snug">${ad.title}</h3>
+                        <p class="text-sm text-gray-600 mt-2 line-clamp-2 flex-grow">${ad.description}</p>
                         
-                        <div class="mt-6 pt-4 border-t border-gray-100 flex justify-between items-center text-xs text-gray-400">
+                        <div class="mt-4 pt-3 border-t border-gray-100 flex justify-between items-center text-xs text-gray-400">
                             <span>${ad.createdAt ? new Date(ad.createdAt.seconds * 1000).toLocaleDateString() : 'Just now'}</span>
-                            <a href="#" class="font-bold text-gray-900 hover:text-primary transition">විස්තර →</a>
+                            <a href="ad-details.html?id=${ad.id}" class="font-bold text-dark hover:text-primary transition">විස්තර →</a>
                         </div>
                     </div>
                 `;
@@ -147,7 +156,7 @@
             });
         }
 
-        // Filter
+        // 4. Search & Filter
         function filterAds() {
             const searchText = document.getElementById('searchInput').value.toLowerCase();
             const category = document.getElementById('categoryFilter').value;

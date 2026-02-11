@@ -3,129 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LankaVikum | භාණ්ඩ විකිණීමට සහ මිලදී ගැනීමට</title>
+    <title>LankaAds | ලංකාවේ අංක 1 වෙළඳ පොළ</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        :root { --primary-color: #ff4757; --secondary-color: #2f3542; }
-        body { background-color: #f1f2f6; font-family: 'Segoe UI', sans-serif; }
+        :root { --primary-red: #ff4757; --dark-blue: #2f3542; }
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, sans-serif; }
         
-        /* Navbar & Buttons */
-        .navbar { background-color: white !important; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .btn-post { background-color: var(--primary-color); color: white; border-radius: 50px; font-weight: bold; }
-        
-        /* Search Section */
-        .search-section { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1557821552-17105176677c?q=80&w=1000'); background-size: cover; padding: 80px 0; color: white; text-align: center; }
-        .search-bar { background: white; padding: 10px; border-radius: 50px; display: flex; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .search-bar input { border: none; flex-grow: 1; padding: 10px 20px; border-radius: 50px; outline: none; }
-        
-        /* Category Icons */
-        .category-card { background: white; padding: 20px; border-radius: 15px; text-align: center; transition: 0.3s; cursor: pointer; border: 1px solid #eee; }
-        .category-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); color: var(--primary-color); }
-        .category-icon { font-size: 30px; margin-bottom: 10px; color: var(--primary-color); }
+        /* Navigation */
+        .navbar { background: white !important; box-shadow: 0 2px 10px rgba(0,0,0,0.1); padding: 15px 0; }
+        .navbar-brand { font-weight: 800; color: var(--primary-red) !important; font-size: 1.6rem; }
+        .btn-login { font-weight: 600; color: var(--dark-blue); text-decoration: none; margin-right: 20px; }
+        .btn-post-ad { background-color: var(--primary-red); color: white !important; font-weight: bold; padding: 10px 25px; border-radius: 8px; text-decoration: none; transition: 0.3s; }
+        .btn-post-ad:hover { background-color: #e03d4a; transform: translateY(-2px); }
+
+        /* Hero & Search */
+        .hero { background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1555421689-491a97ff2040?q=80&w=1200'); background-size: cover; padding: 80px 0; color: white; text-align: center; }
+        .search-group { max-width: 800px; margin: 30px auto; background: white; padding: 8px; border-radius: 12px; display: flex; gap: 5px; }
+        .search-group input { border: none; flex-grow: 1; padding: 12px 20px; outline: none; font-size: 1.1rem; border-radius: 8px; }
+        .btn-search { background: var(--primary-red); color: white; border: none; padding: 12px 30px; border-radius: 8px; font-weight: bold; }
+
+        /* Categories */
+        .cat-box { background: white; padding: 20px; border-radius: 15px; text-align: center; border: 1px solid #eee; transition: 0.3s; text-decoration: none; color: var(--dark-blue); display: block; height: 100%; }
+        .cat-box:hover { border-color: var(--primary-red); color: var(--primary-red); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .cat-box i { font-size: 2.2rem; margin-bottom: 10px; display: block; }
 
         /* Ad Cards */
-        .ad-card { background: white; border-radius: 10px; overflow: hidden; transition: 0.3s; border: none; margin-bottom: 20px; }
-        .ad-card:hover { box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .ad-img { height: 180px; object-fit: cover; width: 100%; }
-        .ad-price { color: var(--primary-color); font-weight: bold; font-size: 1.2rem; }
+        .ad-card { border: none; border-radius: 12px; transition: 0.3s; background: white; box-shadow: 0 3px 10px rgba(0,0,0,0.05); cursor: pointer; }
+        .ad-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .ad-img { height: 170px; object-fit: cover; border-top-left-radius: 12px; border-top-right-radius: 12px; }
+        .price { color: var(--primary-red); font-weight: 800; font-size: 1.15rem; }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+    <nav class="navbar navbar-expand-lg">
         <div class="container">
-            <a class="navbar-brand fw-bold text-danger" href="#">LANKAVIKUM</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item"><a class="nav-link" href="#">Login</a></li>
-                    <li class="nav-item"><a class="nav-link btn btn-outline-dark mx-2 px-3" href="#">Sign Up</a></li>
-                    <li class="nav-item"><a class="nav-link btn btn-post px-4" href="#"><i class="fas fa-plus-circle"></i> POST YOUR AD</a></li>
-                </ul>
+            <a class="navbar-brand" href="index.html">LANKAADS</a>
+            <div class="ms-auto d-flex align-items-center">
+                <a href="login.html" class="btn-login">Login</a>
+                <a href="login.html" class="btn btn-outline-dark fw-bold me-3" style="border-radius: 8px;">Sign Up</a>
+                <a href="post-ad.html" class="btn-post-ad"><i class="fas fa-plus-circle"></i> POST YOUR AD</a>
             </div>
         </div>
     </nav>
 
-    <div class="search-section">
+    <div class="hero">
         <div class="container">
-            <h1 class="fw-bold mb-4">ලංකාවේ ඕනෑම දෙයක් විකුණා ගන්න</h1>
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="search-bar">
-                        <input type="text" placeholder="ඔබ සොයන්නේ කුමක්ද? (උදා: iPhone, Car)">
-                        <button class="btn btn-danger rounded-pill px-4">සොයන්න</button>
-                    </div>
-                </div>
-            </div>
+            <h1 class="fw-bold display-5">ලංකාවේ ඕනෑම දෙයක් විකුණන්න හොඳම තැන</h1>
+            <p class="lead">වාහන, ජංගම දුරකථන, ඉඩම් සහ තවත් බොහෝ දෑ...</p>
+            <form action="listings.html" method="GET" class="search-group">
+                <input type="text" name="q" placeholder="ඔබ සොයන්නේ කුමක්ද?">
+                <button type="submit" class="btn-search">සොයන්න</button>
+            </form>
         </div>
     </div>
 
     <div class="container my-5">
-        <h4 class="fw-bold mb-4">ප්‍රධාන කැටගරි</h4>
-        <div class="row g-3">
+        <h4 class="fw-bold mb-4">සියලුම කැටගරි</h4>
+        <div class="row g-3 text-center">
             <div class="col-6 col-md-2">
-                <div class="category-card"><i class="fas fa-car category-icon"></i><br>වාහන</div>
+                <a href="listings.html?cat=vehicles" class="cat-box"><i class="fas fa-car"></i>වාහන</a>
             </div>
             <div class="col-6 col-md-2">
-                <div class="category-card"><i class="fas fa-mobile-alt category-icon"></i><br>ඉලෙක්ට්‍රොනික</div>
+                <a href="listings.html?cat=electronics" class="cat-box"><i class="fas fa-mobile-alt"></i>Electronics</a>
             </div>
             <div class="col-6 col-md-2">
-                <div class="category-card"><i class="fas fa-home category-icon"></i><br>දේපල</div>
+                <a href="listings.html?cat=property" class="cat-box"><i class="fas fa-home"></i>දේපල</a>
             </div>
             <div class="col-6 col-md-2">
-                <div class="category-card"><i class="fas fa-briefcase category-icon"></i><br>රැකියා</div>
+                <a href="listings.html?cat=jobs" class="cat-box"><i class="fas fa-briefcase"></i>රැකියා</a>
             </div>
             <div class="col-6 col-md-2">
-                <div class="category-card"><i class="fas fa-dog category-icon"></i><br>සතුන්</div>
+                <a href="listings.html?cat=services" class="cat-box"><i class="fas fa-tools"></i>සේවා</a>
             </div>
             <div class="col-6 col-md-2">
-                <div class="category-card"><i class="fas fa-ellipsis-h category-icon"></i><br>වෙනත්</div>
+                <a href="listings.html?cat=other" class="cat-box"><i class="fas fa-th-large"></i>වෙනත්</a>
             </div>
         </div>
     </div>
 
-    <div class="container my-5">
+    <div class="container mb-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h4 class="fw-bold">අලුත්ම පෝස්ට් (Ads)</h4>
-            <a href="#" class="text-danger text-decoration-none">සියල්ල බලන්න</a>
+            <h4 class="fw-bold">නවතම පෝස්ට්</h4>
+            <a href="listings.html" class="text-danger fw-bold text-decoration-none">සියල්ල බලන්න ></a>
         </div>
-        
-        <div class="row">
-            <div class="col-md-3 col-sm-6">
-                <div class="card ad-card">
-                    <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=500" class="ad-img" alt="Mobile">
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="card ad-card" onclick="location.href='ad-details.html'">
+                    <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=400" class="ad-img" alt="iPhone">
                     <div class="card-body">
-                        <p class="text-muted small mb-1"><i class="fas fa-map-marker-alt"></i> Colombo</p>
-                        <h6 class="card-title fw-bold">iPhone 13 Pro Max</h6>
-                        <p class="ad-price">Rs. 185,000</p>
+                        <small class="text-muted">කොළඹ | ජංගම දුරකථන</small>
+                        <h6 class="fw-bold mt-1">iPhone 13 Pro - 128GB</h6>
+                        <p class="price mb-0">Rs. 195,000</p>
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-3 col-sm-6">
-                <div class="card ad-card">
-                    <img src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=500" class="ad-img" alt="Car">
+            <div class="col-md-3">
+                <div class="card ad-card" onclick="location.href='ad-details.html'">
+                    <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?q=80&w=400" class="ad-img" alt="Car">
                     <div class="card-body">
-                        <p class="text-muted small mb-1"><i class="fas fa-map-marker-alt"></i> Kandy</p>
-                        <h6 class="card-title fw-bold">Toyota Aqua 2015</h6>
-                        <p class="ad-price">Rs. 7,200,000</p>
+                        <small class="text-muted">මහනුවර | වාහන</small>
+                        <h6 class="fw-bold mt-1">Toyota Aqua 2017</h6>
+                        <p class="price mb-0">Rs. 7,850,000</p>
                     </div>
                 </div>
             </div>
-            
-            </div>
+        </div>
     </div>
 
-    <footer class="bg-dark text-white py-4 mt-5">
-        <div class="container text-center">
-            <p>&copy; 2024 LankaVikum - All Rights Reserved</p>
+    <footer class="bg-dark text-white py-4 mt-5 text-center">
+        <div class="container">
+            <p class="mb-0">&copy; 2024 LankaAds. All Rights Reserved.</p>
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

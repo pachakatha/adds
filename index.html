@@ -80,6 +80,18 @@
         const db = firebase.firestore();
         const auth = firebase.auth();
 
+        // Category Icons Map
+        const catIcons = {
+            'vehicles': '🚗',
+            'electronics': '📱',
+            'property': '🏠',
+            'home': '🛋️',
+            'fashion': '👕',
+            'services': '🛠️',
+            'jobs': '💼',
+            'other': '✨'
+        };
+
         // Auth State
         auth.onAuthStateChanged(user => {
             const authLinks = document.getElementById('auth-links');
@@ -116,14 +128,22 @@
                 const ad = doc.data();
                 if (searchQuery && !ad.title.toLowerCase().includes(searchQuery.toLowerCase())) return;
 
+                // Select Icon based on category
+                const icon = catIcons[ad.category] || '✨';
+
                 const card = `
-                    <div class="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition">
-                        <img src="${ad.imageUrl || 'https://via.placeholder.com/300'}" class="h-44 w-full object-cover">
-                        <div class="p-4">
+                    <div class="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col">
+                        <div class="h-32 bg-gray-100 flex items-center justify-center text-6xl">
+                            ${icon}
+                        </div>
+                        <div class="p-4 flex-grow">
                             <span class="text-[10px] font-bold text-primary bg-orange-50 px-2 py-1 rounded-md uppercase">${ad.category}</span>
                             <h3 class="font-bold text-secondary mt-2 line-clamp-1">${ad.title}</h3>
                             <p class="text-xs text-gray-500 mt-1">📞 ${ad.phone}</p>
-                            <button class="w-full mt-4 border border-secondary text-secondary py-2 rounded-lg text-xs font-bold hover:bg-secondary hover:text-white transition">බලන්න</button>
+                            <p class="text-xs text-gray-600 mt-2 line-clamp-2">${ad.description}</p>
+                        </div>
+                        <div class="p-4 pt-0">
+                            <button class="w-full bg-secondary text-white py-2 rounded-lg text-xs font-bold hover:bg-blue-900 transition">විස්තර බලන්න</button>
                         </div>
                     </div>
                 `;

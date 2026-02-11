@@ -3,85 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login/Sign Up | Adds.ink</title>
-    
+    <title>Login | LankaAds</title>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
-
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f4f4f4; }
-        .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); width: 300px; text-align: center; }
-        input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
-        button { width: 100%; padding: 10px; margin: 5px 0; cursor: pointer; border: none; border-radius: 5px; color: white; font-weight: bold; }
-        .btn-main { background-color: #007bff; }
-        .toggle-btn { background: none; color: #007bff; border: none; cursor: pointer; text-decoration: underline; }
-        .hidden { display: none; }
+        body { font-family: 'Poppins', sans-serif; }
     </style>
 </head>
-<body>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-6">
 
-<div class="container">
-    <h2 id="form-title">Login</h2>
-    
-    <div id="login-form">
-        <input type="email" id="login-email" placeholder="Email"><br>
-        <input type="password" id="login-password" placeholder="Password"><br>
-        <button class="btn-main" onclick="logIn()">Login (ඇතුල් වන්න)</button>
-        <p>ගිණුමක් නැද්ද? <button class="toggle-btn" onclick="toggleForms()">Sign Up වන්න</button></p>
+    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-blue-900"><span class="text-orange-600">Lanka</span>Ads</h1>
+            <p id="form-title" class="text-gray-500 mt-2">ගිණුමට ඇතුළු වන්න (Login)</p>
+        </div>
+
+        <div class="space-y-4">
+            <input type="email" id="email" placeholder="Email ලිපිනය" class="w-full p-4 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-orange-500">
+            <input type="password" id="password" placeholder="මුරපදය (Password)" class="w-full p-4 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-orange-500">
+            
+            <button id="main-btn" onclick="handleAuth()" class="w-full bg-orange-600 text-white p-4 rounded-xl font-bold hover:bg-orange-700 transition shadow-lg">
+                Login
+            </button>
+        </div>
+
+        <p class="text-center mt-6 text-sm text-gray-600">
+            <span id="toggle-text">ගිණුමක් නැද්ද?</span> 
+            <button onclick="toggleMode()" class="text-orange-600 font-bold hover:underline">මාරු වන්න</button>
+        </p>
+
+        <p id="error-msg" class="text-red-500 text-xs mt-4 text-center hidden"></p>
     </div>
 
-    <div id="signup-form" class="hidden">
-        <input type="email" id="signup-email" placeholder="Email"><br>
-        <input type="password" id="signup-password" placeholder="Password"><br>
-        <button class="btn-main" onclick="signUp()">Sign Up (ලියාපදිංචි වන්න)</button>
-        <p>ගිණුමක් තිබේද? <button class="toggle-btn" onclick="toggleForms()">Login වන්න</button></p>
-    </div>
-    
-    <p id="message" style="color: red; font-size: 13px;"></p>
-</div>
+    <script>
+        // ඔබගේ Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
+            authDomain: "add-ink.firebaseapp.com",
+            projectId: "add-ink",
+            storageBucket: "add-ink.firebasestorage.app",
+            messagingSenderId: "752189116425",
+            appId: "1:752189116425:web:0acf6e7b3f6b3629e3e8d8"
+        };
+        firebase.initializeApp(firebaseConfig);
 
-<script>
-    // Firebase Config එක
-    const firebaseConfig = {
-        apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
-        authDomain: "add-ink.firebaseapp.com",
-        projectId: "add-ink",
-        storageBucket: "add-ink.firebasestorage.app",
-        messagingSenderId: "752189116425",
-        appId: "1:752189116425:web:0acf6e7b3f6b3629e3e8d8",
-        measurementId: "G-CFSC5LY1CS"
-    };
+        let isLoginMode = true;
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+        function toggleMode() {
+            isLoginMode = !isLoginMode;
+            document.getElementById('form-title').innerText = isLoginMode ? "ගිණුමට ඇතුළු වන්න (Login)" : "අලුත් ගිණුමක් සාදන්න (Sign Up)";
+            document.getElementById('main-btn').innerText = isLoginMode ? "Login" : "Sign Up";
+            document.getElementById('toggle-text').innerText = isLoginMode ? "ගිණුමක් නැද්ද?" : "ගිණුමක් තිබේද?";
+        }
 
-    // Form එක මාරු කරන (Toggle) කාර්යය
-    function toggleForms() {
-        document.getElementById('login-form').classList.toggle('hidden');
-        document.getElementById('signup-form').classList.toggle('hidden');
-        const title = document.getElementById('form-title');
-        title.innerText = title.innerText === "Login" ? "Sign Up" : "Login";
-        document.getElementById('message').innerText = "";
-    }
+        async function handleAuth() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('error-msg');
 
-    // ලියාපදිංචි වීමේ (Sign Up) ක්‍රියාවලිය
-    function signUp() {
-        const email = document.getElementById('signup-email').value;
-        const password = document.getElementById('signup-password').value;
-        auth.createUserWithEmailAndPassword(email, password)
-        .then(() => alert("සාර්ථකව ලියාපදිංචි වුණා!"))
-        .catch((error) => document.getElementById('message').innerText = error.message);
-    }
+            if (!email || !password) {
+                showError("කරුණාකර සියල්ල පුරවන්න.");
+                return;
+            }
 
-    // ඇතුල් වීමේ (Login) ක්‍රියාවලිය
-    function logIn() {
-        const email = document.getElementById('login-email').value;
-        const password = document.getElementById('login-password').value;
-        auth.signInWithEmailAndPassword(email, password)
-        .then(() => window.location.href = "index.html")
-        .catch((error) => document.getElementById('message').innerText = error.message);
-    }
-</script>
+            try {
+                // සත්‍යාපනය බ්‍රවුසරයේ ස්ථිරව තබා ගැනීමට (Persistence)
+                await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
+                if (isLoginMode) {
+                    // Login ක්‍රියාවලිය
+                    await firebase.auth().signInWithEmailAndPassword(email, password);
+                } else {
+                    // Sign Up ක්‍රියාවලිය
+                    await firebase.auth().createUserWithEmailAndPassword(email, password);
+                }
+                
+                // සාර්ථක නම් මුල් පිටුවට යවන්න
+                window.location.href = "index.html";
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
+        function showError(msg) {
+            const errorElement = document.getElementById('error-msg');
+            errorElement.innerText = msg;
+            errorElement.classList.remove('hidden');
+        }
+    </script>
 </body>
 </html>

@@ -11,86 +11,102 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Poppins', 'sans-serif'] },
-                    colors: { primary: '#FF6B35', secondary: '#004E89', background: '#F7F9FC' }
-                }
-            }
-        }
-    </script>
+    <style>
+        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); }
+    </style>
 </head>
-<body class="bg-background font-sans text-gray-800">
+<body class="bg-slate-50 font-sans text-gray-800">
+
+    <div id="otpModal" class="modal flex items-center justify-center">
+        <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-sm w-full mx-4">
+            <h3 class="text-xl font-bold text-secondary mb-2">OTP එක ඇතුළත් කරන්න</h3>
+            <p class="text-xs text-gray-500 mb-6">ඔබේ දුරකථනයට ලැබුණු අංක 6 කේතය මෙහි ටයිප් කරන්න.</p>
+            <input type="text" id="otpCode" placeholder="- - - - - -" class="w-full text-center text-2xl tracking-widest p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl outline-none focus:border-primary mb-4">
+            <button onclick="confirmOTP()" class="w-full bg-primary text-white py-4 rounded-2xl font-bold shadow-lg">තහවුරු කරන්න (Verify)</button>
+            <button onclick="closeModal()" class="w-full text-gray-400 mt-4 text-sm font-semibold">අවලංගු කරන්න</button>
+        </div>
+    </div>
 
     <nav class="bg-white shadow-sm px-6 py-4 flex justify-between items-center sticky top-0 z-50">
         <a href="index.html" class="text-2xl font-bold text-secondary flex items-center gap-2">
-            <span class="bg-primary text-white p-2 rounded-lg">LA</span> LankaAds
+            <span class="bg-primary text-white p-2 rounded-lg text-lg">LA</span> LankaAds
         </a>
-        <button onclick="logout()" class="text-red-500 font-semibold text-sm">Logout</button>
+        <button onclick="logout()" class="text-red-500 font-bold text-sm bg-red-50 px-4 py-2 rounded-xl">Logout</button>
     </nav>
 
     <div class="container mx-auto px-4 py-8 max-w-5xl">
-        
-        <div class="bg-white rounded-3xl p-8 shadow-xl mb-8 border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="flex items-center gap-4">
-                <div class="w-20 h-20 bg-secondary text-white rounded-full flex items-center justify-center text-3xl font-bold">
+        <div class="bg-white rounded-[2.5rem] p-8 shadow-xl border border-gray-50 mb-8 flex flex-col md:flex-row items-center gap-8">
+            <div class="relative">
+                <div class="w-28 h-28 bg-gradient-to-tr from-secondary to-blue-400 text-white rounded-full flex items-center justify-center text-4xl font-bold shadow-inner">
                     <span id="user-initial">U</span>
                 </div>
-                <div>
-                    <h2 id="user-email" class="text-2xl font-bold text-secondary">Loading...</h2>
-                    <p id="user-id" class="text-xs text-gray-400">UID: ...</p>
-                </div>
+                <div id="completion-label" class="absolute -bottom-2 -right-2 bg-primary text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-md">0% Done</div>
             </div>
-            
-            <div class="text-center bg-slate-50 p-4 rounded-2xl w-full md:w-auto">
-                <p class="text-xs text-gray-500">Profile Completeness</p>
-                <div class="text-3xl font-bold text-primary" id="completion-percentage">0%</div>
+            <div class="flex-grow text-center md:text-left">
+                <h2 id="user-email" class="text-2xl font-extrabold text-secondary">Loading...</h2>
+                <div class="flex flex-wrap gap-2 mt-3 justify-center md:justify-start">
+                    <span id="email-badge" class="px-3 py-1 rounded-full text-[10px] font-bold">Checking...</span>
+                    <span id="phone-badge" class="px-3 py-1 rounded-full text-[10px] font-bold">Checking...</span>
+                </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            
-            <div class="md:col-span-2 bg-white rounded-3xl p-8 shadow-xl border border-gray-100">
-                <h3 class="text-xl font-bold text-secondary mb-6">👤 පුද්ගලික තොරතුරු (Personal Info)</h3>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <input type="text" id="fullname" placeholder="සම්පූර්ණ නම" class="p-4 rounded-xl border border-gray-200">
-                    <input type="date" id="dob" class="p-4 rounded-xl border border-gray-200 text-gray-500">
-                    <input type="text" id="province" placeholder="පළාත" class="p-4 rounded-xl border border-gray-200">
-                    <input type="text" id="district" placeholder="දිස්ත්‍රික්කය" class="p-4 rounded-xl border border-gray-200">
-                    <textarea id="address" placeholder="ලිපිනය" class="col-span-full p-4 rounded-xl border border-gray-200" rows="2"></textarea>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 space-y-8">
+                <div class="bg-white rounded-[2rem] p-8 shadow-lg border border-gray-50">
+                    <h3 class="text-xl font-bold text-secondary mb-6 flex items-center gap-2">👤 පුද්ගලික තොරතුරු</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-gray-400 ml-2 uppercase">සම්පූර්ණ නම</label>
+                            <input type="text" id="fullname" class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20 border border-transparent">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-gray-400 ml-2 uppercase">උපන් දිනය</label>
+                            <input type="date" id="dob" class="w-full p-4 bg-gray-50 rounded-2xl outline-none border border-transparent">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-gray-400 ml-2 uppercase">පළාත</label>
+                            <input type="text" id="province" class="w-full p-4 bg-gray-50 rounded-2xl outline-none border border-transparent">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-gray-400 ml-2 uppercase">දිස්ත්‍රික්කය</label>
+                            <input type="text" id="district" class="w-full p-4 bg-gray-50 rounded-2xl outline-none border border-transparent">
+                        </div>
+                        <div class="space-y-1 md:col-span-2">
+                            <label class="text-[10px] font-bold text-gray-400 ml-2 uppercase">ලිපිනය</label>
+                            <textarea id="address" rows="2" class="w-full p-4 bg-gray-50 rounded-2xl outline-none border border-transparent"></textarea>
+                        </div>
+                    </div>
+                    <button onclick="saveProfile()" class="w-full mt-8 bg-secondary text-white py-4 rounded-2xl font-bold hover:shadow-lg transition-all active:scale-[0.98]">තොරතුරු සුරකින්න</button>
                 </div>
-                <button onclick="saveProfile()" class="mt-6 bg-secondary text-white w-full py-4 rounded-xl font-bold hover:bg-blue-900 transition">තොරතුරු සුරකින්න (Save)</button>
             </div>
 
-            <div class="bg-white rounded-3xl p-8 shadow-xl border border-gray-100">
-                <h3 class="text-xl font-bold text-secondary mb-6">🔒 තහවුරු කිරීම් (Verification)</h3>
-                
-                <div class="mb-6">
-                    <p class="text-sm font-semibold">Email Verification</p>
-                    <p id="email-status" class="text-xs text-gray-500 mb-2">Checking...</p>
-                    <button id="verify-email-btn" onclick="sendVerification()" class="hidden text-xs bg-primary text-white px-4 py-2 rounded-lg font-bold">Verify Email</button>
-                    <p class="text-[10px] text-gray-400 mt-1">Verification mail එක spam folder එකේ තිබිය හැක.</p>
-                </div>
+            <div class="space-y-8">
+                <div class="bg-white rounded-[2rem] p-8 shadow-lg border border-gray-50">
+                    <h3 class="text-xl font-bold text-secondary mb-6">🔒 තහවුරු කිරීම්</h3>
+                    
+                    <div class="p-4 bg-slate-50 rounded-2xl mb-4">
+                        <p class="text-xs font-bold text-gray-400 mb-2 uppercase">Email Verification</p>
+                        <div id="email-verify-box">
+                            <button id="verify-email-btn" onclick="sendEmailVerification()" class="hidden w-full bg-primary text-white py-2 rounded-xl text-xs font-bold">Verify Now</button>
+                            <p class="text-[9px] text-gray-400 mt-2 italic">*Spam folder එක පරීක්ෂා කරන්න.</p>
+                        </div>
+                    </div>
 
-                <div>
-                    <p class="text-sm font-semibold">Phone Verification</p>
-                    <div id="phone-content">
-                        <p id="phone-status" class="text-xs text-gray-500 mb-2">Phone Not Verified</p>
-                        <input type="tel" id="phoneNumber" placeholder="+947XXXXXXXX" class="w-full p-3 rounded-lg border border-gray-200 text-sm mb-2">
-                        <div id="recaptcha-container"></div>
-                        <button onclick="sendOTP()" class="text-xs bg-secondary text-white px-4 py-2 rounded-lg font-bold">Send OTP</button>
+                    <div class="p-4 bg-slate-50 rounded-2xl">
+                        <p class="text-xs font-bold text-gray-400 mb-2 uppercase">Phone Verification</p>
+                        <div id="phone-verify-box">
+                            <input type="tel" id="phoneNumber" placeholder="+947XXXXXXXX" class="w-full p-3 bg-white rounded-xl text-sm border border-gray-100 mb-3 outline-none">
+                            <div id="recaptcha-container"></div>
+                            <button onclick="requestOTP()" class="w-full bg-secondary text-white py-2 rounded-xl text-xs font-bold">Send OTP</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        
+
         <h3 class="text-xl font-bold text-secondary mt-12 mb-6">📋 මගේ දැන්වීම්</h3>
-        <div id="my-ads-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <p class="col-span-full text-center text-gray-400 py-10">දැන්වීම් පූරණය වෙමින් පවතී...</p>
-        </div>
+        <div id="my-ads-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
     </div>
 
     <script>
@@ -106,17 +122,13 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        let currentUser;
+        let currentResult;
 
         auth.onAuthStateChanged(user => {
             if (user) {
-                currentUser = user;
                 document.getElementById('user-email').innerText = user.email;
-                document.getElementById('user-id').innerText = "UID: " + user.uid;
                 document.getElementById('user-initial').innerText = user.email.charAt(0).toUpperCase();
-                
-                checkEmailStatus(user);
-                checkPhoneStatus(user);
+                updateBadges(user);
                 loadProfileData(user.uid);
                 loadMyAds(user.uid);
             } else {
@@ -124,48 +136,42 @@
             }
         });
 
-        // 1. Email Status
-        function checkEmailStatus(user) {
-            const status = document.getElementById('email-status');
-            const btn = document.getElementById('verify-email-btn');
+        function updateBadges(user) {
+            const eBadge = document.getElementById('email-badge');
+            const pBadge = document.getElementById('phone-badge');
+            
             if (user.emailVerified) {
-                status.innerText = "✅ Email Verified";
-                status.className = "text-xs text-green-600 mb-2 font-bold";
+                eBadge.innerText = "Email Verified";
+                eBadge.className = "px-3 py-1 rounded-full text-[10px] font-bold bg-green-100 text-green-600";
+                document.getElementById('verify-email-btn').classList.add('hidden');
             } else {
-                status.innerText = "❌ Email Unverified";
-                status.className = "text-xs text-red-600 mb-2 font-bold";
-                btn.classList.remove('hidden');
+                eBadge.innerText = "Email Unverified";
+                eBadge.className = "px-3 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-600";
+                document.getElementById('verify-email-btn').classList.remove('hidden');
             }
-        }
 
-        function sendVerification() {
-            auth.currentUser.sendEmailVerification().then(() => {
-                alert("Verification link එක email එකට යවන ලදී. කරුණාකර Inbox සහ Spam folder පරීක්ෂා කරන්න.");
-            }).catch(err => alert("Error: " + err.message));
-        }
-
-        // 2. Phone Status
-        function checkPhoneStatus(user) {
-            const status = document.getElementById('phone-status');
             const phoneProvider = user.providerData.find(p => p.providerId === 'phone');
             if (phoneProvider) {
-                status.innerText = "✅ Verified: " + phoneProvider.phoneNumber;
-                status.className = "text-xs text-green-600 mb-2 font-bold";
-                document.getElementById('phone-content').classList.add('hidden');
+                pBadge.innerText = "Phone Verified";
+                pBadge.className = "px-3 py-1 rounded-full text-[10px] font-bold bg-blue-100 text-blue-600";
+                document.getElementById('phone-verify-box').innerHTML = "<p class='text-xs text-green-600 font-bold'>Verified: " + phoneProvider.phoneNumber + "</p>";
+            } else {
+                pBadge.innerText = "Phone Unverified";
+                pBadge.className = "px-3 py-1 rounded-full text-[10px] font-bold bg-slate-200 text-slate-500";
             }
         }
 
-        // 3. Save & Load Profile Data
         async function saveProfile() {
+            const uid = auth.currentUser.uid;
             const data = {
                 fullname: document.getElementById('fullname').value,
                 dob: document.getElementById('dob').value,
                 province: document.getElementById('province').value,
                 district: document.getElementById('district').value,
-                address: document.getElementById('address').value,
+                address: document.getElementById('address').value
             };
-            await db.collection("users").doc(currentUser.uid).set(data, { merge: true });
-            alert("තොරතුරු සුරකින ලදී!");
+            await db.collection("users").doc(uid).set(data, { merge: true });
+            alert("තොරතුරු සුරැකීම සාර්ථකයි!");
             location.reload();
         }
 
@@ -178,62 +184,58 @@
                 document.getElementById('province').value = data.province || '';
                 document.getElementById('district').value = data.district || '';
                 document.getElementById('address').value = data.address || '';
-                calculateCompletion(data, currentUser);
+                
+                // Calculate Completion
+                const fields = [data.fullname, data.dob, data.province, data.district, data.address];
+                const filled = fields.filter(f => f).length;
+                const percent = Math.round((filled / fields.length) * 100);
+                document.getElementById('completion-label').innerText = percent + "% Done";
             }
         }
 
-        // 4. Completion Percentage
-        function calculateCompletion(data, user) {
-            let fields = ['fullname', 'dob', 'province', 'district', 'address'];
-            let filled = 0;
-            fields.forEach(f => { if(data[f]) filled++; });
-            
-            let percentage = Math.round((filled / fields.length) * 100);
-            document.getElementById('completion-percentage').innerText = percentage + "%";
-        }
+        // --- OTP Logic ---
+        function requestOTP() {
+            const num = document.getElementById('phoneNumber').value;
+            if(!num.startsWith('+94')) { alert("කරුණාකර +947... ලෙස අංකය ඇතුළත් කරන්න"); return; }
 
-        // Phone Auth Logic
-        function sendOTP() {
-            const number = document.getElementById('phoneNumber').value;
             window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {'size': 'invisible'});
-            auth.currentUser.linkWithPhoneNumber(number, window.recaptchaVerifier)
-                .then((result) => {
-                    let code = prompt("Enter the 6-digit OTP");
-                    if (code) {
-                        result.confirm(code).then(() => {
-                            alert("Phone Verified!");
-                            location.reload();
-                        }).catch(err => alert("Wrong OTP"));
-                    }
-                }).catch(err => alert("Error: " + err.message));
+            auth.currentUser.linkWithPhoneNumber(num, window.recaptchaVerifier)
+                .then(result => {
+                    currentResult = result;
+                    document.getElementById('otpModal').style.display = 'flex';
+                }).catch(err => alert("OTP දෝෂයකි: " + err.message));
         }
 
-        // Ads Logic
+        function confirmOTP() {
+            const code = document.getElementById('otpCode').value;
+            currentResult.confirm(code).then(() => {
+                alert("දුරකථන අංකය සාර්ථකව සම්බන්ධ කළා!");
+                location.reload();
+            }).catch(() => alert("වැරදි OTP අංකයකි. නැවත උත්සාහ කරන්න."));
+        }
+
+        function closeModal() { document.getElementById('otpModal').style.display = 'none'; }
+
+        function sendEmailVerification() {
+            auth.currentUser.sendEmailVerification().then(() => alert("Email එක පරීක්ෂා කරන්න (Inbox/Spam)."));
+        }
+
         async function loadMyAds(uid) {
             const grid = document.getElementById('my-ads-grid');
-            const snapshot = await db.collection("posts").where("userId", "==", uid).get();
-            grid.innerHTML = "";
-            if (snapshot.empty) {
-                grid.innerHTML = "<p class='col-span-full text-center text-gray-500'>දැන්වීම් නැත.</p>";
-                return;
-            }
-            snapshot.forEach(doc => {
+            const snap = await db.collection("posts").where("userId", "==", uid).get();
+            grid.innerHTML = snap.empty ? "<p class='col-span-full text-center py-10 text-gray-400'>දැන්වීම් කිසිවක් නැත.</p>" : "";
+            snap.forEach(doc => {
                 const ad = doc.data();
                 grid.innerHTML += `
-                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-50">
-                        <h4 class="font-bold text-secondary">${ad.title}</h4>
-                        <button onclick="deleteAd('${doc.id}')" class="text-red-500 text-xs mt-2">Delete</button>
+                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-50">
+                        <h4 class="font-bold text-secondary mb-4">${ad.title}</h4>
+                        <button onclick="deleteAd('${doc.id}')" class="text-red-500 text-xs font-bold hover:underline">ඉවත් කරන්න</button>
                     </div>`;
             });
         }
 
-        function deleteAd(id) {
-            if(confirm("Delete?")) db.collection("posts").doc(id).delete().then(()=>location.reload());
-        }
-
-        function logout() {
-            auth.signOut().then(() => window.location.href = "index.html");
-        }
+        function deleteAd(id) { if(confirm("Delete?")) db.collection("posts").doc(id).delete().then(()=>location.reload()); }
+        function logout() { auth.signOut().then(() => window.location.href = "index.html"); }
     </script>
 </body>
 </html>

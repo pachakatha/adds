@@ -13,15 +13,26 @@
     <style>
         :root { --primary-red: #ff4757; }
         body { background-color: #f8f9fa; font-family: 'Segoe UI', sans-serif; }
+        
+        /* Navbar */
         .navbar { background: white !important; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .navbar-brand { font-weight: 800; color: var(--primary-red) !important; }
-        .hero { background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1555421689-491a97ff2040?q=80&w=1200'); background-size: cover; padding: 60px 0; color: white; text-align: center; }
-        .search-group { max-width: 700px; margin: 20px auto; background: white; padding: 8px; border-radius: 12px; display: flex; }
-        .search-group input { border: none; flex-grow: 1; padding: 10px; outline: none; }
-        .ad-card { border: none; border-radius: 12px; transition: 0.3s; box-shadow: 0 3px 10px rgba(0,0,0,0.05); overflow: hidden; background: white; }
-        .ad-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .price { color: var(--primary-red); font-weight: 800; }
-        .profile-img { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--primary-red); }
+        .navbar-brand { font-weight: 800; color: var(--primary-red) !important; font-size: 1.6rem; }
+        
+        /* Hero Section */
+        .hero { background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1555421689-491a97ff2040?q=80&w=1200'); background-size: cover; padding: 70px 0; color: white; text-align: center; }
+        .search-group { max-width: 700px; margin: 25px auto; background: white; padding: 8px; border-radius: 12px; display: flex; }
+        .search-group input { border: none; flex-grow: 1; padding: 12px; outline: none; border-radius: 8px; }
+        
+        /* Ad Cards */
+        .ad-card { border: none; border-radius: 15px; transition: 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.06); overflow: hidden; background: white; height: 100%; }
+        .ad-card:hover { transform: translateY(-7px); box-shadow: 0 12px 25px rgba(0,0,0,0.1); }
+        .ad-img { height: 180px; object-fit: cover; width: 100%; background: #eee; }
+        .price { color: var(--primary-red); font-weight: 800; font-size: 1.1rem; }
+        
+        /* Premium Badge */
+        .premium-badge { background: #fab005; color: #000; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 20px; position: absolute; top: 10px; right: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); text-transform: uppercase; }
+        
+        .profile-img { width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--primary-red); }
     </style>
 </head>
 <body>
@@ -33,7 +44,7 @@
                 <div class="dropdown me-3">
                     <a class="dropdown-toggle d-flex align-items-center text-decoration-none text-dark" href="#" data-bs-toggle="dropdown">
                         <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="profile-img me-2">
-                        <span class="d-none d-md-block fw-bold">මගේ ගිණුම</span>
+                        <span class="d-none d-md-block fw-bold small">මගේ ගිණුම</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow border-0">
                         <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user me-2"></i> Profile</a></li>
@@ -42,30 +53,38 @@
                         <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
                     </ul>
                 </div>
-                <a href="post-ad.html" class="btn btn-danger fw-bold" style="border-radius: 8px;">POST AD</a>
+                <a href="post-ad.html" class="btn btn-danger fw-bold rounded-3 px-4 shadow-sm">POST AD</a>
             </div>
         </div>
     </nav>
 
     <div class="hero">
-        <div class="container">
-            <h2 class="fw-bold">ලංකාවේ ඕනෑම දෙයක් ඉක්මනින් විකුණා ගන්න</h2>
+        <div class="container px-4">
+            <h1 class="fw-bold mb-3">ශ්‍රී ලංකාවේ අංක 1 වෙළඳපොළ</h1>
+            <p class="lead mb-4">වාහන, ජංගම දුරකථන සහ ඕනෑම දෙයක් මෙතනින් සොයන්න</p>
             <div class="search-group">
-                <input type="text" placeholder="ඔබ සොයන්නේ කුමක්ද?">
-                <button class="btn btn-danger px-4 rounded-3">සොයන්න</button>
+                <input type="text" id="searchInput" placeholder="ඔබ සොයන්නේ කුමක්ද?">
+                <button class="btn btn-danger px-4 rounded-3 fw-bold">සොයන්න</button>
             </div>
         </div>
     </div>
 
     <div class="container my-5">
-        <h4 class="fw-bold mb-4">නවතම දැන්වීම්</h4>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold m-0">නවතම දැන්වීම්</h4>
+            <span class="badge bg-secondary">සියල්ල</span>
+        </div>
+        
         <div class="row g-4" id="adsContainer">
-            <div class="text-center">පෝස්ට් පූරණය වෙමින් පවතී...</div>
+            <div class="col-12 text-center py-5">
+                <div class="spinner-border text-danger" role="status"></div>
+                <p class="mt-2 text-muted">දැන්වීම් පූරණය වෙමින් පවතී...</p>
+            </div>
         </div>
     </div>
 
     <script>
-        // ඔයාගේ Firebase Config එක
+        // Firebase Config
         const firebaseConfig = {
           apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
           authDomain: "add-ink.firebaseapp.com",
@@ -79,31 +98,47 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // Database එකෙන් පෝස්ට් ටික ගමු
+        // Firestore එකෙන් තොරතුරු ගැනීම
         db.collection("ads").orderBy("createdAt", "desc").onSnapshot((querySnapshot) => {
             let container = document.getElementById('adsContainer');
             container.innerHTML = "";
             
             if (querySnapshot.empty) {
-                container.innerHTML = "<div class='text-center'>තවම කිසිදු දැන්වීමක් පල කර නොමැත.</div>";
+                container.innerHTML = `
+                    <div class='col-12 text-center py-5'>
+                        <i class='fas fa-folder-open fa-3x text-muted mb-3'></i>
+                        <p>තවම කිසිදු දැන්වීමක් පල කර නොමැත.</p>
+                    </div>`;
                 return;
             }
 
             querySnapshot.forEach((doc) => {
                 let ad = doc.data();
+                // පින්තූරයක් නැතිනම් Default එකක් පෙන්වන්න
+                let image = ad.imageUrl ? ad.imageUrl : "https://via.placeholder.com/300x200?text=No+Image";
+                // Premium ද බලන්න
+                let premiumBadge = ad.isPremium ? `<span class="premium-badge"><i class="fas fa-crown me-1"></i>Premium</span>` : "";
+
                 container.innerHTML += `
-                    <div class="col-md-3 col-6">
-                        <div class="card ad-card h-100">
-                            <img src="https://via.placeholder.com/300x200?text=LankaAds" class="card-img-top">
-                            <div class="card-body">
-                                <h6 class="fw-bold mb-1">${ad.title}</h6>
-                                <p class="price mb-0">Rs. ${parseFloat(ad.price).toLocaleString()}</p>
-                                <small class="text-muted"><i class="fas fa-map-marker-alt"></i> Sri Lanka</small>
+                    <div class="col-lg-3 col-md-4 col-6">
+                        <div class="card ad-card shadow-sm position-relative">
+                            ${premiumBadge}
+                            <img src="${image}" class="ad-img" alt="${ad.title}">
+                            <div class="card-body p-3">
+                                <h6 class="fw-bold text-dark mb-1 text-truncate" title="${ad.title}">${ad.title}</h6>
+                                <p class="price mb-1">Rs. ${parseFloat(ad.price).toLocaleString()}</p>
+                                <div class="d-flex align-items-center text-muted mt-2" style="font-size: 12px;">
+                                    <i class="fas fa-map-marker-alt me-1 text-danger"></i>
+                                    <span>${ad.location || 'Sri Lanka'}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 `;
             });
+        }, (error) => {
+            console.error("Error loading ads: ", error);
+            document.getElementById('adsContainer').innerHTML = "<div class='text-center text-danger'>දත්ත පූරණය කිරීමේදී දෝෂයක් සිදුවුණා!</div>";
         });
     </script>
 

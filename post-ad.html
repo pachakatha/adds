@@ -1,70 +1,129 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="si">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Post Ad | LankaAds</title>
+    
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 p-6">
-
-<div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow">
-    <h2 class="text-2xl font-bold mb-6">Post Your Ad</h2>
-    
-    <input type="text" id="title" placeholder="Ad Title" class="w-full p-3 mb-4 border rounded"><br>
-    <select id="category" class="w-full p-3 mb-4 border rounded">
-        <option value="Vehicles">Vehicles</option>
-        <option value="Electronics">Electronics</option>
-        </select>
-    <textarea id="description" placeholder="Description" class="w-full p-3 mb-6 border rounded" rows="4"></textarea><br>
-    
-    <button onclick="postAd()" class="w-full bg-primary text-white p-3 rounded font-semibold hover:bg-orange-600">Submit Ad</button>
-</div>
-
-<script>
-    // ඔබේ Firebase Config (වැදගත්!)
-    const firebaseConfig = {
-        apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
-        authDomain: "add-ink.firebaseapp.com",
-        projectId: "add-ink",
-        storageBucket: "add-ink.firebasestorage.app",
-        messagingSenderId: "752189116425",
-        appId: "1:752189116425:web:0acf6e7b3f6b3629e3e8d8"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-
-    // *** මෙය වැදගත්: ලොග් වී සිටීදැයි පරීක්ෂා කිරීම ***
-    auth.onAuthStateChanged(user => {
-        if (!user) {
-            // ලොග් වී නැත්නම් login පිටුවට යවන්න
-            alert("Please Login first!");
-            window.location.href = "login.html";
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Poppins', 'sans-serif'] },
+                    colors: { primary: '#FF6B35', secondary: '#004E89', background: '#F7F9FC' }
+                }
+            }
         }
-    });
+    </script>
+</head>
+<body class="bg-background text-gray-800 font-sans">
 
-    function postAd() {
-        const user = auth.currentUser;
-        if (!user) return; // තවදුරටත් ලොග් වී නැත්නම් නතර කරන්න
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-secondary flex items-center gap-2">
+                <span class="bg-primary text-white p-2 rounded-lg text-xl">LA</span> LankaAds
+            </a>
+            <a href="index.html" class="text-secondary hover:text-primary transition">Back to Home</a>
+        </div>
+    </nav>
 
-        const title = document.getElementById('title').value;
-        const category = document.getElementById('category').value;
-        const description = document.getElementById('description').value;
+    <div class="container mx-auto px-6 py-12">
+        <div class="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+            <h2 class="text-3xl font-bold text-secondary mb-8 text-center">දැන්වීමක් ඇතුළත් කරන්න (Post Ad)</h2>
+            
+            <div class="space-y-6">
+                <div>
+                    <label class="block font-semibold mb-2">දැන්වීමේ මාතෘකාව (Title)</label>
+                    <input type="text" id="title" placeholder="උදා: Toyota Aqua 2015" class="w-full p-4 border rounded-xl outline-none focus:ring-2 focus:ring-primary">
+                </div>
 
-        db.collection("posts").add({
-            title: title,
-            category: category,
-            description: description,
-            userId: user.uid, // පරිශීලකයාගේ ID එක
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        }).then(() => {
-            alert("Ad Posted!");
-            window.location.href = "index.html";
+                <div>
+                    <label class="block font-semibold mb-2">වර්ගීකරණය (Category)</label>
+                    <select id="category" class="w-full p-4 border rounded-xl outline-none focus:ring-2 focus:ring-primary">
+                        <option value="vehicles">Vehicles</option>
+                        <option value="property">Property</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="home">Home & Garden</option>
+                        <option value="fashion">Fashion</option>
+                        <option value="services">Services</option>
+                        </select>
+                </div>
+
+                <div>
+                    <label class="block font-semibold mb-2">විස්තරය (Description)</label>
+                    <textarea id="description" placeholder="ඔබේ භාණ්ඩය පිළිබඳ විස්තරය..." class="w-full p-4 border rounded-xl outline-none focus:ring-2 focus:ring-primary" rows="6"></textarea>
+                </div>
+
+                <button onclick="postAd()" class="w-full bg-primary text-white p-4 rounded-xl font-bold text-lg hover:bg-orange-600 transition shadow-md">
+                    දැන්වීම පළ කරන්න (Submit Ad)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration (ඔබේ API Keys)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
+            authDomain: "add-ink.firebaseapp.com",
+            projectId: "add-ink",
+            storageBucket: "add-ink.firebasestorage.app",
+            messagingSenderId: "752189116425",
+            appId: "1:752189116425:web:0acf6e7b3f6b3629e3e8d8"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // පරිශීලකයා ලොග් වී සිටීදැයි පරීක්ෂා කිරීම (Session Management)
+        auth.onAuthStateChanged(user => {
+            if (!user) {
+                // ලොග් වී නැත්නම් login පිටුවට යවන්න
+                alert("දැන්වීම් ඇතුළත් කිරීමට කරුණාකර ලොග් වන්න.");
+                window.location.href = "login.html";
+            }
         });
-    }
-</script>
+
+        // පෝස්ට් එක database එකට දැමීම
+        function postAd() {
+            const user = auth.currentUser;
+            if (!user) {
+                alert("කරුණාකර ලොග් වන්න.");
+                window.location.href = "login.html";
+                return;
+            }
+
+            const title = document.getElementById('title').value;
+            const category = document.getElementById('category').value;
+            const description = document.getElementById('description').value;
+
+            if (title === "" || description === "") {
+                alert("කරුණාකර මාතෘකාව සහ විස්තරය ඇතුළත් කරන්න.");
+                return;
+            }
+
+            db.collection("posts").add({
+                title: title,
+                category: category,
+                description: description,
+                userId: user.uid, // පරිශීලකයාගේ ID එක
+                userEmail: user.email,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(() => {
+                alert("දැන්වීම සාර්ථකව පළ කරන ලදී!");
+                window.location.href = "index.html"; // මුල් පිටුවට යවන්න
+            })
+            .catch((error) => {
+                alert("වැරදීමක් සිදුවිය: " + error.message);
+            });
+        }
+    </script>
 </body>
 </html>

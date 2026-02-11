@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LankaAds | Search & Categories</title>
+    <title>LankaAds | ලංකාවේ අංක 1 දැන්වීම් අඩවිය</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
@@ -24,41 +24,46 @@
 </head>
 <body class="bg-background font-sans">
 
-    <nav class="bg-white shadow-md sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <a href="index.html" class="text-2xl font-bold text-secondary flex items-center gap-2">
-                <span class="bg-primary text-white p-2 rounded-lg text-xl">LA</span> LankaAds
+                <span class="bg-primary text-white p-2 rounded-lg">LA</span> LankaAds
             </a>
             <div id="auth-links" class="flex items-center gap-4 text-sm font-semibold"></div>
         </div>
     </nav>
 
-    <section class="bg-secondary py-12 px-4 shadow-inner">
-        <div class="container mx-auto max-w-4xl text-center text-white">
-            <h1 class="text-3xl md:text-4xl font-bold mb-6 text-white">ඔබට අවශ්‍ය ඕනෑම දෙයක් සොයාගන්න</h1>
-            
-            <div class="flex flex-col md:flex-row gap-2 bg-white p-2 rounded-2xl shadow-xl">
-                <input type="text" id="searchInput" placeholder="මොනවාද සොයන්නේ? (Title)" class="flex-grow p-4 text-gray-800 outline-none rounded-xl">
-                <select id="categoryFilter" class="p-4 text-gray-700 border-l border-gray-200 outline-none rounded-xl">
-                    <option value="all">සියලුම වර්ග (All)</option>
-                    <option value="vehicles">Vehicles</option>
-                    <option value="property">Property</option>
-                    <option value="electronics">Electronics</option>
-                    <option value="home">Home & Garden</option>
-                </select>
-                <button onclick="searchAds()" class="bg-primary hover:bg-orange-600 text-white px-8 py-4 rounded-xl font-bold transition">Search</button>
+    <section class="bg-secondary pt-10 pb-20 px-4">
+        <div class="container mx-auto max-w-5xl">
+            <div class="bg-white p-2 rounded-2xl shadow-2xl flex flex-col md:flex-row gap-2">
+                <input type="text" id="searchInput" placeholder="මොනවාද සොයන්නේ?" class="flex-grow p-4 outline-none rounded-xl text-lg">
+                <button onclick="searchAds()" class="bg-primary hover:bg-orange-600 text-white px-10 py-4 rounded-xl font-bold transition">Search Now</button>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-4 mt-8">
+                <button onclick="loadAds('all')" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-full border border-white/20 text-sm transition">All Ads</button>
+                <button onclick="loadAds('vehicles')" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-full border border-white/20 text-sm transition">🚗 Vehicles</button>
+                <button onclick="loadAds('electronics')" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-full border border-white/20 text-sm transition">📱 Electronics</button>
+                <button onclick="loadAds('property')" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-full border border-white/20 text-sm transition">🏠 Property</button>
+                <button onclick="loadAds('home')" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-full border border-white/20 text-sm transition">🛋️ Home & Garden</button>
+                <button onclick="loadAds('fashion')" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-full border border-white/20 text-sm transition">👕 Fashion</button>
+                <button onclick="loadAds('services')" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-full border border-white/20 text-sm transition">🛠️ Services</button>
+                <button onclick="loadAds('jobs')" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-full border border-white/20 text-sm transition">💼 Jobs</button>
+                <button onclick="loadAds('other')" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-full border border-white/20 text-sm transition">✨ Other</button>
             </div>
         </div>
     </section>
 
-    <main class="container mx-auto px-4 py-12">
-        <div class="flex justify-between items-center mb-8">
-            <h2 class="text-2xl font-bold text-secondary border-l-4 border-primary pl-4">නවතම දැන්වීම්</h2>
-            <a href="post-ad.html" class="bg-primary text-white px-6 py-2 rounded-full font-bold shadow-md hover:bg-orange-600">+ Post Ad</a>
-        </div>
-        
-        <div id="ads-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            <div class="col-span-full text-center py-20">පූරණය වෙමින්...</div>
+    <main class="container mx-auto px-4 -mt-10">
+        <div class="bg-white rounded-3xl p-6 shadow-xl min-h-screen">
+            <div class="flex justify-between items-center mb-8">
+                <h2 id="current-view-title" class="text-xl font-bold text-secondary">නවතම දැන්වීම්</h2>
+                <a href="post-ad.html" class="bg-primary text-white px-6 py-2 rounded-xl font-bold hover:shadow-lg transition">+ Post Ad</a>
+            </div>
+            
+            <div id="ads-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div class="col-span-full text-center py-20 italic text-gray-400">Loading Ads...</div>
+            </div>
         </div>
     </main>
 
@@ -72,68 +77,65 @@
             appId: "1:752189116425:web:0acf6e7b3f6b3629e3e8d8"
         };
         firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
         const db = firebase.firestore();
+        const auth = firebase.auth();
 
-        // Authentication State
+        // Auth State
         auth.onAuthStateChanged(user => {
             const authLinks = document.getElementById('auth-links');
             if (user) {
-                authLinks.innerHTML = `<a href="profile.html" class="text-secondary">My Profile</a> | <button onclick="auth.signOut().then(()=>location.reload())" class="text-red-500">Logout</button>`;
+                authLinks.innerHTML = `<a href="profile.html" class="text-secondary">Profile</a> | <button onclick="auth.signOut().then(()=>location.reload())" class="text-red-500">Logout</button>`;
             } else {
-                authLinks.innerHTML = `<a href="login.html" class="text-secondary">Login</a> | <a href="login.html" class="text-primary">Sign Up</a>`;
+                authLinks.innerHTML = `<a href="login.html" class="text-secondary">Login</a>`;
             }
         });
 
-        // Load Ads Function
-        async function loadAds(filterCategory = 'all', searchQuery = '') {
+        // Load Ads with Filter
+        async function loadAds(category = 'all', searchQuery = '') {
             const grid = document.getElementById('ads-grid');
-            grid.innerHTML = "<div class='col-span-full text-center py-20 italic'>සොයමින් පවතී...</div>";
+            const title = document.getElementById('current-view-title');
+            grid.innerHTML = "<div class='col-span-full text-center py-10'>පූරණය වෙමින්...</div>";
+            
+            title.innerText = category === 'all' ? "නවතම දැන්වීම්" : category.toUpperCase() + " දැන්වීම්";
 
             let adsRef = db.collection("posts").orderBy("timestamp", "desc");
 
-            if (filterCategory !== 'all') {
-                adsRef = adsRef.where("category", "==", filterCategory);
+            if (category !== 'all') {
+                adsRef = adsRef.where("category", "==", category);
             }
 
-            const querySnapshot = await adsRef.get();
+            const snapshot = await adsRef.get();
             grid.innerHTML = "";
 
-            if (querySnapshot.empty) {
-                grid.innerHTML = "<p class='col-span-full text-center text-gray-500'>දැන්වීම් හමු නොවීය.</p>";
+            if (snapshot.empty) {
+                grid.innerHTML = "<p class='col-span-full text-center py-10 text-gray-500'>දැන්වීම් කිසිවක් හමු නොවීය.</p>";
                 return;
             }
 
-            querySnapshot.forEach((doc) => {
+            snapshot.forEach(doc => {
                 const ad = doc.data();
-                // Search query filter (Case insensitive)
                 if (searchQuery && !ad.title.toLowerCase().includes(searchQuery.toLowerCase())) return;
 
-                const adHTML = `
-                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition flex flex-col">
-                        <img src="${ad.imageUrl || 'https://via.placeholder.com/300x200?text=No+Image'}" class="h-48 w-full object-cover">
-                        <div class="p-5 flex-grow">
-                            <span class="text-xs font-bold text-primary uppercase">${ad.category}</span>
-                            <h3 class="text-lg font-bold text-secondary mt-1 line-clamp-1">${ad.title}</h3>
-                            <p class="text-gray-500 text-sm mt-2 line-clamp-2">${ad.description}</p>
-                            <p class="text-green-600 font-bold mt-4">📞 ${ad.phone}</p>
-                        </div>
-                        <div class="p-5 pt-0">
-                            <button class="w-full bg-secondary text-white py-2 rounded-lg text-sm font-semibold hover:bg-blue-900 transition">විස්තර බලන්න</button>
+                const card = `
+                    <div class="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition">
+                        <img src="${ad.imageUrl || 'https://via.placeholder.com/300'}" class="h-44 w-full object-cover">
+                        <div class="p-4">
+                            <span class="text-[10px] font-bold text-primary bg-orange-50 px-2 py-1 rounded-md uppercase">${ad.category}</span>
+                            <h3 class="font-bold text-secondary mt-2 line-clamp-1">${ad.title}</h3>
+                            <p class="text-xs text-gray-500 mt-1">📞 ${ad.phone}</p>
+                            <button class="w-full mt-4 border border-secondary text-secondary py-2 rounded-lg text-xs font-bold hover:bg-secondary hover:text-white transition">බලන්න</button>
                         </div>
                     </div>
                 `;
-                grid.innerHTML += adHTML;
+                grid.innerHTML += card;
             });
         }
 
         function searchAds() {
-            const category = document.getElementById('categoryFilter').value;
-            const query = document.getElementById('searchInput').value;
-            loadAds(category, query);
+            const q = document.getElementById('searchInput').value;
+            loadAds('all', q);
         }
 
-        // පූරණය ආරම්භ කරන්න
         loadAds();
     </script>
 </body>

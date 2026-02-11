@@ -37,11 +37,18 @@
     <div class="container mx-auto px-4 py-8 max-w-5xl">
         <div class="bg-white rounded-[2.5rem] p-8 shadow-xl border border-gray-50 mb-8 flex flex-col md:flex-row items-center gap-8">
             <div class="relative">
-                <div class="w-28 h-28 bg-gradient-to-tr from-secondary to-blue-400 text-white rounded-full flex items-center justify-center text-4xl font-bold shadow-inner">
-                    <span id="user-initial">U</span>
-                </div>
-                <div id="membership-badge" class="absolute -bottom-2 -left-2 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-md">Loading...</div>
+                <img id="profile-pic" src="https://via.placeholder.com/150" class="w-28 h-28 rounded-full object-cover shadow-inner border-4 border-white">
+                
+                <label for="file-upload" class="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full cursor-pointer shadow-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M4 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 2h6v2H7V7zm0 4h6v2H7v-2z" />
+                    </svg>
+                </label>
+                <input id="file-upload" type="file" accept="image/*" class="hidden" onchange="previewImage(event)">
+
+                <div id="membership-badge" class="absolute -top-2 -left-2 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-md bg-slate-400">Silver</div>
             </div>
+            
             <div class="flex-grow text-center md:text-left">
                 <h2 id="user-email" class="text-2xl font-extrabold text-secondary">Loading...</h2>
                 <div class="flex flex-wrap gap-2 mt-3 justify-center md:justify-start">
@@ -69,15 +76,13 @@
             <div class="space-y-8">
                 <div class="bg-white rounded-[2rem] p-8 shadow-lg border border-gray-50">
                     <h3 class="text-xl font-bold text-secondary mb-6">🔒 තහවුරු කිරීම්</h3>
-                    
                     <div class="p-4 bg-slate-50 rounded-2xl mb-4">
                         <p class="text-xs font-bold text-gray-400 mb-2 uppercase">Email Verification</p>
                         <div id="email-verify-box">
                             <button id="verify-email-btn" onclick="sendEmailVerification()" class="hidden w-full bg-primary text-white py-2 rounded-xl text-xs font-bold">Verify Now</button>
-                            <p class="text-[9px] text-gray-400 mt-2 italic">*Spam folder එක පරීක්ෂා කරන්න.</p>
+                            <p class="text-[9px] text-gray-400 mt-2 italic">*Spam folder පරීක්ෂා කරන්න.</p>
                         </div>
                     </div>
-
                     <div class="p-4 bg-slate-50 rounded-2xl">
                         <p class="text-xs font-bold text-gray-400 mb-2 uppercase">Phone Verification</p>
                         <div id="phone-verify-box">
@@ -121,10 +126,25 @@
             }
         });
 
+        // Profile Photo Preview & Local Storage
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const output = document.getElementById('profile-pic');
+                output.src = reader.result;
+                localStorage.setItem('profilePic', reader.result);
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
         function updateBadges(user) {
             const eBadge = document.getElementById('email-badge');
             const pBadge = document.getElementById('phone-badge');
             
+            // Load Photo from Local Storage
+            const savedPic = localStorage.getItem('profilePic');
+            if(savedPic) document.getElementById('profile-pic').src = savedPic;
+
             if (user.emailVerified) {
                 eBadge.innerText = "Email Verified";
                 eBadge.className = "px-3 py-1 rounded-full text-[10px] font-bold bg-green-100 text-green-600";
@@ -170,7 +190,6 @@
                 document.getElementById('district').value = data.district || '';
                 document.getElementById('address').value = data.address || '';
                 
-                // Calculate Completion & Membership Level
                 const fields = [data.fullname, data.dob, data.province, data.district, data.address];
                 const filled = fields.filter(f => f).length;
                 const percent = Math.round((filled / fields.length) * 100);
@@ -181,8 +200,8 @@
                 if (percent >= 100) { level = "Platinum"; color = "bg-cyan-500"; }
 
                 const badge = document.getElementById('membership-badge');
-                badge.innerText = level + " Member";
-                badge.className = `absolute -bottom-2 -left-2 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-md ${color}`;
+                badge.innerText = level;
+                badge.className = `absolute -top-2 -left-2 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-md ${color}`;
             }
         }
 

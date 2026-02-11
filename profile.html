@@ -28,33 +28,68 @@
         <a href="index.html" class="text-2xl font-bold text-secondary flex items-center gap-2">
             <span class="bg-primary text-white p-2 rounded-lg">LA</span> LankaAds
         </a>
-        <button onclick="logout()" class="text-red-500 font-semibold hover:underline">Logout</button>
+        <button onclick="logout()" class="text-red-500 font-semibold text-sm">Logout</button>
     </nav>
 
-    <div class="container mx-auto px-4 py-10 max-w-4xl">
-        <div class="bg-white rounded-3xl p-8 shadow-xl mb-8 border border-gray-100">
-            <div class="flex flex-col md:flex-row items-center gap-6">
-                <div class="w-24 h-24 bg-secondary text-white rounded-full flex items-center justify-center text-4xl font-bold">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        
+        <div class="bg-white rounded-3xl p-8 shadow-xl mb-8 border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-4">
+                <div class="w-20 h-20 bg-secondary text-white rounded-full flex items-center justify-center text-3xl font-bold">
                     <span id="user-initial">U</span>
                 </div>
-                <div class="flex-grow text-center md:text-left">
+                <div>
                     <h2 id="user-email" class="text-2xl font-bold text-secondary">Loading...</h2>
-                    <p id="user-id" class="text-xs text-gray-400 mt-1">ID: ...</p>
-                    
-                    <div id="verify-section" class="mt-4 flex flex-wrap gap-2 justify-center md:justify-start">
-                        <span id="status-badge" class="px-4 py-1 rounded-full text-xs font-bold">Checking...</span>
-                        <button id="verify-btn" onclick="sendVerification()" class="hidden bg-primary text-white px-4 py-1 rounded-full text-xs font-bold hover:bg-orange-600 transition">Verify Email</button>
-                    </div>
+                    <p id="user-id" class="text-xs text-gray-400">UID: ...</p>
                 </div>
-                <a href="post-ad.html" class="bg-primary text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:shadow-orange-200 transition">+ New Ad</a>
+            </div>
+            
+            <div class="text-center bg-slate-50 p-4 rounded-2xl w-full md:w-auto">
+                <p class="text-xs text-gray-500">Profile Completeness</p>
+                <div class="text-3xl font-bold text-primary" id="completion-percentage">0%</div>
             </div>
         </div>
 
-        <h3 class="text-xl font-bold text-secondary mb-6 flex items-center gap-2">
-            <span class="text-2xl">📋</span> මගේ දැන්වීම් (My Ads)
-        </h3>
-        <div id="my-ads-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <p class="col-span-full text-center text-gray-400 italic py-10">දැන්වීම් පූරණය වෙමින් පවතී...</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            <div class="md:col-span-2 bg-white rounded-3xl p-8 shadow-xl border border-gray-100">
+                <h3 class="text-xl font-bold text-secondary mb-6">👤 පුද්ගලික තොරතුරු (Personal Info)</h3>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <input type="text" id="fullname" placeholder="සම්පූර්ණ නම" class="p-4 rounded-xl border border-gray-200">
+                    <input type="date" id="dob" class="p-4 rounded-xl border border-gray-200 text-gray-500">
+                    <input type="text" id="province" placeholder="පළාත" class="p-4 rounded-xl border border-gray-200">
+                    <input type="text" id="district" placeholder="දිස්ත්‍රික්කය" class="p-4 rounded-xl border border-gray-200">
+                    <textarea id="address" placeholder="ලිපිනය" class="col-span-full p-4 rounded-xl border border-gray-200" rows="2"></textarea>
+                </div>
+                <button onclick="saveProfile()" class="mt-6 bg-secondary text-white w-full py-4 rounded-xl font-bold hover:bg-blue-900 transition">තොරතුරු සුරකින්න (Save)</button>
+            </div>
+
+            <div class="bg-white rounded-3xl p-8 shadow-xl border border-gray-100">
+                <h3 class="text-xl font-bold text-secondary mb-6">🔒 තහවුරු කිරීම් (Verification)</h3>
+                
+                <div class="mb-6">
+                    <p class="text-sm font-semibold">Email Verification</p>
+                    <p id="email-status" class="text-xs text-gray-500 mb-2">Checking...</p>
+                    <button id="verify-email-btn" onclick="sendVerification()" class="hidden text-xs bg-primary text-white px-4 py-2 rounded-lg font-bold">Verify Email</button>
+                    <p class="text-[10px] text-gray-400 mt-1">Verification mail එක spam folder එකේ තිබිය හැක.</p>
+                </div>
+
+                <div>
+                    <p class="text-sm font-semibold">Phone Verification</p>
+                    <div id="phone-content">
+                        <p id="phone-status" class="text-xs text-gray-500 mb-2">Phone Not Verified</p>
+                        <input type="tel" id="phoneNumber" placeholder="+947XXXXXXXX" class="w-full p-3 rounded-lg border border-gray-200 text-sm mb-2">
+                        <div id="recaptcha-container"></div>
+                        <button onclick="sendOTP()" class="text-xs bg-secondary text-white px-4 py-2 rounded-lg font-bold">Send OTP</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <h3 class="text-xl font-bold text-secondary mt-12 mb-6">📋 මගේ දැන්වීම්</h3>
+        <div id="my-ads-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <p class="col-span-full text-center text-gray-400 py-10">දැන්වීම් පූරණය වෙමින් පවතී...</p>
         </div>
     </div>
 
@@ -71,83 +106,129 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Profile විස්තර සහ පළ කළ පෝස්ට් පෙන්වීම
+        let currentUser;
+
         auth.onAuthStateChanged(user => {
             if (user) {
+                currentUser = user;
                 document.getElementById('user-email').innerText = user.email;
                 document.getElementById('user-id').innerText = "UID: " + user.uid;
                 document.getElementById('user-initial').innerText = user.email.charAt(0).toUpperCase();
-
-                // Email Verification Status
-                const badge = document.getElementById('status-badge');
-                const vBtn = document.getElementById('verify-btn');
                 
-                if (user.emailVerified) {
-                    badge.innerText = "✅ Email Verified";
-                    badge.className = "px-4 py-1 rounded-full text-xs font-bold bg-green-100 text-green-600";
-                    vBtn.classList.add('hidden');
-                } else {
-                    badge.innerText = "❌ Email Unverified";
-                    badge.className = "px-4 py-1 rounded-full text-xs font-bold bg-red-100 text-red-600";
-                    vBtn.classList.remove('hidden');
-                }
-
+                checkEmailStatus(user);
+                checkPhoneStatus(user);
+                loadProfileData(user.uid);
                 loadMyAds(user.uid);
             } else {
                 window.location.href = "login.html";
             }
         });
 
-        // Email Verification Link එකක් යැවීම
+        // 1. Email Status
+        function checkEmailStatus(user) {
+            const status = document.getElementById('email-status');
+            const btn = document.getElementById('verify-email-btn');
+            if (user.emailVerified) {
+                status.innerText = "✅ Email Verified";
+                status.className = "text-xs text-green-600 mb-2 font-bold";
+            } else {
+                status.innerText = "❌ Email Unverified";
+                status.className = "text-xs text-red-600 mb-2 font-bold";
+                btn.classList.remove('hidden');
+            }
+        }
+
         function sendVerification() {
             auth.currentUser.sendEmailVerification().then(() => {
-                alert("Verification link එක ඔබගේ email එකට යවන ලදී. කරුණාකර Inbox පරීක්ෂා කරන්න.");
+                alert("Verification link එක email එකට යවන ලදී. කරුණාකර Inbox සහ Spam folder පරීක්ෂා කරන්න.");
             }).catch(err => alert("Error: " + err.message));
         }
 
-        // පරිශීලකයා පළ කළ පෝස්ට් ලැයිස්තුව පෙන්වීම
-        async function loadMyAds(uid) {
-            const grid = document.getElementById('my-ads-grid');
-            try {
-                const snapshot = await db.collection("posts")
-                                         .where("userId", "==", uid)
-                                         .orderBy("timestamp", "desc")
-                                         .get();
-                
-                grid.innerHTML = "";
-                if (snapshot.empty) {
-                    grid.innerHTML = "<p class='col-span-full text-center text-gray-500 bg-white p-10 rounded-3xl'>ඔබ තවමත් දැන්වීම් පළ කර නැත.</p>";
-                    return;
-                }
-
-                snapshot.forEach(doc => {
-                    const ad = doc.data();
-                    const card = `
-                        <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-50">
-                            <span class="text-[10px] font-bold text-primary bg-orange-50 px-2 py-1 rounded-md uppercase">${ad.category}</span>
-                            <h4 class="font-bold text-secondary mt-2">${ad.title}</h4>
-                            <p class="text-xs text-gray-400 mt-1">📞 ${ad.phone}</p>
-                            <div class="mt-4 flex gap-2">
-                                <button onclick="deleteAd('${doc.id}')" class="text-red-500 text-xs font-bold hover:underline">Delete Ad</button>
-                            </div>
-                        </div>
-                    `;
-                    grid.innerHTML += card;
-                });
-            } catch (err) {
-                console.error(err);
-                grid.innerHTML = "දැන්වීම් පූරණය කිරීමේදී දෝෂයක් ඇතිවිය.";
+        // 2. Phone Status
+        function checkPhoneStatus(user) {
+            const status = document.getElementById('phone-status');
+            const phoneProvider = user.providerData.find(p => p.providerId === 'phone');
+            if (phoneProvider) {
+                status.innerText = "✅ Verified: " + phoneProvider.phoneNumber;
+                status.className = "text-xs text-green-600 mb-2 font-bold";
+                document.getElementById('phone-content').classList.add('hidden');
             }
         }
 
-        // දැන්වීම් ඉවත් කිරීම
-        function deleteAd(id) {
-            if (confirm("මෙම දැන්වීම ඉවත් කිරීමට ඔබට සහතිකද?")) {
-                db.collection("posts").doc(id).delete().then(() => {
-                    alert("දැන්වීම සාර්ථකව ඉවත් කළා.");
-                    location.reload();
-                });
+        // 3. Save & Load Profile Data
+        async function saveProfile() {
+            const data = {
+                fullname: document.getElementById('fullname').value,
+                dob: document.getElementById('dob').value,
+                province: document.getElementById('province').value,
+                district: document.getElementById('district').value,
+                address: document.getElementById('address').value,
+            };
+            await db.collection("users").doc(currentUser.uid).set(data, { merge: true });
+            alert("තොරතුරු සුරකින ලදී!");
+            location.reload();
+        }
+
+        async function loadProfileData(uid) {
+            const doc = await db.collection("users").doc(uid).get();
+            if (doc.exists) {
+                const data = doc.data();
+                document.getElementById('fullname').value = data.fullname || '';
+                document.getElementById('dob').value = data.dob || '';
+                document.getElementById('province').value = data.province || '';
+                document.getElementById('district').value = data.district || '';
+                document.getElementById('address').value = data.address || '';
+                calculateCompletion(data, currentUser);
             }
+        }
+
+        // 4. Completion Percentage
+        function calculateCompletion(data, user) {
+            let fields = ['fullname', 'dob', 'province', 'district', 'address'];
+            let filled = 0;
+            fields.forEach(f => { if(data[f]) filled++; });
+            
+            let percentage = Math.round((filled / fields.length) * 100);
+            document.getElementById('completion-percentage').innerText = percentage + "%";
+        }
+
+        // Phone Auth Logic
+        function sendOTP() {
+            const number = document.getElementById('phoneNumber').value;
+            window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {'size': 'invisible'});
+            auth.currentUser.linkWithPhoneNumber(number, window.recaptchaVerifier)
+                .then((result) => {
+                    let code = prompt("Enter the 6-digit OTP");
+                    if (code) {
+                        result.confirm(code).then(() => {
+                            alert("Phone Verified!");
+                            location.reload();
+                        }).catch(err => alert("Wrong OTP"));
+                    }
+                }).catch(err => alert("Error: " + err.message));
+        }
+
+        // Ads Logic
+        async function loadMyAds(uid) {
+            const grid = document.getElementById('my-ads-grid');
+            const snapshot = await db.collection("posts").where("userId", "==", uid).get();
+            grid.innerHTML = "";
+            if (snapshot.empty) {
+                grid.innerHTML = "<p class='col-span-full text-center text-gray-500'>දැන්වීම් නැත.</p>";
+                return;
+            }
+            snapshot.forEach(doc => {
+                const ad = doc.data();
+                grid.innerHTML += `
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-50">
+                        <h4 class="font-bold text-secondary">${ad.title}</h4>
+                        <button onclick="deleteAd('${doc.id}')" class="text-red-500 text-xs mt-2">Delete</button>
+                    </div>`;
+            });
+        }
+
+        function deleteAd(id) {
+            if(confirm("Delete?")) db.collection("posts").doc(id).delete().then(()=>location.reload());
         }
 
         function logout() {

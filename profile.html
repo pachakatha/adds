@@ -76,6 +76,7 @@
             <div class="space-y-8">
                 <div class="bg-white rounded-[2rem] p-8 shadow-lg border border-gray-50">
                     <h3 class="text-xl font-bold text-secondary mb-6">🔒 තහවුරු කිරීම්</h3>
+                    
                     <div class="p-4 bg-slate-50 rounded-2xl mb-4">
                         <p class="text-xs font-bold text-gray-400 mb-2 uppercase">Email Verification</p>
                         <div id="email-verify-box">
@@ -83,6 +84,7 @@
                             <p class="text-[9px] text-gray-400 mt-2 italic">*Spam folder පරීක්ෂා කරන්න.</p>
                         </div>
                     </div>
+
                     <div class="p-4 bg-slate-50 rounded-2xl">
                         <p class="text-xs font-bold text-gray-400 mb-2 uppercase">Phone Verification</p>
                         <div id="phone-verify-box">
@@ -190,6 +192,7 @@
                 document.getElementById('district').value = data.district || '';
                 document.getElementById('address').value = data.address || '';
                 
+                // Calculate Completion & Membership Level
                 const fields = [data.fullname, data.dob, data.province, data.district, data.address];
                 const filled = fields.filter(f => f).length;
                 const percent = Math.round((filled / fields.length) * 100);

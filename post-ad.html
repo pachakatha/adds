@@ -35,7 +35,7 @@
 
     <div class="container mx-auto px-6 py-12">
         <div class="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
-            <h2 class="text-3xl font-bold text-secondary mb-8 text-center">දැන්වීමක් ඇතුළත් කරන්න (Post Ad)</h2>
+            <h2 class="text-3xl font-bold text-secondary mb-8 text-center">දැන්වීමක් ඇතුළත් කරන්න</h2>
             
             <div class="space-y-6">
                 <div>
@@ -52,7 +52,7 @@
                         <option value="home">Home & Garden</option>
                         <option value="fashion">Fashion</option>
                         <option value="services">Services</option>
-                        </select>
+                    </select>
                 </div>
 
                 <div>
@@ -81,7 +81,7 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // පරිශීලකයා ලොග් වී සිටීදැයි පරීක්ෂා කිරීම (Session Management)
+        // **Session Management**: පරිශීලකයා ලොග් වී සිටීදැයි පරීක්ෂා කිරීම
         auth.onAuthStateChanged(user => {
             if (!user) {
                 // ලොග් වී නැත්නම් login පිටුවට යවන්න
@@ -93,6 +93,8 @@
         // පෝස්ට් එක database එකට දැමීම
         function postAd() {
             const user = auth.currentUser;
+            
+            // ලොග් වී නැත්නම් ක්‍රියාත්මක වීම නතර කරන්න
             if (!user) {
                 alert("කරුණාකර ලොග් වන්න.");
                 window.location.href = "login.html";
@@ -103,11 +105,13 @@
             const category = document.getElementById('category').value;
             const description = document.getElementById('description').value;
 
+            // දත්ත හිස් දැයි පරීක්ෂා කිරීම
             if (title === "" || description === "") {
                 alert("කරුණාකර මාතෘකාව සහ විස්තරය ඇතුළත් කරන්න.");
                 return;
             }
 
+            // Database එකට දත්ත ඇතුළත් කිරීම
             db.collection("posts").add({
                 title: title,
                 category: category,

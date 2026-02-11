@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LankaAds | ලංකාවේ අංක 1 දැන්වීම් අඩවිය</title>
+    <title>LankaAds | Search & Categories</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
@@ -22,37 +22,47 @@
         }
     </script>
 </head>
-<body class="bg-background text-gray-800 font-sans">
+<body class="bg-background font-sans">
 
-    <header class="bg-white shadow-md sticky top-0 z-50">
-        <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
             <a href="index.html" class="text-2xl font-bold text-secondary flex items-center gap-2">
-                <span class="bg-primary text-white p-2 rounded-lg text-xl shadow-md">LA</span> LankaAds
+                <span class="bg-primary text-white p-2 rounded-lg text-xl">LA</span> LankaAds
             </a>
-            
-            <div id="auth-links" class="flex items-center gap-4">
-                <span class="text-gray-400 text-sm italic">පූරණය වෙමින්...</span>
-            </div>
-        </nav>
-    </header>
+            <div id="auth-links" class="flex items-center gap-4 text-sm font-semibold"></div>
+        </div>
+    </nav>
 
-    <section class="bg-secondary py-16 text-center text-white px-4">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4">ලංකාවේ ඕනෑම දෙයක් විකුණන්න හෝ ගන්න</h1>
-        <p class="text-lg opacity-90 mb-8 max-w-2xl mx-auto">වාහන, දේපල, ඉලෙක්ට්‍රොනික උපකරණ සහ තවත් දෑ සඳහා විශ්වාසවන්තම තැන.</p>
-        <a href="post-ad.html" class="bg-primary hover:bg-orange-600 text-white px-8 py-4 rounded-full font-bold text-lg shadow-xl transition inline-block">
-            + Post Your Ad
-        </a>
+    <section class="bg-secondary py-12 px-4 shadow-inner">
+        <div class="container mx-auto max-w-4xl text-center text-white">
+            <h1 class="text-3xl md:text-4xl font-bold mb-6 text-white">ඔබට අවශ්‍ය ඕනෑම දෙයක් සොයාගන්න</h1>
+            
+            <div class="flex flex-col md:flex-row gap-2 bg-white p-2 rounded-2xl shadow-xl">
+                <input type="text" id="searchInput" placeholder="මොනවාද සොයන්නේ? (Title)" class="flex-grow p-4 text-gray-800 outline-none rounded-xl">
+                <select id="categoryFilter" class="p-4 text-gray-700 border-l border-gray-200 outline-none rounded-xl">
+                    <option value="all">සියලුම වර්ග (All)</option>
+                    <option value="vehicles">Vehicles</option>
+                    <option value="property">Property</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="home">Home & Garden</option>
+                </select>
+                <button onclick="searchAds()" class="bg-primary hover:bg-orange-600 text-white px-8 py-4 rounded-xl font-bold transition">Search</button>
+            </div>
+        </div>
     </section>
 
     <main class="container mx-auto px-4 py-12">
-        <h2 class="text-3xl font-bold text-secondary mb-8 border-l-4 border-primary pl-4">අලුත්ම දැන්වීම්</h2>
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-2xl font-bold text-secondary border-l-4 border-primary pl-4">නවතම දැන්වීම්</h2>
+            <a href="post-ad.html" class="bg-primary text-white px-6 py-2 rounded-full font-bold shadow-md hover:bg-orange-600">+ Post Ad</a>
+        </div>
         
         <div id="ads-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            </div>
+            <div class="col-span-full text-center py-20">පූරණය වෙමින්...</div>
+        </div>
     </main>
 
     <script>
-        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
             authDomain: "add-ink.firebaseapp.com",
@@ -65,67 +75,65 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // 1. පරිශීලකයා ලොග් වී ඇත්දැයි පරීක්ෂා කර බොත්තම් වෙනස් කිරීම
+        // Authentication State
         auth.onAuthStateChanged(user => {
             const authLinks = document.getElementById('auth-links');
             if (user) {
-                authLinks.innerHTML = `
-                    <a href="profile.html" class="text-secondary font-semibold hover:text-primary flex items-center gap-1">
-                        <span class="text-xl">👤</span> මගේ ගිණුම
-                    </a>
-                    <button onclick="logOut()" class="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-200">Logout</button>
-                `;
+                authLinks.innerHTML = `<a href="profile.html" class="text-secondary">My Profile</a> | <button onclick="auth.signOut().then(()=>location.reload())" class="text-red-500">Logout</button>`;
             } else {
-                authLinks.innerHTML = `
-                    <a href="login.html" class="text-secondary font-semibold hover:text-primary">Login</a>
-                    <a href="login.html" class="bg-primary text-white px-5 py-2 rounded-lg font-bold shadow-md hover:bg-orange-600 transition">Sign Up</a>
-                `;
+                authLinks.innerHTML = `<a href="login.html" class="text-secondary">Login</a> | <a href="login.html" class="text-primary">Sign Up</a>`;
             }
         });
 
-        // 2. සියලුම දැන්වීම් Firestore වෙතින් පූරණය කිරීම
-        function loadAds() {
+        // Load Ads Function
+        async function loadAds(filterCategory = 'all', searchQuery = '') {
             const grid = document.getElementById('ads-grid');
-            
-            db.collection("posts").orderBy("timestamp", "desc").limit(20).get().then((querySnapshot) => {
-                grid.innerHTML = ""; // Clear loader
-                
-                if (querySnapshot.empty) {
-                    grid.innerHTML = "<p class='col-span-full text-center text-gray-500'>දැනට දැන්වීම් කිසිවක් නැත.</p>";
-                    return;
-                }
+            grid.innerHTML = "<div class='col-span-full text-center py-20 italic'>සොයමින් පවතී...</div>";
 
-                querySnapshot.forEach((doc) => {
-                    const ad = doc.data();
-                    const adHTML = `
-                        <div class="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all border border-gray-100 overflow-hidden group">
-                            <div class="h-48 bg-gray-200 flex items-center justify-center text-gray-400">
-                                <span class="text-4xl">📸</span>
-                            </div>
-                            <div class="p-5">
-                                <span class="text-xs font-bold text-primary uppercase tracking-wider">${ad.category}</span>
-                                <h3 class="text-lg font-bold text-secondary mt-1 group-hover:text-primary transition line-clamp-1">${ad.title}</h3>
-                                <p class="text-gray-500 text-sm mt-2 line-clamp-2">${ad.description}</p>
-                                <div class="mt-4 flex justify-between items-center pt-4 border-t border-gray-50">
-                                    <span class="text-xs text-gray-400">අද දින</span>
-                                    <button class="text-primary font-bold text-sm">View Details</button>
-                                </div>
-                            </div>
+            let adsRef = db.collection("posts").orderBy("timestamp", "desc");
+
+            if (filterCategory !== 'all') {
+                adsRef = adsRef.where("category", "==", filterCategory);
+            }
+
+            const querySnapshot = await adsRef.get();
+            grid.innerHTML = "";
+
+            if (querySnapshot.empty) {
+                grid.innerHTML = "<p class='col-span-full text-center text-gray-500'>දැන්වීම් හමු නොවීය.</p>";
+                return;
+            }
+
+            querySnapshot.forEach((doc) => {
+                const ad = doc.data();
+                // Search query filter (Case insensitive)
+                if (searchQuery && !ad.title.toLowerCase().includes(searchQuery.toLowerCase())) return;
+
+                const adHTML = `
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition flex flex-col">
+                        <img src="${ad.imageUrl || 'https://via.placeholder.com/300x200?text=No+Image'}" class="h-48 w-full object-cover">
+                        <div class="p-5 flex-grow">
+                            <span class="text-xs font-bold text-primary uppercase">${ad.category}</span>
+                            <h3 class="text-lg font-bold text-secondary mt-1 line-clamp-1">${ad.title}</h3>
+                            <p class="text-gray-500 text-sm mt-2 line-clamp-2">${ad.description}</p>
+                            <p class="text-green-600 font-bold mt-4">📞 ${ad.phone}</p>
                         </div>
-                    `;
-                    grid.innerHTML += adHTML;
-                });
+                        <div class="p-5 pt-0">
+                            <button class="w-full bg-secondary text-white py-2 rounded-lg text-sm font-semibold hover:bg-blue-900 transition">විස්තර බලන්න</button>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += adHTML;
             });
         }
 
-        // Logout Function
-        function logOut() {
-            auth.signOut().then(() => {
-                window.location.reload();
-            });
+        function searchAds() {
+            const category = document.getElementById('categoryFilter').value;
+            const query = document.getElementById('searchInput').value;
+            loadAds(category, query);
         }
 
-        // පිටුව පූරණය වන විට දැන්වීම් පෙන්වන්න
+        // පූරණය ආරම්භ කරන්න
         loadAds();
     </script>
 </body>

@@ -14,14 +14,8 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        primary: '#FF7F00',
-                        secondary: '#0071dc',
-                        dark: '#1A1A1A',
-                    },
-                    borderRadius: {
-                        '4xl': '2rem',
-                    }
+                    colors: { primary: '#FF7F00', secondary: '#0071dc', dark: '#1A1A1A' },
+                    borderRadius: { '4xl': '2rem' }
                 }
             }
         }
@@ -31,113 +25,82 @@
         body { font-family: 'Poppins', sans-serif; scroll-behavior: smooth; }
         .hero-bg {
             background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?q=80&w=1600');
-            background-size: cover;
-            background-position: center;
+            background-size: cover; background-position: center;
         }
-        .premium-card {
-            border: 2px solid #FFD700;
-            background: linear-gradient(145deg, #ffffff, #fffef0);
-            box-shadow: 0 15px 30px rgba(255, 215, 0, 0.2);
-        }
-        .premium-tag { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
-        .glass-effect { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
-        .category-card:hover { transform: translateY(-5px); transition: 0.3s; }
+        .premium-card { border: 2px solid #FFD700; background: linear-gradient(145deg, #ffffff, #fffef0); box-shadow: 0 10px 20px rgba(255, 215, 0, 0.15); }
+        .glass-effect { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .category-sidebar button:hover { background: #fff7ed; color: #FF7F00; }
+        .active-cat { background: #FF7F00 !important; color: white !important; }
+        .banner-container:empty { display: none; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
 
+    <div class="bg-dark text-white text-[10px] py-2">
+        <div class="container mx-auto px-6 flex justify-between items-center opacity-80 uppercase tracking-widest font-bold">
+            <div class="flex gap-4">
+                <span>මුළු සාමාජිකයින්: <span id="userCount" class="text-primary">0</span></span>
+                <span>සජීවී දැන්වීම්: <span id="adCount" class="text-primary">0</span></span>
+            </div>
+        </div>
+    </div>
+
     <nav class="glass-effect sticky top-0 z-50 border-b border-gray-100 shadow-sm">
         <div class="container mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
-            <h1 class="text-2xl md:text-3xl font-black text-dark tracking-tighter pointer-cursor" onclick="window.location.href='index.html'">Lanka<span class="text-primary">Ads</span></h1>
+            <h1 class="text-2xl md:text-3xl font-black text-dark tracking-tighter cursor-pointer" onclick="window.location.href='index.html'">Lanka<span class="text-primary">Ads</span></h1>
             <div id="authButtons" class="flex items-center gap-2 md:gap-4"></div>
         </div>
     </nav>
 
+    <div id="topBanner" class="container mx-auto px-6 mt-6 banner-container"></div>
+
     <div class="hero-bg text-white relative overflow-hidden">
-        <div class="container mx-auto px-6 py-20 text-center relative z-10">
-            <h2 class="text-4xl md:text-6xl font-extrabold leading-tight mb-4">ලංකාවේ අංක එකේ <span class="text-primary">වෙළඳපොළ</span></h2>
-            <p class="text-gray-200 mb-10 max-w-2xl mx-auto text-lg md:text-xl">ඕනෑම දෙයක් විකුණන්න හෝ මිලදී ගන්න දැන්ම පිවිසෙන්න.</p>
+        <div class="container mx-auto px-6 py-16 text-center relative z-10">
+            <h2 class="text-4xl md:text-5xl font-extrabold mb-4">ඔබට අවශ්‍ය ඕනෑම දෙයක් මිලදී ගන්න</h2>
             
-            <div class="max-w-4xl mx-auto glass-effect p-2 md:p-3 rounded-3xl md:rounded-full shadow-2xl flex flex-col md:flex-row gap-2">
-                <input type="text" id="searchInput" onkeyup="filterAds()" placeholder="ඔබ සොයන දේ මෙහි ටයිප් කරන්න..." class="flex-[2] p-4 rounded-full text-dark outline-none bg-transparent px-6 text-lg">
-                
-                <select id="districtFilter" onchange="filterAds()" class="flex-1 p-4 rounded-full text-dark outline-none bg-gray-100 border-none px-6 font-medium cursor-pointer">
-                    <option value="All">සියලුම දිස්ත්‍රික්ක</option>
+            <div class="max-w-4xl mx-auto glass-effect p-2 rounded-3xl md:rounded-full shadow-2xl flex flex-col md:flex-row gap-2 mt-8">
+                <input type="text" id="searchInput" onkeyup="filterAds()" placeholder="මොනවද සොයන්නේ?" class="flex-[2] p-4 rounded-full text-dark outline-none bg-transparent px-6 text-lg">
+                <select id="districtFilter" onchange="filterAds()" class="flex-1 p-4 rounded-full text-dark outline-none bg-gray-100 border-none px-6 font-bold cursor-pointer">
+                    <option value="All">දිස්ත්‍රික්කය</option>
                     <option value="Colombo">Colombo</option><option value="Gampaha">Gampaha</option>
                     <option value="Kandy">Kandy</option><option value="Galle">Galle</option>
-                    <option value="Kalutara">Kalutara</option><option value="Kurunegala">Kurunegala</option>
-                    <option value="Matara">Matara</option><option value="Anuradhapura">Anuradhapura</option>
-                    <option value="Ratnapura">Ratnapura</option><option value="Badulla">Badulla</option>
-                    <option value="Kegalle">Kegalle</option><option value="Puttalam">Puttalam</option>
-                    <option value="Matale">Matale</option><option value="Hambantota">Hambantota</option>
-                    <option value="Ampara">Ampara</option><option value="Jaffna">Jaffna</option>
-                    <option value="Moneragala">Moneragala</option><option value="Polonnaruwa">Polonnaruwa</option>
-                    <option value="Trincomalee">Trincomalee</option><option value="Batticaloa">Batticaloa</option>
-                    <option value="Vavuniya">Vavuniya</option><option value="Nuwara Eliya">Nuwara Eliya</option>
-                    <option value="Mannar">Mannar</option><option value="Mullaitivu">Mullaitivu</option>
-                    <option value="Kilinochchi">Kilinochchi</option>
                 </select>
-
-                <button onclick="filterAds()" class="bg-primary text-white px-10 py-4 rounded-full font-bold hover:bg-orange-600 transition-all shadow-lg active:scale-95">
-                    සොයන්න
-                </button>
+                <button onclick="filterAds()" class="bg-primary text-white px-10 py-4 rounded-full font-black hover:bg-orange-600 transition shadow-lg">සොයන්න</button>
             </div>
         </div>
     </div>
 
-    <div class="container mx-auto px-6 py-12">
-        <div class="flex justify-between items-end mb-8">
-            <div>
-                <h3 class="text-2xl font-bold text-dark">ප්‍රධාන වර්ගීකරණයන්</h3>
-                <p class="text-gray-500 text-sm mt-1">ඔබට අවශ්‍ය දේ පහසුවෙන් තෝරාගන්න</p>
+    <div class="container mx-auto px-4 md:px-6 py-10">
+        <div class="flex flex-col lg:flex-row gap-8">
+            
+            <div class="w-full lg:w-1/4">
+                <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm sticky top-24">
+                    <h4 class="font-black text-dark mb-5 border-b pb-2 uppercase text-xs tracking-widest">වර්ගීකරණයන්</h4>
+                    <div class="category-sidebar space-y-1">
+                        <button onclick="setCategory('All')" class="w-full text-left p-3 rounded-xl font-bold text-sm transition active-cat" id="cat-All">🏠 සියලුම ඇඩ්ස්</button>
+                        <button onclick="setCategory('Electronics')" class="w-full text-left p-3 rounded-xl font-bold text-sm transition" id="cat-Electronics">📱 Electronics</button>
+                        <button onclick="setCategory('Vehicles')" class="w-full text-left p-3 rounded-xl font-bold text-sm transition" id="cat-Vehicles">🚗 Vehicles</button>
+                        <button onclick="setCategory('Property')" class="w-full text-left p-3 rounded-xl font-bold text-sm transition" id="cat-Property">🏠 Property</button>
+                        <button onclick="setCategory('Home & Garden')" class="w-full text-left p-3 rounded-xl font-bold text-sm transition" id="cat-HomeGarden">🛋️ Home & Garden</button>
+                    </div>
+                    
+                    <div id="sideBanner" class="mt-8 banner-container"></div>
+                </div>
             </div>
-            <a href="post-ad.html" class="hidden md:flex items-center gap-2 bg-dark text-white px-6 py-3 rounded-2xl font-bold hover:bg-gray-800 transition shadow-lg">
-                <span>+ දැන්වීමක් පළ කරන්න</span>
-            </a>
-        </div>
-        
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4">
-            <button onclick="setCategory('Electronics')" class="category-card bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:border-primary transition flex flex-col items-center group">
-                <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition">📱</div>
-                <p class="text-xs font-bold mt-4">Electronics</p>
-            </button>
-            <button onclick="setCategory('Vehicles')" class="category-card bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:border-primary transition flex flex-col items-center group">
-                <div class="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition">🚗</div>
-                <p class="text-xs font-bold mt-4">Vehicles</p>
-            </button>
-            <button onclick="setCategory('Property')" class="category-card bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:border-primary transition flex flex-col items-center group">
-                <div class="w-16 h-16 bg-green-50 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition">🏠</div>
-                <p class="text-xs font-bold mt-4">Property</p>
-            </button>
-            <button onclick="setCategory('Home & Garden')" class="category-card bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:border-primary transition flex flex-col items-center group">
-                <div class="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition">🛋️</div>
-                <p class="text-xs font-bold mt-4">Home & Garden</p>
-            </button>
-            <button onclick="setCategory('Fashion & Beauty')" class="category-card bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:border-primary transition flex flex-col items-center group">
-                <div class="w-16 h-16 bg-pink-50 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition">👗</div>
-                <p class="text-xs font-bold mt-4">Fashion</p>
-            </button>
-            <button onclick="setCategory('Jobs')" class="category-card bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:border-primary transition flex flex-col items-center group">
-                <div class="w-16 h-16 bg-yellow-50 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition">💼</div>
-                <p class="text-xs font-bold mt-4">Jobs</p>
-            </button>
-            <button onclick="setCategory('Animals')" class="category-card bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:border-primary transition flex flex-col items-center group">
-                <div class="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition">🐕</div>
-                <p class="text-xs font-bold mt-4">Animals</p>
-            </button>
-        </div>
-    </div>
 
-    <div class="container mx-auto px-6 py-6 border-t border-gray-100">
-        <div class="flex justify-between items-center mb-8">
-            <h3 class="text-2xl font-bold text-dark flex items-center gap-2">
-                නවතම දැන්වීම් <span id="currentCategory" class="text-sm font-normal bg-orange-100 text-primary px-3 py-1 rounded-full">සියල්ල</span>
-            </h3>
-            <button onclick="setCategory('All')" class="text-primary font-bold hover:underline">සියල්ල පෙන්වන්න</button>
-        </div>
-        
-        <div id="adsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            <p class="text-gray-400 py-10 col-span-full text-center">දැන්වීම් පූරණය වෙමින් පවතී...</p>
+            <div class="w-full lg:w-3/4">
+                <div id="middleBanner" class="banner-container mb-6"></div>
+
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-black text-dark uppercase tracking-tight">නවතම දැන්වීම් - <span id="currentCategoryText" class="text-primary">සියල්ල</span></h3>
+                    <a href="post-ad.html" class="bg-dark text-white px-6 py-2 rounded-xl font-bold text-xs hover:bg-primary transition shadow-lg">+ ඇඩ් එකක් දාන්න</a>
+                </div>
+
+                <div id="adsGrid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                    </div>
+
+                <div id="bottomBanner" class="mt-10 banner-container"></div>
+            </div>
         </div>
     </div>
 
@@ -158,106 +121,107 @@
 
         let allAds = [];
 
-        // Auth Status and Profile Links
-        auth.onAuthStateChanged(user => {
-            const authDiv = document.getElementById('authButtons');
-            if (user) {
-                authDiv.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <a href="post-ad.html" class="bg-primary text-white p-2 rounded-full md:hidden" title="Post Ad">+</a>
-                        <div class="flex items-center gap-2 bg-gray-50 p-1 pr-4 rounded-full border border-gray-200 cursor-pointer hover:bg-gray-100 transition" onclick="window.location.href='profile.html'">
-                            <div class="w-8 h-8 bg-dark rounded-full flex items-center justify-center text-white font-bold text-xs uppercase">
-                                ${user.email.charAt(0)}
-                            </div>
-                            <div class="flex flex-col">
-                                <span class="hidden md:inline text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-none">Profile</span>
-                                <span class="hidden md:inline text-xs font-bold text-gray-700 leading-tight">${user.email.split('@')[0]}</span>
-                            </div>
-                        </div>
-                        <button onclick="auth.signOut()" class="text-xs text-red-500 font-bold hover:underline">Log Out</button>
-                    </div>
-                `;
-            } else {
-                authDiv.innerHTML = `
-                    <a href="login.html" class="text-sm text-dark font-bold hover:text-primary transition">Login</a>
-                    <a href="signup.html" class="bg-primary text-white px-6 py-2.5 rounded-full text-sm font-bold shadow-lg shadow-orange-200 hover:scale-105 transition">Sign Up</a>
-                `;
-            }
-        });
+        // Load Banners
+        function loadAdminBanners() {
+            db.collection("banners").onSnapshot(snap => {
+                const containers = {
+                    'top': document.getElementById('topBanner'),
+                    'middle': document.getElementById('middleBanner'),
+                    'bottom': document.getElementById('bottomBanner'),
+                    'side': document.getElementById('sideBanner')
+                };
+                
+                Object.values(containers).forEach(c => c.innerHTML = "");
 
+                snap.forEach(doc => {
+                    const b = doc.data();
+                    if (containers[b.pos]) {
+                        containers[b.pos].innerHTML += `
+                            <div class="bg-white border border-gray-100 shadow-sm p-4 mb-4 rounded-2xl">
+                                ${b.img ? `<img src="${b.img}" class="w-full rounded-xl mb-3 h-auto object-cover">` : ''}
+                                <div class="prose prose-sm max-w-none text-sm">${b.content}</div>
+                            </div>
+                        `;
+                    }
+                });
+            });
+        }
+
+        // Load Stats
+        function loadStats() {
+            db.collection("posts").where("status", "==", "approved").onSnapshot(snap => {
+                document.getElementById('adCount').innerText = snap.size;
+            });
+            db.collection("users").onSnapshot(snap => {
+                document.getElementById('userCount').innerText = snap.size || '100+';
+            });
+        }
+
+        // Fetch Approved Ads Only
         function fetchAds() {
-            // "approved" තත්ත්වයේ ඇති දැන්වීම් පමණක් පෙන්වීමට අවශ්‍ය නම් .where("status", "==", "approved") එක් කරන්න
-            db.collection("posts").orderBy("createdAt", "desc")
+            db.collection("posts").where("status", "==", "approved").orderBy("createdAt", "desc")
             .onSnapshot(snapshot => {
                 allAds = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                // Sort Premium to top
+                allAds.sort((a, b) => (b.isPremium === true) - (a.isPremium === true));
                 renderAds(allAds);
-            }, error => {
-                console.error("Error: ", error);
-                document.getElementById('adsGrid').innerHTML = "<p class='col-span-full text-center text-red-400'>දත්ත ලබාගැනීමට නොහැකි විය.</p>";
             });
         }
 
         function renderAds(ads) {
             const grid = document.getElementById('adsGrid');
-            grid.innerHTML = "";
-
-            if(ads.length === 0) {
-                grid.innerHTML = "<div class='col-span-full text-center py-20 bg-white rounded-4xl border-2 border-dashed border-gray-100'><p class='text-gray-400'>දැන්වීම් කිසිවක් හමු නොවීය.</p></div>";
-                return;
-            }
+            grid.innerHTML = ads.length === 0 ? "<p class='col-span-full text-center py-20 text-gray-400 font-bold'>දැන්වීම් කිසිවක් හමු නොවීය.</p>" : "";
 
             ads.forEach(ad => {
-                const isPremium = ad.isFeatured === true;
-                const card = `
-                    <div class="group bg-white rounded-3xl p-3 transition-all duration-500 hover:shadow-2xl border border-gray-100 flex flex-col ${isPremium ? 'premium-card' : ''}">
-                        <div class="relative h-48 rounded-2xl mb-4 overflow-hidden shadow-inner">
-                            <img src="${ad.imageUrl || 'https://via.placeholder.com/300x200?text=No+Image'}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                            ${isPremium ? '<span class="absolute top-3 left-3 premium-tag text-dark text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-tighter shadow-lg">⭐ Premium</span>' : ''}
-                            <div class="absolute bottom-3 left-3 bg-white/90 backdrop-blur px-3 py-1 rounded-lg text-xs font-bold text-dark shadow-sm">
-                                රු. ${Number(ad.price).toLocaleString()}
-                            </div>
+                const isPremium = ad.isPremium === true;
+                grid.innerHTML += `
+                    <div class="group bg-white rounded-3xl p-3 border border-gray-100 hover:shadow-xl transition-all duration-300 ${isPremium ? 'premium-card' : ''}">
+                        <div class="relative h-44 rounded-2xl overflow-hidden mb-3">
+                            <img src="${ad.imageUrl || 'https://via.placeholder.com/300x200'}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                            ${isPremium ? '<span class="absolute top-2 left-2 bg-amber-500 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase shadow-lg">⭐ PREMIUM</span>' : ''}
                         </div>
-                        <div class="px-2 pb-2 flex-grow text-left">
-                            <div class="flex justify-between items-start gap-2 mb-1">
-                                <span class="text-[10px] font-bold text-primary uppercase bg-orange-50 px-2 py-0.5 rounded-md">${ad.category || 'Other'}</span>
-                                <span class="text-[10px] font-medium text-gray-400">📍 ${ad.district || 'Islandwide'}</span>
+                        <div class="px-2">
+                            <span class="text-[9px] font-black text-primary bg-orange-50 px-2 py-0.5 rounded uppercase">${ad.category}</span>
+                            <h3 class="text-sm font-bold text-dark mt-2 line-clamp-1 uppercase tracking-tight">${ad.title}</h3>
+                            <p class="text-[10px] text-gray-400 font-medium">📍 ${ad.district}</p>
+                            <div class="flex justify-between items-center mt-4 pt-3 border-t border-gray-50">
+                                <span class="font-black text-sm text-dark">රු. ${Number(ad.price).toLocaleString()}</span>
+                                <a href="ad-details.html?id=${ad.id}" class="text-[10px] font-black bg-slate-900 text-white px-3 py-2 rounded-lg hover:bg-primary transition uppercase">විස්තර</a>
                             </div>
-                            <h3 class="text-md font-bold text-dark line-clamp-2 leading-snug h-12 uppercase text-xs">${ad.title}</h3>
-                        </div>
-                        <div class="mt-2 pt-3 border-t border-gray-50 flex justify-between items-center px-2">
-                            <span class="text-[10px] text-gray-400 font-medium">${ad.createdAt ? new Date(ad.createdAt.seconds * 1000).toLocaleDateString() : 'Just now'}</span>
-                            <a href="ad-details.html?id=${ad.id}" class="bg-gray-900 text-white text-[11px] font-bold px-4 py-2 rounded-xl hover:bg-primary transition shadow-md">විස්තර බලන්න →</a>
                         </div>
                     </div>
                 `;
-                grid.innerHTML += card;
             });
-        }
-
-        function filterAds() {
-            const searchText = document.getElementById('searchInput').value.toLowerCase();
-            const district = document.getElementById('districtFilter').value;
-            
-            const filtered = allAds.filter(ad => {
-                const matchesSearch = ad.title.toLowerCase().includes(searchText);
-                const matchesDistrict = (district === "All" || ad.district === district);
-                return matchesSearch && matchesDistrict;
-            });
-            
-            renderAds(filtered);
         }
 
         function setCategory(cat) {
-            document.getElementById('currentCategory').innerText = (cat === 'All') ? 'සියල්ල' : cat;
-            if (cat === 'All') {
-                renderAds(allAds);
-            } else {
-                const filtered = allAds.filter(ad => ad.category === cat);
-                renderAds(filtered);
-            }
+            document.getElementById('currentCategoryText').innerText = (cat === 'All') ? 'සියල්ල' : cat;
+            document.querySelectorAll('.category-sidebar button').forEach(b => b.classList.remove('active-cat'));
+            // Normalize ID for selection
+            const id = 'cat-' + cat.replace(' & ', '').replace(' ', '');
+            if(document.getElementById(id)) document.getElementById(id).classList.add('active-cat');
+            
+            if (cat === 'All') renderAds(allAds);
+            else renderAds(allAds.filter(ad => ad.category === cat));
         }
 
-        window.onload = fetchAds;
+        function filterAds() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const dist = document.getElementById('districtFilter').value;
+            const filtered = allAds.filter(ad => (dist === "All" || ad.district === dist) && ad.title.toLowerCase().includes(search));
+            renderAds(filtered);
+        }
+
+        auth.onAuthStateChanged(user => {
+            const authDiv = document.getElementById('authButtons');
+            if (user) {
+                authDiv.innerHTML = `<div class='flex gap-2 items-center'><span class='text-xs font-bold'>${user.email.split('@')[0]}</span><button onclick='auth.signOut()' class='text-xs text-red-500 font-bold'>Log Out</button></div>`;
+            } else {
+                authDiv.innerHTML = `<a href="login.html" class="text-xs font-bold">Login</a><a href="signup.html" class="bg-primary text-white px-4 py-2 rounded-full text-xs font-bold">Sign Up</a>`;
+            }
+        });
+
+        window.onload = () => { fetchAds(); loadAdminBanners(); loadStats(); };
     </script>
 </body>
 </html>

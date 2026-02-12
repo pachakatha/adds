@@ -21,8 +21,8 @@
             <div class="p-6">
                 <div class="flex justify-between items-start mb-4">
                     <div>
-                        <h1 id="adTitle" class="text-2xl font-bold text-gray-800">Loading...</h1>
-                        <p id="adLocation" class="text-gray-500 text-sm">📍 Loading...</p>
+                        <h1 id="adTitle" class="text-2xl font-bold text-gray-800">පූරණය වෙමින්...</h1>
+                        <p id="adLocation" class="text-gray-500 text-sm">📍 පූරණය වෙමින්...</p>
                     </div>
                     <div class="text-right">
                         <p id="adPrice" class="text-2xl font-black text-orange-600">රු. 0</p>
@@ -31,37 +31,40 @@
 
                 <hr class="my-4 border-gray-100">
 
-                <div class="bg-green-50 p-4 rounded-2xl flex items-center justify-between mb-6 border border-green-200">
+                <div class="bg-blue-50 p-4 rounded-2xl flex flex-col md:flex-row items-center justify-between mb-6 border border-blue-100 gap-4">
                     <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-xl" id="sellerInitial">S</div>
+                        <div class="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-md" id="sellerInitial">S</div>
                         <div>
-                            <p class="font-bold text-gray-800" id="sellerName">Seller Name</p>
-                            <p class="text-xs text-gray-500" id="sellerPhone">Loading phone...</p>
-                            <div id="sellerRating" class="flex items-center text-yellow-500 text-xs font-bold mt-1">
+                            <p class="font-bold text-gray-800 text-lg" id="sellerName">විකුණුම්කරු</p>
+                            <div id="sellerRating" class="flex items-center text-yellow-500 text-sm font-bold">
                                 </div>
                         </div>
                     </div>
-                    <a id="whatsappBtn" href="#" target="_blank" class="bg-green-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-green-700 transition flex items-center gap-2 text-sm">
-                        💬 WhatsApp
-                    </a>
+                    
+                    <div class="flex flex-col items-center md:items-end">
+                        <p class="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">විකුණුම්කරු අමතන්න</p>
+                        <a id="phoneBtn" href="#" class="bg-blue-600 text-white px-6 py-3 rounded-2xl font-black text-xl hover:bg-blue-700 transition shadow-lg flex items-center gap-2">
+                            📞 <span id="sellerPhone">පූරණය වේ...</span>
+                        </a>
+                    </div>
                 </div>
 
                 <div class="mb-8">
                     <h3 class="font-bold text-lg mb-2">දැන්වීමේ විස්තර:</h3>
-                    <p id="adDescription" class="text-gray-600 leading-relaxed text-sm">Loading description...</p>
+                    <p id="adDescription" class="text-gray-600 leading-relaxed text-sm bg-gray-50 p-4 rounded-xl">දැන්වීමේ විස්තර මෙහි දැක්වේ...</p>
                 </div>
 
                 <div class="border-t pt-6">
                     <h3 class="font-bold text-sm mb-3">විකුණුම්කරු ගැන ඔබේ අදහස:</h3>
-                    <div class="flex gap-2 mb-4">
-                        <select id="ratingScore" class="border p-2 rounded-lg text-sm outline-none">
-                            <option value="5">⭐⭐⭐⭐⭐ (පංකාදුයි)</option>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <select id="ratingScore" class="border p-2 rounded-lg text-sm outline-none bg-white">
+                            <option value="5">⭐⭐⭐⭐⭐ (විශිෂ්ටයි)</option>
                             <option value="4">⭐⭐⭐⭐ (හොඳයි)</option>
                             <option value="3">⭐⭐⭐ (සාමාන්‍යයි)</option>
                             <option value="2">⭐⭐ (අඩුයි)</option>
                             <option value="1">⭐ (නරකයි)</option>
                         </select>
-                        <button onclick="submitRating()" class="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-bold">Rate</button>
+                        <button onclick="submitRating()" class="bg-dark bg-black text-white px-6 py-2 rounded-lg text-sm font-bold hover:bg-gray-800">Rate</button>
                     </div>
                 </div>
             </div>
@@ -98,41 +101,43 @@
                 
                 document.getElementById('adTitle').innerText = ad.title;
                 document.getElementById('adPrice').innerText = "රු. " + Number(ad.price).toLocaleString();
-                document.getElementById('adLocation').innerText = "📍 " + (ad.district || "ශ්‍රී ලංකාව");
+                document.getElementById('adLocation').innerText = "📍 " + (ad.district || "දිස්ත්‍රික්කය සඳහන් කර නැත");
                 document.getElementById('adDescription').innerText = ad.description;
                 document.getElementById('adImage').src = ad.imageUrl || "https://via.placeholder.com/600x400";
                 
-                loadSellerData(ad.userId, ad.title);
+                loadSellerData(ad.userId);
             }
         }
 
-        // 2. විකුණුම්කරුගේ දත්ත සහ WhatsApp Link සෑදීම
-        function loadSellerData(sellerId, adTitle) {
+        // 2. විකුණුම්කරුගේ දත්ත සහ Phone Number ලබාගැනීම
+        function loadSellerData(sellerId) {
             db.collection("users").doc(sellerId).onSnapshot(doc => {
                 if (doc.exists) {
                     const seller = doc.data();
-                    const phone = seller.phone || "N/A";
+                    const phone = seller.phone || "අංකය නොමැත";
+                    
                     document.getElementById('sellerName').innerText = seller.name || "විකුණුම්කරු";
                     document.getElementById('sellerInitial').innerText = (seller.name || "S").charAt(0).toUpperCase();
                     document.getElementById('sellerPhone').innerText = phone;
                     
-                    // WhatsApp Link එක සෑදීම (පොතේ අංකය 9477... ලෙස තිබිය යුතුය)
-                    if (phone !== "N/A") {
-                        const whatsappUrl = `https://wa.me/${phone}?text=Hello, I saw your ad for "${adTitle}" on Adds.ink`;
-                        document.getElementById('whatsappBtn').href = whatsappUrl;
+                    // Phone Button එකට 'tel:' link එක ලබා දීම (Click කළ විට Call යාමට)
+                    if (seller.phone) {
+                        document.getElementById('phoneBtn').href = `tel:${seller.phone}`;
                     }
                     
                     const avg = seller.averageRating || 0;
                     const total = seller.totalRatings || 0;
                     document.getElementById('sellerRating').innerHTML = `★ ${avg} (${total} reviews)`;
+                } else {
+                    document.getElementById('sellerPhone').innerText = "අංකය සොයාගත නොහැක";
                 }
             });
         }
 
-        // 3. Rating එකක් Submit කිරීම
+        // 3. Rating එකක් ලබා දීම
         async function submitRating() {
             const user = auth.currentUser;
-            if (!user) { alert("කරුණාකර ඇතුළු වන්න (Login)."); return; }
+            if (!user) { alert("කරුණාකර පළමුව ඇතුළු වන්න."); return; }
             if (user.uid === currentSellerId) { alert("ඔබටම Rating ලබා දිය නොහැක."); return; }
 
             const score = document.getElementById('ratingScore').value;
@@ -154,9 +159,9 @@
                     totalRatings: ratings.length
                 });
 
-                alert("ස්තූතියි! Rating එක ඇතුළත් විය.");
+                alert("ස්තූතියි! ඔබේ අදහස ඇතුළත් විය.");
             } catch (e) {
-                console.error(e);
+                console.error("Error: ", e);
             }
         }
 

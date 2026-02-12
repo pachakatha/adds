@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LankaAds | ඇතුල් වන්න</title>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 flex items-center justify-center h-screen">
+
+    <div class="bg-white p-8 rounded-3xl shadow-xl w-full max-w-md border border-gray-100">
+        <h1 class="text-3xl font-bold text-center mb-2">Lanka<span class="text-orange-500">Ads</span></h1>
+        <h2 class="text-xl font-semibold text-center text-gray-700 mb-6">නැවත සාදරයෙන් පිළිගනිමු</h2>
+
+        <div class="space-y-4">
+            <input type="email" id="email" placeholder="Email ලිපිනය" class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:border-orange-500">
+            <input type="password" id="password" placeholder="මුරපදය" class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:border-orange-500">
+            <button onclick="login()" class="w-full bg-dark bg-black text-white p-4 rounded-xl font-bold hover:bg-gray-800 transition">ඇතුල් වන්න</button>
+        </div>
+
+        <p class="text-center mt-6 text-sm text-gray-500">
+            ගිණුමක් නොමැතිද? <a href="signup.html" class="text-orange-500 font-bold">Register වන්න</a>
+        </p>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
+            authDomain: "adds-ink.firebaseapp.com",
+            projectId: "adds-ink",
+            storageBucket: "adds-ink.firebasestorage.app",
+            messagingSenderId: "638657776631",
+            appId: "1:638657776631:web:44ffdad33137bfefa57cf2",
+            measurementId: "G-Z002TVT7QX"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    window.location.href = "index.html";
+                })
+                .catch((error) => {
+                    alert("දෝෂයක්: " + error.message);
+                });
+        }
+    </script>
+</body>
+</html>

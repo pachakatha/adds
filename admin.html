@@ -3,46 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | LankaAds</title>
+    <title>Super Admin | LankaAds Control</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>body { font-family: 'Poppins', sans-serif; }</style>
 </head>
-<body class="bg-gray-100 flex">
+<body class="bg-slate-50 flex">
 
-    <div class="min-h-screen w-64 bg-slate-900 text-white p-5 flex flex-col fixed">
-        <h1 class="text-2xl font-bold mb-10 text-orange-400">LankaAds Admin</h1>
-        <nav class="space-y-4">
-            <button onclick="location.reload()" class="w-full text-left p-3 rounded-lg bg-slate-800 hover:bg-orange-500 transition">📋 සියලුම දැන්වීම්</button>
+    <div class="min-h-screen w-64 bg-slate-900 text-white p-6 fixed shadow-2xl">
+        <h1 class="text-2xl font-black mb-8 text-orange-500 border-b border-slate-700 pb-4">LANKA ADS</h1>
+        <nav class="space-y-2">
+            <button onclick="switchTab('ads')" class="w-full text-left p-4 rounded-xl hover:bg-orange-500 transition font-bold">📋 දැන්වීම් පාලනය</button>
+            <button onclick="switchTab('banners')" class="w-full text-left p-4 rounded-xl hover:bg-orange-500 transition font-bold">🖼️ බැනර් ඇඩ් (Banners)</button>
         </nav>
     </div>
 
-    <div class="flex-1 ml-64">
-        <header class="bg-white shadow p-5 sticky top-0 z-20 flex justify-between items-center">
-            <h2 class="text-xl font-bold text-gray-800">දැන්වීම් පාලනය</h2>
-            <div class="text-xs font-bold text-green-600 bg-green-100 px-3 py-1 rounded-full uppercase">Database Connected</div>
-        </header>
-
-        <div class="p-8">
-            <div class="bg-white rounded-3xl shadow-sm overflow-hidden border border-gray-100">
-                <table class="w-full text-left border-collapse">
-                    <thead class="bg-slate-50 border-b">
-                        <tr class="text-gray-600 text-[11px] uppercase font-bold tracking-widest">
-                            <th class="p-5">දැන්වීමේ විස්තර</th>
+    <div class="flex-1 ml-64 p-10">
+        
+        <div id="ads-section">
+            <h2 class="text-3xl font-bold mb-8 text-slate-800">සියලුම දැන්වීම් පාලනය</h2>
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
+                <table class="w-full text-left">
+                    <thead class="bg-slate-900 text-white uppercase text-[11px] tracking-widest">
+                        <tr>
+                            <th class="p-5">දැන්වීම</th>
                             <th class="p-5">තත්ත්වය</th>
-                            <th class="p-5 text-center">ක්‍රියාකාරකම්</th>
+                            <th class="p-5 text-center">පාලනය</th>
                         </tr>
                     </thead>
-                    <tbody id="adsTableBody" class="divide-y divide-gray-50">
+                    <tbody id="adsTableBody" class="divide-y divide-gray-100 text-sm">
                         </tbody>
                 </table>
             </div>
+        </div>
+
+        <div id="banners-section" class="hidden">
+            <h2 class="text-3xl font-bold mb-8 text-slate-800">නව බැනර් දැන්වීමක් එක් කරන්න</h2>
+            <div class="bg-white p-8 rounded-3xl shadow-xl border border-gray-100 max-w-2xl mb-10">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Banner Image Link (Google Drive/Direct Link)</label>
+                        <input type="url" id="bannerImg" placeholder="https://..." class="w-full p-4 bg-gray-50 rounded-xl border-none ring-1 ring-gray-200 focus:ring-2 focus:ring-orange-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">පෙන්විය යුතු ස්ථානය (Position)</label>
+                        <select id="bannerPos" class="w-full p-4 bg-gray-50 rounded-xl border-none ring-1 ring-gray-200 outline-none">
+                            <option value="top">ඉහළින්ම (Top Banner)</option>
+                            <option value="middle">මැදින් (Middle Ads)</option>
+                            <option value="side">පැත්තෙන් (Side Bar Ads)</option>
+                            <option value="bottom">යටින්ම (Footer Ads)</option>
+                        </select>
+                    </div>
+                    <button onclick="addBanner()" class="w-full bg-orange-500 text-white p-4 rounded-xl font-bold shadow-lg hover:bg-orange-600 transition">Banner එක ඇතුළත් කරන්න</button>
+                </div>
+            </div>
+
+            <h3 class="text-xl font-bold mb-5">දැනට පවතින බැනර්</h3>
+            <div id="bannerList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
-        import { getFirestore, collection, doc, updateDoc, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+        import { getFirestore, collection, doc, addDoc, updateDoc, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
@@ -57,75 +81,68 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // --- වැදගත්ම කොටස: Functions Window එකට සම්බන්ධ කිරීම ---
-
-        // Approve Function
-        window.approveAd = async (id) => {
-            try {
-                const adRef = doc(db, "posts", id);
-                await updateDoc(adRef, { status: "approved" });
-                alert("දැන්වීම අනුමත විය!");
-            } catch (error) {
-                console.error("Error approving ad:", error);
-                alert("දෝෂයකි: " + error.message);
-            }
+        // Tab Switching
+        window.switchTab = (tab) => {
+            document.getElementById('ads-section').classList.toggle('hidden', tab !== 'ads');
+            document.getElementById('banners-section').classList.toggle('hidden', tab !== 'banners');
         };
 
-        // Make Premium Function
-        window.makePremium = async (id) => {
-            try {
-                const adRef = doc(db, "posts", id);
-                await updateDoc(adRef, { isPremium: true, status: "approved" });
-                alert("ප්‍රිමියම් කිරීම සාර්ථකයි!");
-            } catch (error) {
-                alert("දෝෂයකි: " + error.message);
-            }
+        // --- Ad Management Functions ---
+        window.approveAd = async (id) => { await updateDoc(doc(db, "posts", id), { status: "approved" }); };
+        window.makePremium = async (id) => { await updateDoc(doc(db, "posts", id), { isPremium: true, status: "approved" }); };
+        window.deleteAd = async (id) => { if(confirm("ඇඩ් එක මකා දමන්නද?")) await deleteDoc(doc(db, "posts", id)); };
+
+        // --- Banner Management Functions ---
+        window.addBanner = async () => {
+            const img = document.getElementById('bannerImg').value;
+            const pos = document.getElementById('bannerPos').value;
+            if(!img) return alert("ලින්ක් එක දාන්න!");
+            await addDoc(collection(db, "banners"), { img, pos, createdAt: new Date() });
+            alert("Banner එක ඇතුළත් කළා!");
+            document.getElementById('bannerImg').value = "";
         };
 
-        // Delete Function (මෙය ස්ථිරවම වැඩ කරනු ඇත)
-        window.deleteAd = async (id) => {
-            const confirmDelete = confirm("මෙම දැන්වීම සදහටම මකා දැමීමට ඔබට විශ්වාසද? මෙය නැවත ලබා ගත නොහැක.");
-            if (confirmDelete) {
-                try {
-                    const adRef = doc(db, "posts", id);
-                    await deleteDoc(adRef);
-                    alert("දැන්වීම සාර්ථකව මකා දැමුවා!");
-                } catch (error) {
-                    console.error("Error deleting ad:", error);
-                    alert("මකා දැමීමට නොහැකි විය: " + error.message);
-                }
-            }
-        };
+        window.deleteBanner = async (id) => { if(confirm("බැනර් එක මකා දමන්නද?")) await deleteDoc(doc(db, "banners", id)); };
 
-        // දත්ත සජීවීව පෙන්වීම
-        onSnapshot(collection(db, "posts"), (snapshot) => {
-            const tableBody = document.getElementById('adsTableBody');
-            tableBody.innerHTML = "";
-            
-            snapshot.forEach((doc) => {
-                const ad = doc.data();
-                const id = doc.id;
-
-                tableBody.innerHTML += `
-                    <tr class="hover:bg-gray-50 transition">
+        // --- Real-time Loaders ---
+        onSnapshot(collection(db, "posts"), (snap) => {
+            const body = document.getElementById('adsTableBody');
+            body.innerHTML = "";
+            snap.forEach(d => {
+                const ad = d.data();
+                body.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="p-5 font-bold text-slate-700">${ad.title} <br> <span class="text-[10px] text-gray-400 font-normal uppercase">${ad.category}</span></td>
                         <td class="p-5">
-                            <div class="font-bold text-slate-800">${ad.title || 'No Title'}</div>
-                            <div class="text-[10px] text-gray-400 uppercase font-semibold">${ad.category} | රු. ${ad.price}</div>
-                        </td>
-                        <td class="p-5">
-                            <span class="px-2 py-1 rounded text-[10px] font-bold ${ad.isPremium ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-500'}">
+                            <span class="px-3 py-1 rounded-full text-[10px] font-black ${ad.isPremium ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-500'}">
                                 ${ad.isPremium ? 'PREMIUM' : 'NORMAL'}
                             </span>
                         </td>
                         <td class="p-5 flex gap-2 justify-center">
-                            <button onclick="approveAd('${id}')" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs transition">Approve</button>
-                            <button onclick="makePremium('${id}')" class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1 rounded text-xs transition">⭐ Premium</button>
-                            <button onclick="deleteAd('${id}')" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs transition">Delete</button>
+                            <button onclick="approveAd('${d.id}')" class="bg-green-500 text-white px-3 py-1 rounded-lg text-xs font-bold">Approve</button>
+                            <button onclick="makePremium('${d.id}')" class="bg-amber-500 text-white px-3 py-1 rounded-lg text-xs font-bold">⭐ Premium</button>
+                            <button onclick="deleteAd('${d.id}')" class="bg-red-500 text-white px-3 py-1 rounded-lg text-xs font-bold">Delete</button>
                         </td>
                     </tr>
                 `;
             });
         });
+
+        onSnapshot(collection(db, "banners"), (snap) => {
+            const list = document.getElementById('bannerList');
+            list.innerHTML = "";
+            snap.forEach(d => {
+                const b = d.data();
+                list.innerHTML += `
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border relative group">
+                        <img src="${b.img}" class="w-full h-32 object-cover rounded-xl mb-3">
+                        <div class="text-xs font-bold uppercase text-gray-500">ස්ථානය: ${b.pos}</div>
+                        <button onclick="deleteBanner('${d.id}')" class="absolute top-2 right-2 bg-red-600 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition">✕</button>
+                    </div>
+                `;
+            });
+        });
+
     </script>
 </body>
 </html>

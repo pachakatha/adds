@@ -64,18 +64,20 @@
                             <label class="form-label fw-bold">ප්‍රභේදය (Category)</label>
                             <select class="form-select" id="category" required>
                                 <option value="">ප්‍රභේදය තෝරන්න</option>
-                                <option value="Vehicles">වාහන</option>
-                                <option value="Electronics">ඉලෙක්ට්‍රොනික</option>
-                                <option value="Property">නිවාස/ඉඩම්</option>
-                                <option value="Home">ගෘහ භාණ්ඩ</option>
-                                <option value="Jobs">රැකියා</option>
-                                <option value="Services">සේවා</option>
+                                <option value="Vehicles">🚗 වාහන</option>
+                                <option value="Electronics">📱 ඉලෙක්ට්‍රොනික</option>
+                                <option value="Property">🏠 නිවාස/ඉඩම්</option>
+                                <option value="Home">🛋️ ගෘහ භාණ්ඩ</option>
+                                <option value="Jobs">💼 රැකියා</option>
+                                <option value="Services">🛠️ සේවා</option>
                             </select>
                         </div>
+                        
                         <div class="col-md-8 mb-3">
                             <label class="form-label fw-bold">දැන්වීමේ මාතෘකාව</label>
                             <input type="text" class="form-control" id="title" placeholder="උදා: iPhone 13 Pro" required>
                         </div>
+                        
                         <div class="col-md-4 mb-3">
                             <label class="form-label fw-bold">මිල (Rs.)</label>
                             <input type="number" class="form-control" id="price" placeholder="මිල" required>
@@ -87,9 +89,15 @@
                         <textarea class="form-control" id="desc" rows="3" placeholder="භාණ්ඩයේ තත්ත්වය..." required></textarea>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="form-label fw-bold">ස්ථානය (Location)</label>
-                        <input type="text" class="form-control" id="location" placeholder="උදා: ගම්පහ, කොළඹ" required>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">ස්ථානය (Location)</label>
+                            <input type="text" class="form-control" id="location" placeholder="උදා: කොළඹ" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">දුරකථන අංකය</label>
+                            <input type="tel" class="form-control" id="phone" placeholder="උදා: 0712345678" required>
+                        </div>
                     </div>
 
                     <div class="premium-box">
@@ -112,12 +120,12 @@
 </div>
 
 <script>
-    // Firebase Config
+    // Firebase Config (ඔබේ config ඒ විදිහටම තියන්න)
     const firebaseConfig = {
       apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
       authDomain: "add-ink.firebaseapp.com",
       projectId: "add-ink",
-      storageBucket: "add-ink.firebasestorage.app", // මෙතන storage.app ද බලන්න (ඔබේ එක නිවැරදියි)
+      storageBucket: "add-ink.firebasestorage.app",
       messagingSenderId: "752189116425",
       appId: "1:752189116425:web:3aa935b30b1b9154e3e8d8"
     };
@@ -150,20 +158,21 @@
         btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> ඇඩ් එක පල වෙමින් පවතී...';
 
         try {
-            // 1. Upload Image to Storage
+            // 1. Upload Image
             const storageRef = storage.ref('posts/' + Date.now() + "_" + file.name);
             const uploadTask = await storageRef.put(file);
             const imageUrl = await uploadTask.ref.getDownloadURL();
 
-            // 2. Save Data to Firestore (Collection name 'posts' ලෙස වෙනස් කළා index එකට ගැලපෙන්න)
+            // 2. Save Data
             await db.collection("posts").add({
                 title: document.getElementById('title').value,
                 price: document.getElementById('price').value,
                 description: document.getElementById('desc').value,
                 location: document.getElementById('location').value,
-                category: document.getElementById('category').value,
+                phone: document.getElementById('phone').value, // දුරකථන අංකය එකතු කළා
+                category: document.getElementById('category').value, // ප්‍රභේදය එකතු කළා
                 imageUrl: imageUrl,
-                isFeatured: document.getElementById('premiumSwitch').checked, // 'isPremium' වෙනුවට 'isFeatured'
+                isFeatured: document.getElementById('premiumSwitch').checked,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
 
@@ -178,7 +187,7 @@
         }
     };
 
-    // Premium Switch Logic
+    // Premium Switch
     document.getElementById('premiumSwitch').addEventListener('change', function() {
         if(this.checked) {
             if(!confirm("Premium දැන්වීමක් පල කිරීමට ගෙවීම් සිදුකළ යුතුය. ඔබව Payment පිටුවට යොමු කරන්නද?")) {

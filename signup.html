@@ -3,29 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LankaAds | ඇතුල් වන්න</title>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <title>ලියාපදිංචි වන්න | LankaAds</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Poppins', sans-serif; }</style>
 </head>
-<body class="bg-gray-50 flex items-center justify-center h-screen">
+<body class="bg-gray-50">
 
-    <div class="bg-white p-8 rounded-3xl shadow-xl w-full max-w-md border border-gray-100">
-        <h1 class="text-3xl font-bold text-center mb-2">Lanka<span class="text-orange-500">Ads</span></h1>
-        <h2 class="text-xl font-semibold text-center text-gray-700 mb-6">නැවත සාදරයෙන් පිළිගනිමු</h2>
+    <div class="container mx-auto px-6 py-10 max-w-md">
+        <h1 class="text-3xl font-bold text-center mb-8">ගිණුමක් සාදන්න</h1>
 
-        <div class="space-y-4">
-            <input type="email" id="email" placeholder="Email ලිපිනය" class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:border-orange-500">
-            <input type="password" id="password" placeholder="මුරපදය" class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:border-orange-500">
-            <button onclick="login()" class="w-full bg-dark bg-black text-white p-4 rounded-xl font-bold hover:bg-gray-800 transition">ඇතුල් වන්න</button>
+        <div class="bg-white p-8 rounded-3xl shadow-lg border border-gray-100 space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">සම්පූර්ණ නම</label>
+                <input type="text" id="userName" placeholder="උදා: නිමල් පෙරේරා" class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:border-orange-500">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700">දුරකථන අංකය</label>
+                <input type="text" id="userPhone" placeholder="07xxxxxxxx" class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:border-orange-500">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700">ඊමේල් ලිපිනය</label>
+                <input type="email" id="userEmail" placeholder="example@mail.com" class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:border-orange-500">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700">මුරපදය (Password)</label>
+                <input type="password" id="userPassword" placeholder="******" class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:border-orange-500">
+            </div>
+
+            <button id="signupBtn" class="w-full bg-orange-500 text-white p-4 rounded-xl font-bold hover:bg-orange-600 transition mt-4">
+                ලියාපදිංචි වන්න
+            </button>
+
+            <p class="text-center text-sm text-gray-500 mt-4">
+                දැනටමත් ගිණුමක් තිබේද? <a href="login.html" class="text-orange-500 font-bold">Log In</a>
+            </p>
         </div>
-
-        <p class="text-center mt-6 text-sm text-gray-500">
-            ගිණුමක් නොමැතිද? <a href="signup.html" class="text-orange-500 font-bold">Register වන්න</a>
-        </p>
     </div>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+
         const firebaseConfig = {
             apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
             authDomain: "adds-ink.firebaseapp.com",
@@ -35,21 +58,46 @@
             appId: "1:638657776631:web:44ffdad33137bfefa57cf2",
             measurementId: "G-Z002TVT7QX"
         };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
 
-        function login() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
 
-            auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    window.location.href = "index.html";
-                })
-                .catch((error) => {
-                    alert("දෝෂයක්: " + error.message);
+        async function signUpUser() {
+            const name = document.getElementById('userName').value;
+            const phone = document.getElementById('userPhone').value;
+            const email = document.getElementById('userEmail').value;
+            const password = document.getElementById('userPassword').value;
+
+            if (!name || !phone || !email || !password) {
+                alert("කරුණාකර සියලුම විස්තර ඇතුළත් කරන්න.");
+                return;
+            }
+
+            try {
+                // 1. Firebase Auth හරහා User සාදන්න
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // 2. Firestore හි 'users' collection එකට අමතර දත්ත ඇතුළත් කරන්න
+                await setDoc(doc(db, "users", user.uid), {
+                    fullName: name,
+                    phoneNumber: phone,
+                    email: email,
+                    joinedAt: serverTimestamp(),
+                    role: "user" // Admin කෙනෙක් නෙවෙයි සාමාන්‍ය user කෙනෙක්
                 });
+
+                alert("ලියාපදිංචිය සාර්ථකයි!");
+                window.location.href = "index.html";
+
+            } catch (error) {
+                console.error("Error: ", error);
+                alert("ලියාපදිංචි වීමට නොහැකි විය: " + error.message);
+            }
         }
+
+        document.getElementById('signupBtn').addEventListener('click', signUpUser);
     </script>
 </body>
 </html>

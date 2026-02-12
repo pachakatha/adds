@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LankaAds | ශ්‍රී ලංකාවේ විශාලතම වෙළඳපොළ</title>
+    <meta name="google-site-verification" content="r8dfB82ybIIQNDVmhwz88AzJwMK_yVTbs_TAuDa53YE" />
     
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
@@ -186,7 +187,6 @@
         });
 
         function fetchAds() {
-            // "approved" තත්ත්වයේ ඇති දැන්වීම් පමණක් පෙන්වීමට අවශ්‍ය නම් .where("status", "==", "approved") එක් කරන්න
             db.collection("posts").orderBy("createdAt", "desc")
             .onSnapshot(snapshot => {
                 allAds = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -261,5 +261,3 @@
     </script>
 </body>
 </html>
-
-

@@ -22,6 +22,28 @@
             </div>
 
             <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">වර්ගීකරණය (Category)</label>
+                <select id="postCategory" class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:border-orange-500 bg-white">
+                    <option value="Vehicles">වාහන</option>
+                    <option value="Electronics">ඉලෙක්ට්‍රොනික</option>
+                    <option value="Property">ඉඩම්/නිවාස</option>
+                    <option value="Home">ගෘහ භාණ්ඩ</option>
+                    <option value="Jobs">රැකියා</option>
+                    <option value="Other">වෙනත්</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">දිස්ත්‍රික්කය</label>
+                <input type="text" id="postDistrict" placeholder="උදා: කොළඹ" class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:border-orange-500">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">දුරකථන අංකය</label>
+                <input type="text" id="postPhone" placeholder="07xxxxxxxx" class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:border-orange-500">
+            </div>
+
+            <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">විස්තරය</label>
                 <textarea id="postContent" rows="5" placeholder="දැන්වීම ගැන විස්තර මෙතැන ලියන්න..." class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:border-orange-500"></textarea>
             </div>
@@ -33,12 +55,11 @@
     </div>
 
     <script type="module">
-        // 1. Firebase Modules Import කිරීම
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
         import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
         import { getAuth } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
 
-        // 2. අලුත් Firebase Configuration එක
+        // ඔබේ Config එක
         const firebaseConfig = {
             apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
             authDomain: "adds-ink.firebaseapp.com",
@@ -49,52 +70,50 @@
             measurementId: "G-Z002TVT7QX"
         };
 
-        // 3. Firebase Initialize කිරීම
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // 4. Post එකතු කිරීමේ function එක
         async function addPost() {
             const titleInput = document.getElementById('postTitle');
             const contentInput = document.getElementById('postContent');
+            const categoryInput = document.getElementById('postCategory');
+            const districtInput = document.getElementById('postDistrict');
+            const phoneInput = document.getElementById('postPhone');
             
+            // දත්ත ලබාගැනීම
             const title = titleInput.value;
             const content = contentInput.value;
+            const category = categoryInput.value;
+            const district = districtInput.value;
+            const phone = phoneInput.value;
 
-            // සරල පරීක්ෂාව
-            if (title === "" || content === "") {
-                alert("කරුණාකර මාතෘකාව සහ අන්තර්ගතය ඇතුළත් කරන්න.");
+            if (title === "" || content === "" || district === "" || phone === "") {
+                alert("සියලුම තොරතුරු ඇතුළත් කරන්න.");
                 return;
             }
 
             try {
-                // Firestore එකට දත්ත එකතු කිරීම
+                // දත්ත Firestore එකට එකතු කිරීම
                 const docRef = await addDoc(collection(db, "posts"), {
                     title: title,
                     content: content,
+                    category: category,
+                    district: district,
+                    phone: phone,
                     createdAt: serverTimestamp(),
-                    // logged in user ගේ ID එක දැමීම
                     author: auth.currentUser ? auth.currentUser.uid : "Anonymous"
                 });
 
-                console.log("Post ID: ", docRef.id);
                 alert("දැන්වීම සාර්ථකව පළ විය!");
-                
-                // Fields හිස් කිරීම
-                titleInput.value = "";
-                contentInput.value = "";
-                
-                // මුල් පිටුවට යාම
                 window.location.href = "index.html";
                 
             } catch (e) {
-                console.error("දෝෂයක් ඇතිවිය: ", e);
+                console.error("Error: ", e);
                 alert("දැන්වීම පළ කිරීමට නොහැකි විය.");
             }
         }
 
-        // 5. Button click event එක
         document.getElementById('submitBtn').addEventListener('click', addPost);
     </script>
 </body>

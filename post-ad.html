@@ -57,6 +57,17 @@
                 <textarea id="adDescription" rows="4" class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:border-orange-500"></textarea>
             </div>
 
+            <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-xl">
+                <p class="text-sm text-blue-700 font-medium">
+                    📷 පින්තූර පෙන්වීම සඳහා: ඔබගේ පින්තූර Google Drive එකට Upload කර එහි Link එක (Link sharing - Anyone with the link) පහත කොටුවේ දමන්න.
+                </p>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Google Drive Link (පින්තූර සඳහා)</label>
+                <input type="url" id="adImageUrl" placeholder="https://drive.google.com/..." class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:border-orange-500">
+            </div>
+
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">මිල (රු.)</label>
@@ -108,6 +119,7 @@
             const description = document.getElementById('adDescription').value;
             const price = document.getElementById('adPrice').value;
             const phone = document.getElementById('adPhone').value;
+            const imageUrl = document.getElementById('adImageUrl').value;
             const isFeatured = document.getElementById('isFeatured').checked;
 
             if (!title || !category || !district || !description || !price || !phone) {
@@ -120,6 +132,11 @@
             btn.disabled = true;
 
             try {
+                // දින 5ක කාලසීමාව ගණනය කිරීම (Premium සඳහා පමණක්)
+                const now = new Date();
+                const expiryDate = new Date();
+                expiryDate.setDate(now.getDate() + 5); 
+
                 // දත්ත ව්‍යුහය
                 const adData = {
                     title: title,
@@ -128,12 +145,16 @@
                     description: description,
                     price: price,
                     phone: phone,
-                    isFeatured: false, // මුලින්ම False වේ (ගෙවීම් කර ඇඩ්මින් අනුමත කරන තෙක්)
-                    requestedPremium: isFeatured, // ඔහු ප්‍රිමියම් ඉල්ලුවාද යන්න
-                    premiumStatus: isFeatured ? "pending" : "none", 
+                    imageUrl: imageUrl, // Drive link
+                    isFeatured: false, // ඇඩ්මින් අනුමත කරන තෙක් false
+                    requestedPremium: isFeatured, 
+                    premiumStatus: isFeatured ? "pending" : "none",
+                    premiumExpiry: isFeatured ? expiryDate : null, // දින 5 කල් ඉකුත් වීම
                     status: "approved", // සාමාන්‍ය දැන්වීමක් ලෙස කෙලින්ම සක්‍රිය වේ
                     createdAt: serverTimestamp(),
-                    authorId: auth.currentUser ? auth.currentUser.uid : "anonymous"
+                    // Author ID - පණිවිඩ එවීමට
+                    authorId: auth.currentUser ? auth.currentUser.uid : "anonymous",
+                    authorEmail: auth.currentUser ? auth.currentUser.email : "anonymous"
                 };
 
                 const docRef = await addDoc(collection(db, "posts"), adData);

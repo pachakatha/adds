@@ -3,95 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | LankaAds</title>
+    <title>LankaAds | ඇතුල් වන්න</title>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
-    
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Poppins', sans-serif; }
-    </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-6">
+<body class="bg-gray-50 flex items-center justify-center h-screen">
 
-    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-blue-900"><span class="text-orange-600">Lanka</span>Ads</h1>
-            <p id="form-title" class="text-gray-500 mt-2">ගිණුමට ඇතුළු වන්න (Login)</p>
-        </div>
+    <div class="bg-white p-8 rounded-3xl shadow-xl w-full max-w-md border border-gray-100">
+        <h1 class="text-3xl font-bold text-center mb-2">Lanka<span class="text-orange-500">Ads</span></h1>
+        <h2 class="text-xl font-semibold text-center text-gray-700 mb-6">නැවත සාදරයෙන් පිළිගනිමු</h2>
 
         <div class="space-y-4">
-            <input type="email" id="email" placeholder="Email ලිපිනය" class="w-full p-4 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-orange-500">
-            <input type="password" id="password" placeholder="මුරපදය (Password)" class="w-full p-4 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-orange-500">
-            
-            <button id="main-btn" onclick="handleAuth()" class="w-full bg-orange-600 text-white p-4 rounded-xl font-bold hover:bg-orange-700 transition shadow-lg">
-                Login
-            </button>
+            <input type="email" id="email" placeholder="Email ලිපිනය" class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:border-orange-500">
+            <input type="password" id="password" placeholder="මුරපදය" class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:border-orange-500">
+            <button onclick="login()" class="w-full bg-dark bg-black text-white p-4 rounded-xl font-bold hover:bg-gray-800 transition">ඇතුල් වන්න</button>
         </div>
 
-        <p class="text-center mt-6 text-sm text-gray-600">
-            <span id="toggle-text">ගිණුමක් නැද්ද?</span> 
-            <button onclick="toggleMode()" class="text-orange-600 font-bold hover:underline">මාරු වන්න</button>
+        <p class="text-center mt-6 text-sm text-gray-500">
+            ගිණුමක් නොමැතිද? <a href="signup.html" class="text-orange-500 font-bold">Register වන්න</a>
         </p>
-
-        <p id="error-msg" class="text-red-500 text-xs mt-4 text-center hidden"></p>
     </div>
 
     <script>
-        // ඔබගේ Firebase Config
         const firebaseConfig = {
-            apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
-            authDomain: "add-ink.firebaseapp.com",
-            projectId: "add-ink",
-            storageBucket: "add-ink.firebasestorage.app",
-            messagingSenderId: "752189116425",
-            appId: "1:752189116425:web:0acf6e7b3f6b3629e3e8d8"
+            apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
+            authDomain: "adds-ink.firebaseapp.com",
+            projectId: "adds-ink",
+            storageBucket: "adds-ink.firebasestorage.app",
+            messagingSenderId: "638657776631",
+            appId: "1:638657776631:web:44ffdad33137bfefa57cf2",
+            measurementId: "G-Z002TVT7QX"
         };
         firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
 
-        let isLoginMode = true;
-
-        function toggleMode() {
-            isLoginMode = !isLoginMode;
-            document.getElementById('form-title').innerText = isLoginMode ? "ගිණුමට ඇතුළු වන්න (Login)" : "අලුත් ගිණුමක් සාදන්න (Sign Up)";
-            document.getElementById('main-btn').innerText = isLoginMode ? "Login" : "Sign Up";
-            document.getElementById('toggle-text').innerText = isLoginMode ? "ගිණුමක් නැද්ද?" : "ගිණුමක් තිබේද?";
-        }
-
-        async function handleAuth() {
+        function login() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            const errorMsg = document.getElementById('error-msg');
 
-            if (!email || !password) {
-                showError("කරුණාකර සියල්ල පුරවන්න.");
-                return;
-            }
-
-            try {
-                // සත්‍යාපනය බ්‍රවුසරයේ ස්ථිරව තබා ගැනීමට (Persistence)
-                await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-
-                if (isLoginMode) {
-                    // Login ක්‍රියාවලිය
-                    await firebase.auth().signInWithEmailAndPassword(email, password);
-                } else {
-                    // Sign Up ක්‍රියාවලිය
-                    await firebase.auth().createUserWithEmailAndPassword(email, password);
-                }
-                
-                // සාර්ථක නම් මුල් පිටුවට යවන්න
-                window.location.href = "index.html";
-            } catch (error) {
-                showError(error.message);
-            }
-        }
-
-        function showError(msg) {
-            const errorElement = document.getElementById('error-msg');
-            errorElement.innerText = msg;
-            errorElement.classList.remove('hidden');
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    window.location.href = "index.html";
+                })
+                .catch((error) => {
+                    alert("දෝෂයක්: " + error.message);
+                });
         }
     </script>
 </body>

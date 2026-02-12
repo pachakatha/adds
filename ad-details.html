@@ -1,127 +1,120 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="si">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ad Details - LankaAds</title>
+    <title>Ad Details | LankaAds</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Poppins', 'sans-serif'],
-                    },
                     colors: {
-                        primary: '#FF6B35',
-                        secondary: '#004E89',
-                        background: '#F7F9FC',
+                        primary: '#FF7F00',
+                        dark: '#1A1A1A',
                     }
                 }
             }
         }
     </script>
-    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+    </style>
 </head>
+<body class="bg-gray-50">
 
-<body class="bg-background text-gray-800 font-sans min-h-screen flex flex-col">
-
-    <!-- Navigation -->
-    <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="index.html" class="text-2xl font-bold text-secondary flex items-center gap-2">
-                <span class="bg-primary text-white p-2 rounded-lg">LA</span> LankaAds
-            </a>
-            <a href="listings.html" class="text-gray-500 hover:text-primary transition font-medium">← Back to
-                Listings</a>
+    <nav class="bg-white sticky top-0 z-50 border-b border-gray-100 shadow-sm">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-3xl font-bold text-dark tracking-tighter">Lanka<span class="text-primary">Ads</span></h1>
+            <a href="index.html" class="text-sm font-semibold text-gray-600 hover:text-primary">← ආපසු</a>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="container mx-auto px-6 py-12 flex-grow">
+    <div class="container mx-auto px-6 py-10">
+        <div id="adContainer" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <p class="text-center col-span-full py-20 text-gray-500">දැන්වීම් විස්තර පූරණය වෙමින් පවතී...</p>
+        </div>
+    </div>
 
-        <div class="grid md:grid-cols-2 gap-12 bg-white p-8 rounded-3xl shadow-xl border border-gray-100">
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
+            authDomain: "add-ink.firebaseapp.com",
+            projectId: "add-ink",
+            storageBucket: "add-ink.firebasestorage.app",
+            messagingSenderId: "752189116425",
+            appId: "1:752189116425:web:0acf6e7b3f6b3629e3e8d8"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-            <!-- Image Section -->
-            <div class="relative group h-[500px]">
-                <div class="absolute inset-0 bg-gray-100 rounded-2xl animate-pulse" id="image-skeleton"></div>
-                <img id="ad-image" src="" alt="Product Image"
-                    class="w-full h-full object-cover rounded-2xl shadow-lg transition duration-500 group-hover:scale-[1.01] hidden">
-                <div class="absolute top-4 left-4 bg-primary text-white px-4 py-1 rounded-full text-sm font-bold shadow-md"
-                    id="ad-category-tag">Category</div>
-            </div>
+        // URL එකෙන් ඇඩ් එකේ ID එක ගන්න
+        const urlParams = new URLSearchParams(window.location.search);
+        const adId = urlParams.get('id');
 
-            <!-- Details Section -->
-            <div class="flex flex-col justify-center">
-                <div class="mb-2 text-gray-400 text-sm flex items-center gap-2">
-                    <span>📅 Posted on <span id="ad-date">Today</span></span>
+        async function fetchAdDetails() {
+            if (!adId) return document.getElementById('adContainer').innerHTML = "<p class='text-center col-span-full'>දැන්වීමක් තෝරා නැත.</p>";
+
+            try {
+                const doc = await db.collection("posts").doc(adId).get();
+                if (doc.exists) {
+                    renderAd(doc.data());
+                } else {
+                    document.getElementById('adContainer').innerHTML = "<p class='text-center col-span-full'>මෙවැනි දැන්වීමක් නොමැත.</p>";
+                }
+            } catch (error) {
+                console.error(error);
+                document.getElementById('adContainer').innerHTML = "<p class='text-center col-span-full'>දෝෂයක් ඇතිවිය.</p>";
+            }
+        }
+
+        function renderAd(ad) {
+            const container = document.getElementById('adContainer');
+            const phoneNumber = ad.phone || "";
+            // WhatsApp link එක හදන්න (Sri Lanka code +94)
+            const whatsappLink = `https://wa.me/94${phoneNumber.replace(/^0/, '')}?text=Hello, I saw your ad for ${ad.title} on LankaAds`;
+
+            container.innerHTML = `
+                <div class="md:col-span-2 bg-white p-4 rounded-3xl shadow-sm border border-gray-100">
+                    <img src="${ad.imageUrl || 'https://via.placeholder.com/600x400'}" alt="${ad.title}" class="w-full h-96 object-contain rounded-2xl bg-gray-100">
                 </div>
 
-                <h1 class="text-4xl font-bold text-secondary mb-4 leading-tight" id="ad-title">Loading...</h1>
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 h-fit sticky top-24">
+                    <span class="text-xs font-semibold text-primary uppercase tracking-widest">${ad.category || 'Other'}</span>
+                    <h2 class="text-2xl font-bold text-dark mt-2 leading-snug">${ad.title}</h2>
+                    <p class="text-3xl font-extrabold text-primary mt-4">Rs. ${parseFloat(ad.price).toLocaleString('en-US')}</p>
+                    
+                    <div class="mt-6 space-y-3 text-sm text-gray-600">
+                        <p>📍 <strong>ස්ථානය:</strong> ${ad.location}</p>
+                        <p>📅 <strong>පළකළ දිනය:</strong> ${ad.createdAt ? new Date(ad.createdAt.seconds * 1000).toLocaleDateString() : 'Just now'}</p>
+                    </div>
 
-                <div class="text-3xl font-bold text-primary mb-8" id="ad-price">Rs. ---</div>
-
-                <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 mb-8">
-                    <h3 class="font-bold text-gray-800 mb-3">Description</h3>
-                    <p class="text-gray-600 leading-relaxed" id="ad-description">LOADING DESCRIPTION...</p>
-                </div>
-
-                <div class="border-t border-gray-100 pt-8">
-                    <h3 class="text-lg font-bold text-secondary mb-4 block">Seller Contact</h3>
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <a href="#" id="call-btn"
-                            class="bg-green-500 text-white px-8 py-4 rounded-xl font-bold shadow-lg hover:bg-green-600 transition flex items-center justify-center gap-2 flex-grow transform hover:-translate-y-1">
-                            📞 Call Seller
+                    <div class="mt-8 space-y-3">
+                        <a href="tel:${phoneNumber}" class="block text-center bg-dark text-white py-3 rounded-full font-semibold hover:bg-gray-800 transition">
+                            📞 කෝල් කරන්න
                         </a>
-                        <button
-                            class="bg-white border-2 border-primary text-primary px-8 py-4 rounded-xl font-bold shadow-sm hover:bg-primary hover:text-white transition flex items-center justify-center gap-2 flex-grow transform hover:-translate-y-1">
-                            💬 Chat (Mock)
-                        </button>
+                        <a href="${whatsappLink}" target="_blank" class="block text-center bg-green-500 text-white py-3 rounded-full font-semibold hover:bg-green-600 transition flex items-center justify-center gap-2">
+                            <i class="fab fa-whatsapp"></i> WhatsApp පණිවිඩයක් යවන්න
+                        </a>
                     </div>
                 </div>
-            </div>
-        </div>
 
-    </main>
+                <div class="md:col-span-3 bg-white p-6 rounded-3xl shadow-sm border border-gray-100 mt-6">
+                    <h3 class="text-lg font-bold text-dark">විස්තරය</h3>
+                    <p class="text-gray-600 mt-4 leading-relaxed">${ad.description.replace(/\n/g, '<br>')}</p>
+                </div>
+            `;
+        }
 
-    <!-- Footer -->
-    <footer class="bg-secondary text-white py-8 mt-auto">
-        <div class="container mx-auto px-6 text-center text-sm text-gray-300">
-            &copy; 2026 LankaAds. All rights reserved.
-        </div>
-    </footer>
-
-    <script src="script.js"></script>
-    <script>
-        // Inline logic for details page to get query param and render instantly
-        document.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const id = urlParams.get('id');
-            const ads = JSON.parse(localStorage.getItem('ads') || '[]');
-            const ad = ads.find(a => a.id == id);
-
-            if (ad) {
-                document.getElementById('ad-title').textContent = ad.title;
-                document.getElementById('ad-price').textContent = 'Rs. ' + parseInt(ad.price).toLocaleString();
-                document.getElementById('ad-description').textContent = ad.description;
-                document.getElementById('ad-category-tag').textContent = ad.category;
-                document.getElementById('call-btn').href = 'tel:' + ad.contact;
-                document.getElementById('call-btn').innerHTML = '📞 ' + ad.contact;
-                document.getElementById('ad-date').textContent = new Date(ad.date).toLocaleDateString();
-
-                if (ad.image) {
-                    document.getElementById('ad-image').src = ad.image;
-                    document.getElementById('ad-image').classList.remove('hidden');
-                    document.getElementById('image-skeleton').classList.add('hidden');
-                }
-            } else {
-                document.getElementById('ad-title').textContent = 'Ad Not Found';
-                document.getElementById('ad-description').textContent = 'Sorry, this listing does not exist.';
-            }
-        });
+        window.onload = fetchAdDetails;
     </script>
+    
+    <script src="https://kit.fontawesome.com/your-font-awesome-kit.js" crossorigin="anonymous"></script>
 </body>
-
 </html>

@@ -1,201 +1,61 @@
-<!DOCTYPE html>
-<html lang="si">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Post Your Ad | LankaAds Premium</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-storage-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+// 1. Firebase libraries import කිරීම
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
 
-    <style>
-        body { background-color: #f0f2f5; font-family: 'Inter', sans-serif; color: #1c1e21; }
-        .navbar { background: white; border-bottom: 1px solid #ddd; }
-        .main-card { background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 40px; border: none; }
-        
-        .upload-area { border: 2px dashed #ccd0d5; border-radius: 12px; padding: 30px; text-align: center; cursor: pointer; transition: 0.3s; background: #f9fafb; position: relative; }
-        .upload-area:hover { border-color: #ff4757; background: #fff5f5; }
-        .upload-icon { font-size: 35px; color: #ff4757; margin-bottom: 10px; }
-        .preview-img { width: 100%; max-height: 250px; object-fit: cover; border-radius: 10px; display: none; margin-top: 15px; }
+// 2. ඔබ දුන් නව Configuration එක
+const firebaseConfig = {
+  apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
+  authDomain: "adds-ink.firebaseapp.com",
+  projectId: "adds-ink",
+  storageBucket: "adds-ink.firebasestorage.app",
+  messagingSenderId: "638657776631",
+  appId: "1:638657776631:web:44ffdad33137bfefa57cf2",
+  measurementId: "G-Z002TVT7QX"
+};
 
-        .premium-box { background: #fff9db; border: 1px solid #fab005; border-radius: 12px; padding: 15px; margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between; }
-        .form-check-input:checked { background-color: #fab005; border-color: #fab005; }
+// 3. Firebase Initialize කිරීම
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
-        .btn-post { background: #ff4757; color: white; border: none; padding: 14px; border-radius: 10px; font-weight: 700; font-size: 1.1rem; transition: 0.3s; }
-        .btn-post:hover { background: #e03d4a; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255, 71, 87, 0.3); }
-        .form-control, .form-select { border-radius: 8px; padding: 12px; border: 1px solid #ddd; }
-    </style>
-</head>
-<body>
+// 4. Post එක එකතු කිරීමේ function එක
+async function addPost() {
+  // HTML input fields වලින් අගයන් ලබා ගැනීම
+  const titleInput = document.getElementById('postTitle');
+  const contentInput = document.getElementById('postContent');
+  
+  const title = titleInput.value;
+  const content = contentInput.value;
 
-<nav class="navbar navbar-light py-3">
-    <div class="container text-center">
-        <a class="navbar-brand fw-bold text-danger mx-auto" href="index.html" style="font-size: 1.8rem; letter-spacing: -1px;">LANKAADS</a>
-    </div>
-</nav>
+  // Input එක හිස් නම් නතර කිරීම
+  if (title === "" || content === "") {
+    alert("කරුණාකර මාතෘකාව සහ අන්තර්ගතය ඇතුළත් කරන්න.");
+    return;
+  }
 
-<div class="container my-5">
-    <div class="row">
-        <div class="col-lg-7 mx-auto">
-            <div class="main-card shadow-lg">
-                <h3 class="fw-bold mb-4 text-center">ඔබේ දැන්වීම පල කරන්න</h3>
-                
-                <form id="adForm">
-                    <div class="mb-4 text-center">
-                        <label class="form-label fw-bold d-block text-start">භාණ්ඩයේ පින්තූරයක් එක් කරන්න</label>
-                        <div class="upload-area" id="uploadArea" onclick="document.getElementById('imageFile').click()">
-                            <div id="uploadPlaceholder">
-                                <i class="fas fa-camera upload-icon"></i>
-                                <p class="mb-0 fw-semibold text-muted">පින්තූරය තෝරන්න (Click to upload)</p>
-                            </div>
-                            <input type="file" id="imageFile" hidden accept="image/*">
-                            <img id="imagePreview" class="preview-img img-fluid">
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12 mb-3">
-                            <label class="form-label fw-bold">ප්‍රභේදය (Category)</label>
-                            <select class="form-select" id="category" required>
-                                <option value="">ප්‍රභේදය තෝරන්න</option>
-                                <option value="Vehicles">🚗 වාහන</option>
-                                <option value="Electronics">📱 ඉලෙක්ට්‍රොනික</option>
-                                <option value="Property">🏠 නිවාස/ඉඩම්</option>
-                                <option value="Home">🛋️ ගෘහ භාණ්ඩ</option>
-                                <option value="Jobs">💼 රැකියා</option>
-                                <option value="Services">🛠️ සේවා</option>
-                            </select>
-                        </div>
-                        
-                        <div class="col-md-8 mb-3">
-                            <label class="form-label fw-bold">දැන්වීමේ මාතෘකාව</label>
-                            <input type="text" class="form-control" id="title" placeholder="උදා: iPhone 13 Pro" required>
-                        </div>
-                        
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label fw-bold">මිල (Rs.)</label>
-                            <input type="number" class="form-control" id="price" placeholder="මිල" required>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">විස්තරය (Description)</label>
-                        <textarea class="form-control" id="desc" rows="3" placeholder="භාණ්ඩයේ තත්ත්වය..." required></textarea>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">ස්ථානය (Location)</label>
-                            <input type="text" class="form-control" id="location" placeholder="උදා: කොළඹ" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">දුරකථන අංකය</label>
-                            <input type="tel" class="form-control" id="phone" placeholder="උදා: 0712345678" required>
-                        </div>
-                    </div>
-
-                    <div class="premium-box">
-                        <div>
-                            <h6 class="mb-0 fw-bold"><i class="fas fa-crown text-warning me-2"></i>Premium Ad එකක් ලෙස පල කරන්න</h6>
-                            <small class="text-muted">වැඩි පිරිසකට පෙන්වීමට මෙය තෝරන්න</small>
-                        </div>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="premiumSwitch" style="width: 50px; height: 25px; cursor: pointer;">
-                        </div>
-                    </div>
-
-                    <button type="submit" id="submitBtn" class="btn btn-post w-100 shadow-sm">
-                        <i class="fas fa-plus-circle me-2"></i> පල කරන්න (Post Ad)
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    // Firebase Config (ඔබේ config ඒ විදිහටම තියන්න)
-    const firebaseConfig = {
-      apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
-      authDomain: "add-ink.firebaseapp.com",
-      projectId: "add-ink",
-      storageBucket: "add-ink.firebasestorage.app",
-      messagingSenderId: "752189116425",
-      appId: "1:752189116425:web:3aa935b30b1b9154e3e8d8"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const storage = firebase.storage();
-
-    // Image Preview
-    document.getElementById('imageFile').onchange = e => {
-        const [file] = e.target.files;
-        if (file) {
-            const preview = document.getElementById('imagePreview');
-            const placeholder = document.getElementById('uploadPlaceholder');
-            preview.src = URL.createObjectURL(file);
-            preview.style.display = 'block';
-            placeholder.style.display = 'none';
-        }
-    }
-
-    // Submit Action
-    document.getElementById('adForm').onsubmit = async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('submitBtn');
-        const file = document.getElementById('imageFile').files[0];
-        
-        if (!file) return alert("කරුණාකර පින්තූරයක් ඇතුළත් කරන්න!");
-
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> ඇඩ් එක පල වෙමින් පවතී...';
-
-        try {
-            // 1. Upload Image
-            const storageRef = storage.ref('posts/' + Date.now() + "_" + file.name);
-            const uploadTask = await storageRef.put(file);
-            const imageUrl = await uploadTask.ref.getDownloadURL();
-
-            // 2. Save Data
-            await db.collection("posts").add({
-                title: document.getElementById('title').value,
-                price: document.getElementById('price').value,
-                description: document.getElementById('desc').value,
-                location: document.getElementById('location').value,
-                phone: document.getElementById('phone').value, // දුරකථන අංකය එකතු කළා
-                category: document.getElementById('category').value, // ප්‍රභේදය එකතු කළා
-                imageUrl: imageUrl,
-                isFeatured: document.getElementById('premiumSwitch').checked,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            alert("දැන්වීම සාර්ථකව පල කරන ලදී!");
-            window.location.href = 'index.html';
-
-        } catch (error) {
-            console.error(error);
-            alert("වැරැද්දක් සිදුවුණා: " + error.message);
-            btn.disabled = false;
-            btn.innerText = "පල කරන්න (Post Ad)";
-        }
-    };
-
-    // Premium Switch
-    document.getElementById('premiumSwitch').addEventListener('change', function() {
-        if(this.checked) {
-            if(!confirm("Premium දැන්වීමක් පල කිරීමට ගෙවීම් සිදුකළ යුතුය. ඔබව Payment පිටුවට යොමු කරන්නද?")) {
-                this.checked = false;
-            }
-        }
+  try {
+    // Firestore එකට දත්ත එකතු කිරීම
+    const docRef = await addDoc(collection(db, "posts"), {
+      title: title,
+      content: content,
+      createdAt: serverTimestamp(),
+      author: auth.currentUser ? auth.currentUser.uid : "Anonymous"
     });
-</script>
 
-</body>
-</html>
+    console.log("Post ID: ", docRef.id);
+    alert("Post එක සාර්ථකව එකතු විය!");
+    
+    // Input fields හිස් කිරීම
+    titleInput.value = "";
+    contentInput.value = "";
+    
+  } catch (e) {
+    console.error("දෝෂයක් ඇතිවිය: ", e);
+    alert("Post එක එකතු කිරීමට නොහැකි විය.");
+  }
+}
+
+// 5. Button එක click කළ විට function එක ක්‍රියාත්මක කිරීම
+// HTML එකේ ඇති බොත්තමේ id එක 'submitBtn' බව තහවුරු කරගන්න
+document.getElementById('submitBtn').addEventListener('click', addPost);

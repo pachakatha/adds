@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | LankaAds</title>
+    <title>Advanced Admin Dashboard | LankaAds</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>body { font-family: 'Poppins', sans-serif; }</style>
@@ -11,68 +11,60 @@
 <body class="bg-gray-100 flex">
 
     <div class="min-h-screen w-64 bg-slate-900 text-white p-5 flex flex-col fixed">
-        <h1 class="text-2xl font-bold mb-10 text-orange-400">LankaAds Admin</h1>
-        <nav class="space-y-4 flex-grow">
-            <a href="#" class="block p-3 rounded-lg bg-slate-800 font-semibold border-l-4 border-orange-500">🏠 Dashboard</a>
-            <a href="#" class="block p-3 rounded-lg hover:bg-slate-800 transition">📊 දැන්වීම් පාලනය</a>
-            <a href="#" class="block p-3 rounded-lg hover:bg-slate-800 transition">👥 පරිශීලකයින්</a>
+        <h1 class="text-2xl font-bold mb-10 text-orange-400 text-center border-b border-slate-700 pb-4">LankaAds Admin</h1>
+        <nav class="space-y-4">
+            <button onclick="filterAds('all')" class="w-full text-left p-3 rounded-lg bg-slate-800 hover:bg-orange-500 transition">📋 සියලුම දැන්වීම්</button>
+            <button onclick="filterAds('premium')" class="w-full text-left p-3 rounded-lg hover:bg-orange-500 transition">⭐ Premium ඉල්ලීම්</button>
+            <button onclick="filterAds('byUser')" class="w-full text-left p-3 rounded-lg hover:bg-orange-500 transition">👤 පරිශීලක අනුව</button>
         </nav>
-        <button class="bg-red-600 hover:bg-red-700 p-3 rounded-lg w-full mt-auto font-semibold transition">Logout</button>
     </div>
 
     <div class="flex-1 ml-64">
-        <header class="bg-white shadow-sm p-5 flex justify-between items-center sticky top-0 z-10">
-            <h2 class="text-xl font-bold text-gray-800">පාලක පුවරුව (Control Board)</h2>
-            <div class="flex items-center gap-3">
-                <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded">Online</span>
-                <div class="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold">A</div>
+        <header class="bg-white shadow p-5 sticky top-0 z-20 flex justify-between items-center">
+            <h2 id="currentViewTitle" class="text-xl font-bold text-gray-800">සියලුම දැන්වීම්</h2>
+            <div class="flex gap-4 items-center">
+                <input type="text" id="userInput" placeholder="User ID එක ඇතුළත් කරන්න..." class="hidden p-2 border rounded-lg text-sm outline-none focus:border-orange-500">
+                <div class="text-xs font-bold text-green-600 bg-green-100 px-3 py-1 rounded-full uppercase">Live Sync</div>
             </div>
         </header>
 
         <div class="p-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition">
-                    <p class="text-sm text-gray-500 font-medium">මුළු දැන්වීම් සංඛ්‍යාව</p>
-                    <p id="totalAds" class="text-3xl font-bold text-slate-900 mt-1">...</p>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-slate-900">
+                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">මුළු දැන්වීම්</p>
+                    <p id="totalAds" class="text-3xl font-black text-slate-900">0</p>
                 </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition border-l-4 border-blue-500">
-                    <p class="text-sm text-gray-500 font-medium">මුළු අමුත්තන් (Visitors)</p>
-                    <p id="totalVisitors" class="text-3xl font-bold text-blue-600 mt-1">...</p>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-blue-500">
+                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">මුළු අමුත්තන්</p>
+                    <p id="totalVisitors" class="text-3xl font-black text-blue-600">0</p>
                 </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition border-l-4 border-orange-500">
-                    <p class="text-sm text-gray-500 font-medium">අනුමත කිරීමට ඇති දැන්වීම්</p>
-                    <p id="pendingAds" class="text-3xl font-bold text-orange-500 mt-1">...</p>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-orange-500">
+                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">ප්‍රිමියම් ඉල්ලීම්</p>
+                    <p id="premiumReqCount" class="text-3xl font-black text-orange-500">0</p>
                 </div>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div class="p-6 border-b border-gray-100 flex justify-between items-center">
-                    <h3 class="text-lg font-bold text-gray-800">නවතම දැන්වීම් ලැයිස්තුව</h3>
-                    <button onclick="window.location.reload()" class="text-sm text-blue-600 hover:underline">Refresh List</button>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left">
-                        <thead class="bg-gray-50">
-                            <tr class="text-gray-600 text-sm uppercase">
-                                <th class="p-4">දැන්වීම</th>
-                                <th class="p-4">ප්‍රදේශය</th>
-                                <th class="p-4">තත්ත්වය</th>
-                                <th class="p-4">ක්‍රියාකාරකම්</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adsTableBody" class="text-gray-700">
-                            </tbody>
-                    </table>
-                </div>
+            <div class="bg-white rounded-3xl shadow-sm overflow-hidden border border-gray-100">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-slate-50 border-b border-gray-100">
+                        <tr class="text-gray-600 text-[11px] uppercase font-bold tracking-widest">
+                            <th class="p-5">දැන්වීමේ විස්තර</th>
+                            <th class="p-5">පරිශීලක (Author ID)</th>
+                            <th class="p-5">තත්ත්වය</th>
+                            <th class="p-5 text-center">ක්‍රියාකාරකම්</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adsTableBody" class="divide-y divide-gray-50">
+                        </tbody>
+                </table>
             </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
-        import { getFirestore, collection, doc, updateDoc, onSnapshot, deleteDoc, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+        import { getFirestore, collection, doc, updateDoc, onSnapshot, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
-        // ඔබ ලබාදුන් යාවත්කාලීන කළ Config එක
         const firebaseConfig = {
             apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
             authDomain: "adds-ink.firebaseapp.com",
@@ -86,75 +78,98 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Stats සහ Table Load කිරීම
-        function initAdmin() {
-            // 1. මුළු ඇඩ්ස් ගණන
-            onSnapshot(collection(db, "posts"), (snap) => {
-                document.getElementById('totalAds').innerText = snap.size;
-                
-                const tableBody = document.getElementById('adsTableBody');
-                tableBody.innerHTML = "";
-                let pendingCount = 0;
+        let currentFilter = 'all';
 
-                snap.forEach((adDoc) => {
-                    const ad = adDoc.data();
-                    const id = adDoc.id;
-
-                    if (ad.status === "pending" || ad.status === "waiting_approval") pendingCount++;
-
-                    const row = `
-                        <tr class="border-b border-gray-50 hover:bg-gray-50 transition">
-                            <td class="p-4">
-                                <div class="font-bold text-gray-800">${ad.title}</div>
-                                <div class="text-xs text-gray-500">${ad.category} | රු. ${ad.price}</div>
-                            </td>
-                            <td class="p-4 text-sm">${ad.district}</td>
-                            <td class="p-4">
-                                <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase ${ad.isPremium ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-600'}">
-                                    ${ad.isPremium ? 'Premium' : 'Normal'}
-                                </span>
-                            </td>
-                            <td class="p-4 flex gap-2">
-                                <button onclick="approveAd('${id}')" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded shadow-sm text-xs transition">Approve</button>
-                                <button onclick="makePremium('${id}')" class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1 rounded shadow-sm text-xs transition">⭐ Premium</button>
-                                <button onclick="deleteAd('${id}')" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded shadow-sm text-xs transition">Delete</button>
-                            </td>
-                        </tr>
-                    `;
-                    tableBody.innerHTML += row;
-                });
-                document.getElementById('pendingAds').innerText = pendingCount;
-            });
-
-            // 2. අමුත්තන් ගණන (Real-time)
-            onSnapshot(doc(db, "analytics", "siteStats"), (docSnap) => {
-                if (docSnap.exists()) {
-                    document.getElementById('totalVisitors').innerText = docSnap.data().totalVisitors;
-                }
-            });
-        }
-
-        // Functions for buttons
+        // --- Functions Exposed to Window for HTML Buttons ---
         window.approveAd = async (id) => {
             await updateDoc(doc(db, "posts", id), { status: "approved" });
-            alert("දැන්වීම සාර්ථකව අනුමත කළා!");
+            alert("දැන්වීම අනුමත කළා!");
         };
 
         window.makePremium = async (id) => {
-            await updateDoc(doc(db, "posts", id), { 
-                isPremium: true,
-                status: "approved"
-            });
-            alert("දැන්වීම Premium ලෙස සකස් කළා!");
+            await updateDoc(doc(db, "posts", id), { isPremium: true, status: "approved", premiumStatus: "active" });
+            alert("දැන්වීම Premium කළා!");
         };
 
         window.deleteAd = async (id) => {
-            if(confirm("මෙම දැන්වීම සදහටම මකා දැමීමට ඔබට විශ්වාසද?")) {
+            if(confirm("මෙය සදහටම මකා දැමීමට අවශ්‍යද?")) {
                 await deleteDoc(doc(db, "posts", id));
+                alert("මකා දැමීම සාර්ථකයි!");
             }
         };
 
-        initAdmin();
+        window.filterAds = (type) => {
+            currentFilter = type;
+            const input = document.getElementById('userInput');
+            const title = document.getElementById('currentViewTitle');
+            
+            input.classList.add('hidden');
+            if(type === 'all') title.innerText = "සියලුම දැන්වීම්";
+            if(type === 'premium') title.innerText = "Premium ඉල්ලීම් පමණි";
+            if(type === 'byUser') {
+                title.innerText = "පරිශීලක අනුව සෙවීම";
+                input.classList.remove('hidden');
+            }
+            loadData();
+        };
+
+        // --- Real-time Data Loader ---
+        function loadData() {
+            let q = collection(db, "posts");
+            const userIdSearch = document.getElementById('userInput').value;
+
+            if (currentFilter === 'premium') {
+                q = query(collection(db, "posts"), where("premiumStatus", "==", "waiting_approval"));
+            } else if (currentFilter === 'byUser' && userIdSearch) {
+                q = query(collection(db, "posts"), where("authorId", "==", userIdSearch));
+            }
+
+            onSnapshot(q, (snapshot) => {
+                const tableBody = document.getElementById('adsTableBody');
+                tableBody.innerHTML = "";
+                
+                snapshot.forEach((doc) => {
+                    const ad = doc.data();
+                    const id = doc.id;
+
+                    tableBody.innerHTML += `
+                        <tr class="hover:bg-orange-50/30 transition">
+                            <td class="p-5">
+                                <div class="font-bold text-slate-800 text-sm">${ad.title}</div>
+                                <div class="text-[10px] text-gray-400 uppercase mt-1">${ad.category} | ${ad.district}</div>
+                            </td>
+                            <td class="p-5 font-mono text-[10px] text-gray-500">${ad.authorId}</td>
+                            <td class="p-5">
+                                <span class="px-2 py-1 rounded text-[9px] font-black ${ad.isPremium ? 'bg-amber-100 text-amber-600' : 'bg-slate-100 text-slate-500'}">
+                                    ${ad.isPremium ? 'PREMIUM' : 'NORMAL'}
+                                </span>
+                            </td>
+                            <td class="p-5 flex gap-2 justify-center">
+                                <button onclick="approveAd('${id}')" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-[10px] font-bold shadow-sm transition">Approve</button>
+                                <button onclick="makePremium('${id}')" class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1 rounded text-[10px] font-bold shadow-sm transition">⭐ Premium</button>
+                                <button onclick="deleteAd('${id}')" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-[10px] font-bold shadow-sm transition">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            });
+        }
+
+        // Stats & Initialization
+        onSnapshot(collection(db, "posts"), (snap) => {
+            document.getElementById('totalAds').innerText = snap.size;
+            let pCount = 0;
+            snap.forEach(d => { if(d.data().premiumStatus === 'waiting_approval') pCount++; });
+            document.getElementById('premiumReqCount').innerText = pCount;
+        });
+
+        onSnapshot(doc(db, "analytics", "siteStats"), (d) => {
+            if(d.exists()) document.getElementById('totalVisitors').innerText = d.data().totalVisitors;
+        });
+
+        document.getElementById('userInput').addEventListener('input', loadData);
+        loadData();
+
     </script>
 </body>
 </html>

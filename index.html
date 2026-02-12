@@ -26,9 +26,8 @@
     <style>
         body { font-family: 'Poppins', sans-serif; }
         
-        /* පසුබිම් පින්තූරය - ඔබට කැමති එකක් දාගත හැක */
         .hero-bg {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1596541505358-1f486a605f6c?q=80&w=1600');
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('https://images.unsplash.com/photo-1596541505358-1f486a605f6c?q=80&w=1600');
             background-size: cover;
             background-position: center;
         }
@@ -40,6 +39,9 @@
         }
         .premium-tag {
             background: linear-gradient(90deg, #f59e0b, #fbbf24);
+        }
+        .category-icon {
+            font-size: 2rem;
         }
     </style>
 </head>
@@ -54,20 +56,12 @@
     </nav>
 
     <div class="hero-bg text-white">
-        <div class="container mx-auto px-6 py-20 text-center">
+        <div class="container mx-auto px-6 py-16 text-center">
             <h2 class="text-4xl md:text-5xl font-bold leading-tight">ලංකාවේ අංක එකේ <span class="text-primary">වෙළඳපොළ</span></h2>
             <p class="text-gray-200 mt-4 max-w-lg mx-auto text-lg">ඔබේ බඩු බාහිරාදිය විශ්වාසයෙන් විකුණන්න සහ මිලදී ගන්න.</p>
             
-            <div class="mt-10 flex flex-col md:flex-row justify-center gap-3 max-w-3xl mx-auto bg-white/10 p-3 rounded-full backdrop-blur-sm">
-                <input type="text" id="searchInput" onkeyup="filterAds()" placeholder="Toyota, iPhone, House..." class="flex-1 p-4 rounded-full text-dark outline-none">
-                <select id="categoryFilter" onchange="filterAds()" class="p-4 rounded-full text-dark bg-white outline-none">
-                    <option value="All">සියලුම වර්ග</option>
-                    <option value="Vehicles">වාහන</option>
-                    <option value="Electronics">ඉලෙක්ට්‍රොනික</option>
-                    <option value="Property">නිවාස/ඉඩම්</option>
-                    <option value="Jobs">රැකියා</option>
-                    <option value="Services">සේවා</option>
-                </select>
+            <div class="mt-8 flex flex-col md:flex-row justify-center gap-3 max-w-3xl mx-auto bg-white/10 p-3 rounded-full backdrop-blur-sm">
+                <input type="text" id="searchInput" onkeyup="filterAds()" placeholder="Toyota, iPhone, House..." class="flex-1 p-4 rounded-full text-dark outline-none bg-white">
                 <a href="post-ad.html" class="bg-primary text-white px-8 py-4 rounded-full font-semibold hover:bg-orange-600 transition flex items-center justify-center">
                     + දැන්වීමක් දමන්න
                 </a>
@@ -76,25 +70,43 @@
     </div>
 
     <div class="container mx-auto px-6 py-10">
-        <h3 class="text-xl font-bold text-dark mb-6">ප්‍රධාන වර්ගීකරණයන්</h3>
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
-            <button onclick="setCategory('Vehicles')" class="bg-white p-5 rounded-2xl border border-gray-100 hover:border-primary text-center transition">
-                <span class="text-3xl">🚗</span><p class="text-sm font-semibold mt-2">වාහන</p>
+        <h3 class="text-2xl font-bold text-dark mb-6 text-center">ප්‍රධාන වර්ගීකරණයන්</h3>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <button onclick="setCategory('Vehicles')" class="bg-white p-6 rounded-2xl border border-gray-100 hover:border-primary hover:shadow-lg text-center transition flex flex-col items-center">
+                <span class="category-icon">🚗</span><p class="text-sm font-semibold mt-3">වාහන</p>
             </button>
-            <button onclick="setCategory('Electronics')" class="bg-white p-5 rounded-2xl border border-gray-100 hover:border-primary text-center transition">
-                <span class="text-3xl">📱</span><p class="text-sm font-semibold mt-2">ඉලෙක්ට්‍රොනික</p>
+            <button onclick="setCategory('Electronics')" class="bg-white p-6 rounded-2xl border border-gray-100 hover:border-primary hover:shadow-lg text-center transition flex flex-col items-center">
+                <span class="category-icon">📱</span><p class="text-sm font-semibold mt-3">ඉලෙක්ට්‍රොනික</p>
             </button>
-            <button onclick="setCategory('Property')" class="bg-white p-5 rounded-2xl border border-gray-100 hover:border-primary text-center transition">
-                <span class="text-3xl">🏠</span><p class="text-sm font-semibold mt-2">ඉඩම්/නිවාස</p>
+            <button onclick="setCategory('Property')" class="bg-white p-6 rounded-2xl border border-gray-100 hover:border-primary hover:shadow-lg text-center transition flex flex-col items-center">
+                <span class="category-icon">🏠</span><p class="text-sm font-semibold mt-3">ඉඩම්/නිවාස</p>
             </button>
-            <button onclick="setCategory('Home')" class="bg-white p-5 rounded-2xl border border-gray-100 hover:border-primary text-center transition">
-                <span class="text-3xl">🛋️</span><p class="text-sm font-semibold mt-2">ගෘහ භාණ්ඩ</p>
+            <button onclick="setCategory('Home')" class="bg-white p-6 rounded-2xl border border-gray-100 hover:border-primary hover:shadow-lg text-center transition flex flex-col items-center">
+                <span class="category-icon">🛋️</span><p class="text-sm font-semibold mt-3">ගෘහ භාණ්ඩ</p>
             </button>
-            <button onclick="setCategory('Jobs')" class="bg-white p-5 rounded-2xl border border-gray-100 hover:border-primary text-center transition">
-                <span class="text-3xl">💼</span><p class="text-sm font-semibold mt-2">රැකියා</p>
+            <button onclick="setCategory('Jobs')" class="bg-white p-6 rounded-2xl border border-gray-100 hover:border-primary hover:shadow-lg text-center transition flex flex-col items-center">
+                <span class="category-icon">💼</span><p class="text-sm font-semibold mt-3">රැකියා</p>
             </button>
-            <button onclick="setCategory('Services')" class="bg-white p-5 rounded-2xl border border-gray-100 hover:border-primary text-center transition">
-                <span class="text-3xl">🛠️</span><p class="text-sm font-semibold mt-2">සේවා</p>
+            <button onclick="setCategory('Services')" class="bg-white p-6 rounded-2xl border border-gray-100 hover:border-primary hover:shadow-lg text-center transition flex flex-col items-center">
+                <span class="category-icon">🛠️</span><p class="text-sm font-semibold mt-3">සේවා</p>
+            </button>
+            <button onclick="setCategory('Animals')" class="bg-white p-6 rounded-2xl border border-gray-100 hover:border-primary hover:shadow-lg text-center transition flex flex-col items-center">
+                <span class="category-icon">🐶</span><p class="text-sm font-semibold mt-3">සතුන්</p>
+            </button>
+            <button onclick="setCategory('Fashion')" class="bg-white p-6 rounded-2xl border border-gray-100 hover:border-primary hover:shadow-lg text-center transition flex flex-col items-center">
+                <span class="category-icon">👗</span><p class="text-sm font-semibold mt-3">ඇඳුම්</p>
+            </button>
+            <button onclick="setCategory('Education')" class="bg-white p-6 rounded-2xl border border-gray-100 hover:border-primary hover:shadow-lg text-center transition flex flex-col items-center">
+                <span class="category-icon">📚</span><p class="text-sm font-semibold mt-3">අධ්‍යාපන</p>
+            </button>
+            <button onclick="setCategory('Sports')" class="bg-white p-6 rounded-2xl border border-gray-100 hover:border-primary hover:shadow-lg text-center transition flex flex-col items-center">
+                <span class="category-icon">⚽</span><p class="text-sm font-semibold mt-3">ක්‍රීඩා</p>
+            </button>
+            <button onclick="setCategory('Business')" class="bg-white p-6 rounded-2xl border border-gray-100 hover:border-primary hover:shadow-lg text-center transition flex flex-col items-center">
+                <span class="category-icon">📈</span><p class="text-sm font-semibold mt-3">ව්‍යාපාර</p>
+            </button>
+            <button onclick="setCategory('Other')" class="bg-white p-6 rounded-2xl border border-gray-100 hover:border-primary hover:shadow-lg text-center transition flex flex-col items-center">
+                <span class="category-icon">📦</span><p class="text-sm font-semibold mt-3">වෙනත්</p>
             </button>
         </div>
     </div>
@@ -102,6 +114,7 @@
     <div class="container mx-auto px-6 py-10">
         <div class="flex justify-between items-center mb-8">
             <h3 class="text-2xl font-bold text-dark">නවතම දැන්වීම්</h3>
+            <span id="currentCategory" class="text-primary font-semibold">සියල්ල</span>
         </div>
         
         <div id="adsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -185,24 +198,18 @@
             });
         }
 
-        // Filter by text and category
+        // Filter by text
         function filterAds() {
             const searchText = document.getElementById('searchInput').value.toLowerCase();
-            const category = document.getElementById('categoryFilter').value;
-
-            const filtered = allAds.filter(ad => {
-                const matchesSearch = ad.title.toLowerCase().includes(searchText);
-                const matchesCategory = category === "All" || ad.category === category;
-                return matchesSearch && matchesCategory;
-            });
-
+            const filtered = allAds.filter(ad => ad.title.toLowerCase().includes(searchText));
             renderAds(filtered);
         }
 
         // Quick Category Filter
         function setCategory(cat) {
-            document.getElementById('categoryFilter').value = cat;
-            filterAds();
+            document.getElementById('currentCategory').innerText = cat;
+            const filtered = allAds.filter(ad => ad.category === cat);
+            renderAds(filtered);
         }
 
         window.onload = fetchAds;

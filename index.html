@@ -15,7 +15,7 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#FF7F00', // LankaAds Orange
+                        primary: '#FF7F00',
                         dark: '#1A1A1A',
                     }
                 }
@@ -25,13 +25,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Poppins', sans-serif; }
-        
         .hero-bg {
             background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('https://images.unsplash.com/photo-1596541505358-1f486a605f6c?q=80&w=1600');
             background-size: cover;
             background-position: center;
         }
-
         .premium-card {
             border: 2px solid #FFD700;
             background: linear-gradient(145deg, #ffffff, #fffdf0);
@@ -40,9 +38,7 @@
         .premium-tag {
             background: linear-gradient(90deg, #f59e0b, #fbbf24);
         }
-        .category-icon {
-            font-size: 2rem;
-        }
+        .category-icon { font-size: 2rem; }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -50,8 +46,7 @@
     <nav class="bg-white/95 backdrop-blur-sm sticky top-0 z-50 border-b border-gray-100 shadow-sm">
         <div class="container mx-auto px-6 py-3 flex justify-between items-center">
             <h1 class="text-3xl font-bold text-dark tracking-tighter">Lanka<span class="text-primary">Ads</span></h1>
-            <div id="authButtons" class="flex items-center gap-3">
-                </div>
+            <div id="authButtons" class="flex items-center gap-3"></div>
         </div>
     </nav>
 
@@ -87,24 +82,6 @@
             <button onclick="setCategory('Jobs')" class="bg-white p-6 rounded-2xl border border-gray-100 hover:border-primary hover:shadow-lg text-center transition flex flex-col items-center">
                 <span class="category-icon">💼</span><p class="text-sm font-semibold mt-3">රැකියා</p>
             </button>
-            <button onclick="setCategory('Services')" class="bg-white p-6 rounded-2xl border border-gray-100 hover:border-primary hover:shadow-lg text-center transition flex flex-col items-center">
-                <span class="category-icon">🛠️</span><p class="text-sm font-semibold mt-3">සේවා</p>
-            </button>
-            <button onclick="setCategory('Animals')" class="bg-white p-6 rounded-2xl border border-gray-100 hover:border-primary hover:shadow-lg text-center transition flex flex-col items-center">
-                <span class="category-icon">🐶</span><p class="text-sm font-semibold mt-3">සතුන්</p>
-            </button>
-            <button onclick="setCategory('Fashion')" class="bg-white p-6 rounded-2xl border border-gray-100 hover:border-primary hover:shadow-lg text-center transition flex flex-col items-center">
-                <span class="category-icon">👗</span><p class="text-sm font-semibold mt-3">ඇඳුම්</p>
-            </button>
-            <button onclick="setCategory('Education')" class="bg-white p-6 rounded-2xl border border-gray-100 hover:border-primary hover:shadow-lg text-center transition flex flex-col items-center">
-                <span class="category-icon">📚</span><p class="text-sm font-semibold mt-3">අධ්‍යාපන</p>
-            </button>
-            <button onclick="setCategory('Sports')" class="bg-white p-6 rounded-2xl border border-gray-100 hover:border-primary hover:shadow-lg text-center transition flex flex-col items-center">
-                <span class="category-icon">⚽</span><p class="text-sm font-semibold mt-3">ක්‍රීඩා</p>
-            </button>
-            <button onclick="setCategory('Business')" class="bg-white p-6 rounded-2xl border border-gray-100 hover:border-primary hover:shadow-lg text-center transition flex flex-col items-center">
-                <span class="category-icon">📈</span><p class="text-sm font-semibold mt-3">ව්‍යාපාර</p>
-            </button>
             <button onclick="setCategory('Other')" class="bg-white p-6 rounded-2xl border border-gray-100 hover:border-primary hover:shadow-lg text-center transition flex flex-col items-center">
                 <span class="category-icon">📦</span><p class="text-sm font-semibold mt-3">වෙනත්</p>
             </button>
@@ -114,7 +91,8 @@
     <div class="container mx-auto px-6 py-10">
         <div class="flex justify-between items-center mb-8">
             <h3 class="text-2xl font-bold text-dark">නවතම දැන්වීම්</h3>
-            <span id="currentCategory" class="text-primary font-semibold">සියල්ල</span>
+            <button onclick="setCategory('All')" class="text-primary font-semibold">සියල්ල පෙන්වන්න</button>
+            <span id="currentCategory" class="bg-orange-100 text-primary px-3 py-1 rounded-full text-sm font-bold">සියල්ල</span>
         </div>
         
         <div id="adsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -123,29 +101,32 @@
     </div>
 
     <script>
-        // Firebase Config
+        // --- ඔබේ නව Firebase Config එක මෙතැන ඇතුළත් කර ඇත ---
         const firebaseConfig = {
-            apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
-            authDomain: "add-ink.firebaseapp.com",
-            projectId: "add-ink",
-            storageBucket: "add-ink.firebasestorage.app",
-            messagingSenderId: "752189116425",
-            appId: "1:752189116425:web:0acf6e7b3f6b3629e3e8d8"
+            apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
+            authDomain: "adds-ink.firebaseapp.com",
+            projectId: "adds-ink",
+            storageBucket: "adds-ink.firebasestorage.app",
+            messagingSenderId: "638657776631",
+            appId: "1:638657776631:web:44ffdad33137bfefa57cf2",
+            measurementId: "G-Z002TVT7QX"
         };
+
+        // Firebase Initialize
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         const auth = firebase.auth();
 
         let allAds = [];
 
-        // Auth Status
+        // 1. Auth Status (පැරණි logic එකමයි)
         auth.onAuthStateChanged(user => {
             const authDiv = document.getElementById('authButtons');
             if (user) {
                 authDiv.innerHTML = `
-                    <span class="text-sm text-gray-600">${user.email}</span>
+                    <span class="hidden md:inline text-sm text-gray-600">${user.email}</span>
                     <a href="profile.html" class="bg-gray-100 text-dark px-4 py-2 rounded-full text-sm font-semibold">Profile</a>
-                    <button onclick="auth.signOut()" class="text-sm text-red-500">Log Out</button>
+                    <button onclick="auth.signOut()" class="text-sm text-red-500 ml-2">Log Out</button>
                 `;
             } else {
                 authDiv.innerHTML = `
@@ -155,16 +136,19 @@
             }
         });
 
-        // Fetch Ads
+        // 2. Fetch Ads (පැරණි logic එකමයි)
         function fetchAds() {
-            db.collection("posts").orderBy("isFeatured", "desc").orderBy("createdAt", "desc")
+            db.collection("posts").orderBy("createdAt", "desc")
             .onSnapshot(snapshot => {
                 allAds = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderAds(allAds);
+            }, error => {
+                console.error("Error fetching ads: ", error);
+                document.getElementById('adsGrid').innerHTML = "<p class='col-span-full text-center text-red-400'>දත්ත ලබාගැනීමට නොහැකි විය. කරුණාකර Firestore Rules පරීක්ෂා කරන්න.</p>";
             });
         }
 
-        // Render Ads
+        // 3. Render Ads (පැරණි logic එකමයි)
         function renderAds(ads) {
             const grid = document.getElementById('adsGrid');
             grid.innerHTML = "";
@@ -178,16 +162,13 @@
                 const isPremium = ad.isFeatured === true;
                 const card = `
                     <div class="bg-white p-4 rounded-2xl transition-all duration-300 hover:shadow-lg border border-gray-100 flex flex-col ${isPremium ? 'premium-card' : ''}">
-                        
                         <div class="relative bg-gray-200 h-40 rounded-xl mb-4 overflow-hidden">
                             <img src="${ad.imageUrl || 'https://via.placeholder.com/300x200?text=No+Image'}" class="w-full h-full object-cover">
                             ${isPremium ? '<span class="absolute top-2 right-2 premium-tag text-dark text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">Premium</span>' : ''}
                         </div>
-                        
                         <span class="text-[11px] font-semibold text-primary uppercase tracking-widest">${ad.category || 'Other'}</span>
                         <h3 class="text-md font-bold text-dark mt-1 line-clamp-2 leading-snug">${ad.title}</h3>
-                        <p class="text-sm text-gray-600 mt-2 line-clamp-2 flex-grow">${ad.description}</p>
-                        
+                        <p class="text-sm text-gray-600 mt-2 line-clamp-2 flex-grow">${ad.description || ''}</p>
                         <div class="mt-4 pt-3 border-t border-gray-100 flex justify-between items-center text-xs text-gray-400">
                             <span>${ad.createdAt ? new Date(ad.createdAt.seconds * 1000).toLocaleDateString() : 'Just now'}</span>
                             <a href="ad-details.html?id=${ad.id}" class="font-bold text-dark hover:text-primary transition">විස්තර →</a>
@@ -198,18 +179,22 @@
             });
         }
 
-        // Filter by text
+        // 4. Filter by Search (පැරණි logic එකමයි)
         function filterAds() {
             const searchText = document.getElementById('searchInput').value.toLowerCase();
             const filtered = allAds.filter(ad => ad.title.toLowerCase().includes(searchText));
             renderAds(filtered);
         }
 
-        // Quick Category Filter
+        // 5. Category Filter (පැරණි logic එකමයි)
         function setCategory(cat) {
-            document.getElementById('currentCategory').innerText = cat;
-            const filtered = allAds.filter(ad => ad.category === cat);
-            renderAds(filtered);
+            document.getElementById('currentCategory').innerText = (cat === 'All') ? 'සියල්ල' : cat;
+            if (cat === 'All') {
+                renderAds(allAds);
+            } else {
+                const filtered = allAds.filter(ad => ad.category === cat);
+                renderAds(filtered);
+            }
         }
 
         window.onload = fetchAds;

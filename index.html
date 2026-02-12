@@ -49,7 +49,7 @@
 
     <nav class="glass-effect sticky top-0 z-50 border-b border-gray-100 shadow-sm">
         <div class="container mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
-            <h1 class="text-2xl md:text-3xl font-black text-dark tracking-tighter pointer-cursor" onclick="window.location.href='index.html'">Lanka<span class="text-primary">Ads</span></h1>
+            <h1 class="text-2xl md:text-3xl font-black text-dark tracking-tighter cursor-pointer" onclick="window.location.href='index.html'">Lanka<span class="text-primary">Ads</span></h1>
             <div id="authButtons" class="flex items-center gap-2 md:gap-4"></div>
         </div>
     </nav>
@@ -159,7 +159,6 @@
 
         let allAds = [];
 
-        // Auth Status and Profile Links
         auth.onAuthStateChanged(user => {
             const authDiv = document.getElementById('authButtons');
             if (user) {
@@ -186,15 +185,31 @@
             }
         });
 
+        // දත්ත ලබාගැනීම
         function fetchAds() {
             db.collection("posts").orderBy("createdAt", "desc")
             .onSnapshot(snapshot => {
                 allAds = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                renderAds(allAds);
+                sortAndRender(allAds); // මෙතනින් sort කිරීම සිදු කරනවා
             }, error => {
                 console.error("Error: ", error);
                 document.getElementById('adsGrid').innerHTML = "<p class='col-span-full text-center text-red-400'>දත්ත ලබාගැනීමට නොහැකි විය.</p>";
             });
+        }
+
+        // ප්‍රිමියම් ඇඩ්ස් උඩට ගෙන ඒම සඳහා විශේෂ ශ්‍රිතය
+        function sortAndRender(ads) {
+            const sortedAds = [...ads].sort((a, b) => {
+                // a හෝ b Featured (Premium) නම් ඒවා උඩට ගේනවා
+                const aFeatured = a.isFeatured === true ? 1 : 0;
+                const bFeatured = b.isFeatured === true ? 1 : 0;
+                
+                if (aFeatured !== bFeatured) {
+                    return bFeatured - aFeatured; // 1 (featured) ඉහළට, 0 පහළට
+                }
+                return 0; // දෙකම එකම වර්ගයේ නම් createdAt පිළිවෙළටම තියෙනවා (පෙර orderBy නිසා)
+            });
+            renderAds(sortedAds);
         }
 
         function renderAds(ads) {
@@ -244,16 +259,16 @@
                 return matchesSearch && matchesDistrict;
             });
             
-            renderAds(filtered);
+            sortAndRender(filtered); // Filter කළ පසුත් sort කරනවා
         }
 
         function setCategory(cat) {
             document.getElementById('currentCategory').innerText = (cat === 'All') ? 'සියල්ල' : cat;
             if (cat === 'All') {
-                renderAds(allAds);
+                sortAndRender(allAds);
             } else {
                 const filtered = allAds.filter(ad => ad.category === cat);
-                renderAds(filtered);
+                sortAndRender(filtered);
             }
         }
 

@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Poppins', sans-serif; }
-        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 15px; }
+        .video-wrapper { position: relative; padding-bottom: 177.77%; height: 0; overflow: hidden; border-radius: 20px; max-width: 300px; margin: 0 auto; }
         .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
     </style>
 </head>
@@ -77,12 +77,12 @@
                 </h4>
                 
                 <div class="video-wrapper mb-5 shadow-lg border-4 border-white">
-                    <iframe src="https://drive.google.com/file/d/1R9rwiSRGZ18fEIHQets9lfnwX7OPmYXs/preview" allow="autoplay"></iframe>
+                    <iframe src="https://www.youtube.com/embed/xs-amsA8m0E" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                 </div>
 
-                <div class="space-y-3 text-sm text-blue-900 font-medium">
-                    <p class="flex gap-2"><span>1.</span> <span>පින්තූරය මත ඇති තිත් 3 ක්ලික් කර <b>Manage access</b> තෝරන්න.</span></p>
-                    <p class="flex gap-2"><span>2.</span> <span><b>"Anyone with the link"</b> තෝරා <b>Copy link</b> ක්ලික් කරන්න.</span></p>
+                <div class="space-y-3 text-sm text-blue-900 font-medium bg-white/50 p-4 rounded-xl">
+                    <p class="flex gap-2"><span>1.</span> <span>ඉහත වීඩියෝවේ පෙන්වන පරිදි පින්තූරය Google Drive වෙත දමන්න.</span></p>
+                    <p class="flex gap-2"><span>2.</span> <span><b>Manage access</b> ගොස් <b>"Anyone with the link"</b> ලෙස වෙනස් කරන්න.</span></p>
                     <p class="flex gap-2"><span>3.</span> <span>ලබාගත් ලින්ක් එක පහත <b>Google Drive Link</b> කොටුවට දාන්න.</span></p>
                 </div>
             </div>
@@ -92,9 +92,15 @@
                 <input type="url" id="adImageUrl" placeholder="https://drive.google.com/..." class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:border-orange-500 shadow-sm">
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
-                <input type="number" id="adPrice" placeholder="මිල (රු.)" class="w-full p-4 rounded-xl border border-gray-200 shadow-sm outline-none focus:border-orange-500">
-                <input type="tel" id="adPhone" placeholder="දුරකථනය" class="w-full p-4 rounded-xl border border-gray-200 shadow-sm outline-none focus:border-orange-500">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">මිල (රු.)</label>
+                    <input type="number" id="adPrice" placeholder="15000" class="w-full p-4 rounded-xl border border-gray-200 shadow-sm outline-none focus:border-orange-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">දුරකථනය</label>
+                    <input type="tel" id="adPhone" placeholder="07XXXXXXXX" class="w-full p-4 rounded-xl border border-gray-200 shadow-sm outline-none focus:border-orange-500">
+                </div>
             </div>
 
             <div class="bg-amber-50 border-2 border-amber-200 p-5 rounded-2xl flex items-center justify-between shadow-sm">
@@ -102,7 +108,7 @@
                     <h5 class="font-bold text-amber-950 text-md">Premium දැන්වීමක් (Featured)</h5>
                     <p class="text-xs text-amber-800 mt-1">දින 7ක් ඉහළින්ම පෙන්වීමට. ඇඩ්මින් අනුමැතියෙන් පසු සජීවී වේ.</p>
                 </div>
-                <input type="checkbox" id="isPremium" class="w-7 h-7 accent-orange-500 cursor-pointer">
+                <input type="checkbox" id="isPremium" class="w-8 h-8 accent-orange-500 cursor-pointer">
             </div>
 
             <button id="postBtn" class="w-full bg-slate-900 text-white p-5 rounded-2xl font-bold text-lg hover:bg-orange-600 transition shadow-lg active:scale-95">
@@ -167,10 +173,9 @@
                     imageUrl: convertDriveLink(imageUrl),
                     createdAt: serverTimestamp(),
                     authorId: auth.currentUser ? auth.currentUser.uid : "anonymous",
-                    // ඇඩ්මින් විසින් admin.html හරහා approve කරන තෙක් isPremium false වේ
-                    isPremium: false,
-                    status: "pending", 
-                    premiumStatus: isPremiumRequested ? "waiting_for_payment" : "none"
+                    isPremium: false, // මුලින්ම false වේ. ඇඩ්මින් approve කළ යුතුයි.
+                    status: "approved", // සාමාන්‍ය දැන්වීමක් ලෙස වහාම පෙන්වීමට
+                    premiumStatus: isPremiumRequested ? "waiting_approval" : "none"
                 };
 
                 const docRef = await addDoc(collection(db, "posts"), adData);
@@ -178,7 +183,7 @@
                 if (isPremiumRequested) {
                     window.location.href = `payment.html?adId=${docRef.id}`;
                 } else {
-                    alert("දැන්වීම සාර්ථකව පළ විය! ඇඩ්මින් අනුමැතියෙන් පසු සජීවී වේ.");
+                    alert("දැන්වීම සාර්ථකව පළ විය!");
                     window.location.href = "index.html";
                 }
 

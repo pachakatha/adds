@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile | LankaAds</title>
+    <title>මගේ ගිණුම | LankaAds</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
@@ -12,99 +12,80 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* ආරම්භයේදී Popup එක සඟවා තැබීමට */
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); }
+        body { font-family: 'Poppins', sans-serif; }
+        .edit-mode input, .edit-mode textarea { background: white !important; border-color: #f97316 !important; }
+        input:disabled, textarea:disabled { background: transparent; border: none; padding-left: 0; color: #1e293b; font-weight: 600; cursor: default; }
     </style>
 </head>
-<body class="bg-slate-50 font-sans text-gray-800">
-
-    <div id="otpModal" class="modal flex items-center justify-center">
-        <div class="bg-white p-8 rounded-[2rem] shadow-2xl max-w-sm w-full mx-4">
-            <h3 class="text-xl font-bold text-secondary mb-2">OTP කේතය ඇතුළත් කරන්න</h3>
-            <p class="text-[10px] text-gray-500 mb-6 uppercase tracking-wider">දුරකථනයට ලැබුණු අංක 6 මෙහි ඇතුළත් කරන්න</p>
-            <input type="text" id="otpCode" placeholder="......" class="w-full text-center text-3xl tracking-[10px] p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl outline-none focus:border-primary mb-6">
-            <button onclick="confirmOTP()" class="w-full bg-primary text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-orange-600 transition">තහවුරු කරන්න</button>
-            <button onclick="closeModal()" class="w-full text-gray-400 mt-4 text-xs font-semibold hover:text-gray-600">අවලංගු කරන්න</button>
-        </div>
-    </div>
+<body class="bg-slate-50 text-gray-800">
 
     <nav class="bg-white shadow-sm px-6 py-4 flex justify-between items-center sticky top-0 z-50">
-        <a href="index.html" class="text-2xl font-bold text-secondary flex items-center gap-2 italic">
-            <span class="bg-primary text-white px-2 rounded-lg not-italic">LA</span> LankaAds
+        <a href="index.html" class="text-2xl font-bold text-orange-600 flex items-center gap-2 italic">
+            <span class="bg-orange-500 text-white px-2 rounded-lg not-italic">LA</span> LankaAds
         </a>
-        <button onclick="logout()" class="text-red-500 font-bold text-xs bg-red-50 px-4 py-2 rounded-xl border border-red-100">Logout</button>
+        <button onclick="logout()" class="text-red-500 font-bold text-xs bg-red-50 px-4 py-2 rounded-xl border border-red-100 hover:bg-red-100 transition">Logout</button>
     </nav>
 
-    <div class="container mx-auto px-4 py-8 max-w-5xl">
-        <div class="bg-white rounded-[2.5rem] p-10 shadow-xl border border-gray-100 mb-8 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
-            <div class="relative z-10">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <div class="bg-white rounded-[2.5rem] p-8 shadow-xl border border-gray-100 mb-8 flex flex-col md:flex-row items-center gap-8 relative">
+            <div class="relative">
                 <img id="profile-pic" src="https://via.placeholder.com/150" class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-2xl">
-                <label for="file-upload" class="absolute bottom-1 right-1 bg-primary text-white p-2 rounded-full cursor-pointer shadow-lg hover:scale-110 transition">
+                <label for="file-upload" class="absolute bottom-1 right-1 bg-orange-500 text-white p-2 rounded-full cursor-pointer shadow-lg hover:scale-110 transition">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>
                 </label>
                 <input id="file-upload" type="file" accept="image/*" class="hidden" onchange="previewImage(event)">
-                <div id="membership-badge" class="absolute -top-3 -left-3 text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-lg transform -rotate-12">Silver</div>
             </div>
             
-            <div class="flex-grow text-center md:text-left z-10">
-                <h2 id="user-email" class="text-3xl font-black text-secondary tracking-tight">Loading...</h2>
+            <div class="flex-grow text-center md:text-left">
+                <h2 id="display-name" class="text-3xl font-black text-slate-800 tracking-tight">Loading...</h2>
+                <p id="user-email" class="text-gray-500 font-medium"></p>
                 <div class="flex flex-wrap gap-3 mt-4 justify-center md:justify-start">
                     <span id="email-badge" class="px-4 py-1.5 rounded-full text-[10px] font-bold shadow-sm">...</span>
-                    <span id="phone-badge" class="px-4 py-1.5 rounded-full text-[10px] font-bold shadow-sm">...</span>
                 </div>
             </div>
+
+            <button onclick="toggleEdit()" id="edit-btn" class="bg-slate-100 text-slate-600 px-6 py-3 rounded-2xl font-bold hover:bg-orange-50 hover:text-orange-600 transition">
+                Edit Profile
+            </button>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="lg:col-span-2 space-y-8">
-                <div class="bg-white rounded-[2rem] p-10 shadow-xl border border-gray-100">
-                    <h3 class="text-xl font-bold text-secondary mb-8 flex items-center gap-3">
-                        <span class="p-2 bg-blue-50 rounded-lg text-blue-500">👤</span> පුද්ගලික තොරතුරු
+            <div class="lg:col-span-1 space-y-8">
+                <div id="profile-card" class="bg-white rounded-[2rem] p-8 shadow-xl border border-gray-100">
+                    <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-3">
+                        <span class="p-2 bg-orange-50 rounded-lg text-orange-500">👤</span> තොරතුරු
                     </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="space-y-2">
-                            <label class="text-[11px] font-bold text-gray-400 ml-2 uppercase">සම්පූර්ණ නම</label>
-                            <input type="text" id="fullname" class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20 border-2 border-transparent focus:border-primary/20 transition">
+                    <div class="space-y-4" id="info-form">
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase">සම්පූර්ණ නම</label>
+                            <input type="text" id="fullname" disabled class="w-full p-3 bg-gray-50 rounded-xl outline-none border border-transparent transition">
                         </div>
-                        <div class="space-y-2">
-                            <label class="text-[11px] font-bold text-gray-400 ml-2 uppercase">උපන් දිනය</label>
-                            <input type="date" id="dob" class="w-full p-4 bg-gray-50 rounded-2xl outline-none border-2 border-transparent transition text-gray-500">
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase">දිස්ත්‍රික්කය</label>
+                            <input type="text" id="district" disabled class="w-full p-3 bg-gray-50 rounded-xl outline-none border border-transparent transition">
                         </div>
-                        <div class="space-y-2">
-                            <label class="text-[11px] font-bold text-gray-400 ml-2 uppercase">පළාත</label>
-                            <input type="text" id="province" class="w-full p-4 bg-gray-50 rounded-2xl outline-none border-2 border-transparent transition">
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase">ලිපිනය</label>
+                            <textarea id="address" disabled rows="2" class="w-full p-3 bg-gray-50 rounded-xl outline-none border border-transparent transition"></textarea>
                         </div>
-                        <div class="space-y-2">
-                            <label class="text-[11px] font-bold text-gray-400 ml-2 uppercase">දිස්ත්‍රික්කය</label>
-                            <input type="text" id="district" class="w-full p-4 bg-gray-50 rounded-2xl outline-none border-2 border-transparent transition">
-                        </div>
-                        <div class="space-y-2 md:col-span-2">
-                            <label class="text-[11px] font-bold text-gray-400 ml-2 uppercase">ලිපිනය</label>
-                            <textarea id="address" rows="3" class="w-full p-4 bg-gray-50 rounded-2xl outline-none border-2 border-transparent transition"></textarea>
-                        </div>
+                        <button id="save-btn" onclick="saveProfile()" class="hidden w-full bg-orange-500 text-white py-4 rounded-xl font-bold shadow-lg hover:bg-orange-600 transition">Save Changes</button>
                     </div>
-                    <button onclick="saveProfile()" class="w-full mt-10 bg-secondary text-white py-5 rounded-2xl font-bold hover:shadow-2xl transition-all active:scale-[0.98] text-lg">තොරතුරු සුරකින්න</button>
+
+                    <div id="email-verify-section" class="mt-8 pt-8 border-t border-gray-100">
+                        <p class="text-[10px] font-bold text-gray-400 mb-4 uppercase">Email තත්ත්වය</p>
+                        <button id="verify-email-btn" onclick="sendEmailVerification()" class="hidden w-full bg-blue-500 text-white py-3 rounded-xl text-xs font-bold hover:bg-blue-600 transition">Verify Email Now</button>
+                    </div>
                 </div>
             </div>
 
-            <div class="space-y-8">
-                <div class="bg-white rounded-[2rem] p-8 shadow-xl border border-gray-100">
-                    <h3 class="text-xl font-bold text-secondary mb-8">🔒 තහවුරු කිරීම්</h3>
-                    <div class="p-6 bg-slate-50 rounded-3xl mb-6 border border-slate-100">
-                        <p class="text-xs font-bold text-gray-400 mb-4 uppercase tracking-tighter text-center">Email Verification</p>
-                        <div id="email-verify-box">
-                            <button id="verify-email-btn" onclick="sendEmailVerification()" class="hidden w-full bg-primary text-white py-3 rounded-2xl text-xs font-bold shadow-md hover:scale-[1.02] transition">Verify Now</button>
-                            <p class="text-[9px] text-gray-400 mt-4 text-center leading-relaxed font-medium">*Spam folder එක අනිවාර්යයෙන්ම පරීක්ෂා කරන්න.</p>
-                        </div>
-                    </div>
-                    <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100">
-                        <p class="text-xs font-bold text-gray-400 mb-4 uppercase tracking-tighter text-center">Phone Verification</p>
-                        <div id="phone-verify-box">
-                            <input type="tel" id="phoneNumber" placeholder="+947XXXXXXXX" class="w-full p-4 bg-white rounded-2xl text-sm border border-gray-200 mb-4 outline-none focus:border-primary text-center font-bold">
-                            <div id="recaptcha-container"></div>
-                            <button id="send-otp-btn" onclick="requestOTP()" class="w-full bg-secondary text-white py-3 rounded-2xl text-xs font-bold shadow-md hover:scale-[1.02] transition">Send OTP</button>
-                        </div>
-                    </div>
+            <div class="lg:col-span-2 space-y-6">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-2xl font-bold text-slate-800">මගේ දැන්වීම් (My Ads)</h3>
+                    <span id="ad-count" class="bg-orange-100 text-orange-600 px-4 py-1 rounded-full font-bold text-sm">0 Ads</span>
+                </div>
+                
+                <div id="my-ads-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="col-span-full py-20 text-center text-gray-400 font-medium">දැන්වීම් පූරණය වෙමින් පවතී...</div>
                 </div>
             </div>
         </div>
@@ -123,122 +104,144 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        let currentResult;
+        let isEditing = false;
 
         auth.onAuthStateChanged(user => {
             if (user) {
                 document.getElementById('user-email').innerText = user.email;
-                updateBadges(user);
+                updateEmailStatus(user);
                 loadProfileData(user.uid);
+                loadUserAds(user.uid);
             } else {
                 window.location.href = "login.html";
             }
         });
 
-        function previewImage(event) {
-            const reader = new FileReader();
-            reader.onload = function() {
-                const output = document.getElementById('profile-pic');
-                output.src = reader.result;
-                localStorage.setItem('profilePic_' + auth.currentUser.uid, reader.result);
-            }
-            reader.readAsDataURL(event.target.files[0]);
-        }
+        function toggleEdit() {
+            isEditing = !isEditing;
+            const fields = ['fullname', 'district', 'address'];
+            const editBtn = document.getElementById('edit-btn');
+            const saveBtn = document.getElementById('save-btn');
+            const infoForm = document.getElementById('info-form');
 
-        function updateBadges(user) {
-            const eBadge = document.getElementById('email-badge');
-            const pBadge = document.getElementById('phone-badge');
-            
-            const savedPic = localStorage.getItem('profilePic_' + user.uid);
-            if(savedPic) document.getElementById('profile-pic').src = savedPic;
+            fields.forEach(id => {
+                document.getElementById(id).disabled = !isEditing;
+            });
 
-            if (user.emailVerified) {
-                eBadge.innerText = "✓ EMAIL VERIFIED";
-                eBadge.className = "px-4 py-1.5 rounded-full text-[10px] font-bold bg-green-50 text-green-600 border border-green-100";
-                document.getElementById('verify-email-btn').style.display = 'none';
+            if(isEditing) {
+                editBtn.innerText = "Cancel Edit";
+                editBtn.className = "bg-red-50 text-red-600 px-6 py-3 rounded-2xl font-bold transition";
+                saveBtn.classList.remove('hidden');
+                infoForm.classList.add('edit-mode');
             } else {
-                eBadge.innerText = "⚠ EMAIL UNVERIFIED";
-                eBadge.className = "px-4 py-1.5 rounded-full text-[10px] font-bold bg-red-50 text-red-600 border border-red-100";
-                document.getElementById('verify-email-btn').classList.remove('hidden');
+                editBtn.innerText = "Edit Profile";
+                editBtn.className = "bg-slate-100 text-slate-600 px-6 py-3 rounded-2xl font-bold transition";
+                saveBtn.classList.add('hidden');
+                infoForm.classList.remove('edit-mode');
+                loadProfileData(auth.currentUser.uid); // Reset data
             }
-
-            const phoneProvider = user.providerData.find(p => p.providerId === 'phone');
-            if (phoneProvider) {
-                pBadge.innerText = "✓ PHONE VERIFIED";
-                pBadge.className = "px-4 py-1.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-600 border border-blue-100";
-                document.getElementById('phone-verify-box').innerHTML = "<div class='text-center py-2'><p class='text-xs text-green-600 font-bold'>Connected: " + phoneProvider.phoneNumber + "</p></div>";
-            } else {
-                pBadge.innerText = "⚠ PHONE UNVERIFIED";
-                pBadge.className = "px-4 py-1.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-500 border border-slate-200";
-            }
-        }
-
-        async function saveProfile() {
-            const data = {
-                fullname: document.getElementById('fullname').value,
-                dob: document.getElementById('dob').value,
-                province: document.getElementById('province').value,
-                district: document.getElementById('district').value,
-                address: document.getElementById('address').value
-            };
-            await db.collection("users").doc(auth.currentUser.uid).set(data, { merge: true });
-            alert("තොරතුරු සුරැකීම සාර්ථකයි!");
-            location.reload();
         }
 
         async function loadProfileData(uid) {
             const doc = await db.collection("users").doc(uid).get();
             if (doc.exists) {
                 const data = doc.data();
-                document.getElementById('fullname').value = data.fullname || '';
-                document.getElementById('dob').value = data.dob || '';
-                document.getElementById('province').value = data.province || '';
+                document.getElementById('fullname').value = data.fullName || data.fullname || '';
                 document.getElementById('district').value = data.district || '';
                 document.getElementById('address').value = data.address || '';
+                document.getElementById('display-name').innerText = data.fullName || data.fullname || 'LankaAds User';
                 
-                const fields = [data.fullname, data.dob, data.province, data.district, data.address];
-                const filled = fields.filter(f => f && f.length > 0).length;
-                const percent = Math.round((filled / fields.length) * 100);
-                
-                let level = "Silver"; let color = "bg-slate-400";
-                if (percent >= 60) { level = "Gold"; color = "bg-yellow-500"; }
-                if (percent >= 100) { level = "Platinum"; color = "bg-cyan-500"; }
-
-                const badge = document.getElementById('membership-badge');
-                badge.innerText = level;
-                badge.className = `absolute -top-3 -left-3 text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-lg transform -rotate-12 ${color}`;
+                const savedPic = localStorage.getItem('profilePic_' + uid);
+                if(savedPic) document.getElementById('profile-pic').src = savedPic;
             }
         }
 
-        function requestOTP() {
-            const num = document.getElementById('phoneNumber').value;
-            const btn = document.getElementById('send-otp-btn');
-            if(!num.startsWith('+94') || num.length < 12) { alert("කරුණාකර +947XXXXXXXX ලෙස අංකය ඇතුළත් කරන්න"); return; }
-
-            btn.disabled = true; btn.innerText = "යවමින්...";
-
-            window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {'size': 'invisible'});
-            auth.currentUser.linkWithPhoneNumber(num, window.recaptchaVerifier)
-                .then(result => {
-                    currentResult = result;
-                    document.getElementById('otpModal').style.display = 'flex';
-                    btn.disabled = false; btn.innerText = "Send OTP";
-                }).catch(err => {
-                    alert("OTP දෝෂයකි: " + err.message);
-                    btn.disabled = false; btn.innerText = "Send OTP";
-                });
+        async function saveProfile() {
+            const user = auth.currentUser;
+            const data = {
+                fullname: document.getElementById('fullname').value,
+                district: document.getElementById('district').value,
+                address: document.getElementById('address').value
+            };
+            await db.collection("users").doc(user.uid).set(data, { merge: true });
+            alert("තොරතුරු සාර්ථකව යාවත්කාලීන කළා!");
+            location.reload();
         }
 
-        function confirmOTP() {
-            const code = document.getElementById('otpCode').value;
-            currentResult.confirm(code).then(() => {
-                alert("දුරකථන අංකය සාර්ථකව සම්බන්ධ කළා!");
+        async function loadUserAds(uid) {
+            const adsContainer = document.getElementById('my-ads-container');
+            const adCountSpan = document.getElementById('ad-count');
+            
+            // Note: Make sure your 'posts' collection has 'author' field storing user.uid
+            const snapshot = await db.collection("posts").where("author", "==", uid).get();
+            
+            if (snapshot.empty) {
+                adsContainer.innerHTML = `<div class="col-span-full py-10 text-center bg-white rounded-3xl border-2 border-dashed text-gray-400">ඔබ තවමත් දැන්වීම් පළ කර නැත.</div>`;
+                adCountSpan.innerText = "0 Ads";
+                return;
+            }
+
+            adCountSpan.innerText = `${snapshot.size} Ads`;
+            adsContainer.innerHTML = '';
+
+            snapshot.forEach(doc => {
+                const ad = doc.data();
+                const adHtml = `
+                    <div class="bg-white rounded-3xl overflow-hidden shadow-md border border-gray-100 hover:shadow-xl transition relative group">
+                        <img src="${ad.imageUrl || 'https://via.placeholder.com/300'}" class="w-full h-40 object-cover">
+                        <div class="p-4">
+                            <h4 class="font-bold text-slate-800 truncate">${ad.title}</h4>
+                            <p class="text-xs text-gray-500 mt-1">${ad.district || 'Location N/A'}</p>
+                            <div class="flex justify-between items-center mt-4">
+                                <span class="${ad.isFeatured ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-600'} text-[9px] px-2 py-1 rounded font-bold">
+                                    ${ad.isFeatured ? '⭐ PREMIUM' : 'NORMAL'}
+                                </span>
+                                <button onclick="deleteAd('${doc.id}')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                adsContainer.innerHTML += adHtml;
+            });
+        }
+
+        async function deleteAd(adId) {
+            if(confirm("මෙම දැන්වීම සදහටම මකා දැමීමට ඔබට අවශ්‍යද?")) {
+                await db.collection("posts").doc(adId).delete();
+                alert("දැන්වීම සාර්ථකව මකා දැමුවා.");
                 location.reload();
-            }).catch(() => alert("වැරදි OTP අංකයකි."));
+            }
         }
 
-        function closeModal() { document.getElementById('otpModal').style.display = 'none'; }
-        function sendEmailVerification() { auth.currentUser.sendEmailVerification().then(() => alert("Email එක පරීක්ෂා කරන්න (Inbox/Spam).")); }
+        function updateEmailStatus(user) {
+            const badge = document.getElementById('email-badge');
+            const btn = document.getElementById('verify-email-btn');
+            if (user.emailVerified) {
+                badge.innerText = "✓ EMAIL VERIFIED";
+                badge.className = "px-4 py-1.5 rounded-full text-[10px] font-bold bg-green-100 text-green-700 border border-green-200";
+                btn.style.display = 'none';
+            } else {
+                badge.innerText = "⚠ EMAIL UNVERIFIED";
+                badge.className = "px-4 py-1.5 rounded-full text-[10px] font-bold bg-red-100 text-red-700 border border-red-200";
+                btn.classList.remove('hidden');
+            }
+        }
+
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                document.getElementById('profile-pic').src = reader.result;
+                localStorage.setItem('profilePic_' + auth.currentUser.uid, reader.result);
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        function sendEmailVerification() {
+            auth.currentUser.sendEmailVerification().then(() => alert("Verification Email එකක් එවා ඇත. කරුණාකර Inbox සහ Spam Folder පරීක්ෂා කරන්න."));
+        }
+
         function logout() { auth.signOut().then(() => window.location.href = "index.html"); }
     </script>
 </body>

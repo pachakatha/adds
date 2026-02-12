@@ -3,246 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>මගේ ගිණුම | LankaAds</title>
-    
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
-
+    <title>මගේ පැතිකඩ | LankaAds</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Poppins', sans-serif; }
-        .edit-mode input, .edit-mode textarea { background: white !important; border-color: #f97316 !important; }
-        input:disabled, textarea:disabled { background: transparent; border: none; padding-left: 0; color: #1e293b; font-weight: 600; cursor: default; }
-    </style>
+    <style>body { font-family: 'Poppins', sans-serif; }</style>
 </head>
-<body class="bg-slate-50 text-gray-800">
+<body class="bg-slate-50 min-h-screen">
 
-    <nav class="bg-white shadow-sm px-6 py-4 flex justify-between items-center sticky top-0 z-50">
-        <a href="index.html" class="text-2xl font-bold text-orange-600 flex items-center gap-2 italic">
-            <span class="bg-orange-500 text-white px-2 rounded-lg not-italic">LA</span> LankaAds
-        </a>
-        <button onclick="logout()" class="text-red-500 font-bold text-xs bg-red-50 px-4 py-2 rounded-xl border border-red-100 hover:bg-red-100 transition">Logout</button>
-    </nav>
-
-    <div class="container mx-auto px-4 py-8 max-w-6xl">
-        <div class="bg-white rounded-[2.5rem] p-8 shadow-xl border border-gray-100 mb-8 flex flex-col md:flex-row items-center gap-8 relative">
-            <div class="relative">
-                <img id="profile-pic" src="https://via.placeholder.com/150" class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-2xl">
-                <label for="file-upload" class="absolute bottom-1 right-1 bg-orange-500 text-white p-2 rounded-full cursor-pointer shadow-lg hover:scale-110 transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>
-                </label>
-                <input id="file-upload" type="file" accept="image/*" class="hidden" onchange="previewImage(event)">
-            </div>
-            
-            <div class="flex-grow text-center md:text-left">
-                <h2 id="display-name" class="text-3xl font-black text-slate-800 tracking-tight">Loading...</h2>
-                <p id="user-email" class="text-gray-500 font-medium"></p>
-                <div class="flex flex-wrap gap-3 mt-4 justify-center md:justify-start">
-                    <span id="email-badge" class="px-4 py-1.5 rounded-full text-[10px] font-bold shadow-sm">...</span>
-                </div>
-            </div>
-
-            <button onclick="toggleEdit()" id="edit-btn" class="bg-slate-100 text-slate-600 px-6 py-3 rounded-2xl font-bold hover:bg-orange-50 hover:text-orange-600 transition">
-                Edit Profile
-            </button>
-        </div>
-
+    <div class="container mx-auto px-4 py-10 max-w-5xl">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="lg:col-span-1 space-y-8">
-                <div id="profile-card" class="bg-white rounded-[2rem] p-8 shadow-xl border border-gray-100">
-                    <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-3">
-                        <span class="p-2 bg-orange-50 rounded-lg text-orange-500">👤</span> තොරතුරු
-                    </h3>
-                    <div class="space-y-4" id="info-form">
-                        <div>
-                            <label class="text-[10px] font-bold text-gray-400 uppercase">සම්පූර්ණ නම</label>
-                            <input type="text" id="fullname" disabled class="w-full p-3 bg-gray-50 rounded-xl outline-none border border-transparent transition">
+            
+            <div class="lg:col-span-1 space-y-6">
+                <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100 text-center">
+                    <div class="relative inline-block">
+                        <div class="h-24 w-24 bg-orange-500 rounded-full mx-auto flex items-center justify-center text-white text-4xl font-bold shadow-lg" id="user-initial">?</div>
+                        <div id="verify-badge" class="absolute bottom-0 right-0 h-8 w-8 bg-white border-4 border-white rounded-full flex items-center justify-center hidden">
+                            <span class="text-green-500">✓</span>
                         </div>
-                        <div>
-                            <label class="text-[10px] font-bold text-gray-400 uppercase">දිස්ත්‍රික්කය</label>
-                            <input type="text" id="district" disabled class="w-full p-3 bg-gray-50 rounded-xl outline-none border border-transparent transition">
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-bold text-gray-400 uppercase">ලිපිනය</label>
-                            <textarea id="address" disabled rows="2" class="w-full p-3 bg-gray-50 rounded-xl outline-none border border-transparent transition"></textarea>
-                        </div>
-                        <button id="save-btn" onclick="saveProfile()" class="hidden w-full bg-orange-500 text-white py-4 rounded-xl font-bold shadow-lg hover:bg-orange-600 transition">Save Changes</button>
+                    </div>
+                    
+                    <h2 class="text-xl font-bold mt-4" id="display-name">Loading...</h2>
+                    <p class="text-sm text-gray-400 mb-6" id="display-email"></p>
+
+                    <div id="verify-box" class="hidden bg-red-50 p-4 rounded-2xl mb-6 border border-red-100">
+                        <p class="text-xs text-red-600 font-bold mb-2">ඊමේල් එක තහවුරු කර නැත!</p>
+                        <button id="resend-verify" class="text-xs bg-red-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-red-700 transition">Email එකක් එවන්න</button>
                     </div>
 
-                    <div id="email-verify-section" class="mt-8 pt-8 border-t border-gray-100">
-                        <p class="text-[10px] font-bold text-gray-400 mb-4 uppercase">Email තත්ත්වය</p>
-                        <button id="verify-email-btn" onclick="sendEmailVerification()" class="hidden w-full bg-blue-500 text-white py-3 rounded-xl text-xs font-bold hover:bg-blue-600 transition">Verify Email Now</button>
+                    <button id="edit-profile-btn" class="w-full py-3 border-2 border-orange-500 text-orange-600 rounded-2xl font-bold hover:bg-orange-500 hover:text-white transition">Edit Profile</button>
+                </div>
+
+                <div class="bg-white p-6 rounded-[2.5rem] shadow-sm border border-gray-100">
+                    <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <span class="w-2 h-6 bg-blue-500 rounded-full"></span> Inbox (පණිවිඩ)
+                    </h3>
+                    <div id="inbox-list" class="space-y-4 max-h-80 overflow-y-auto pr-2">
+                        <p class="text-sm text-gray-400 text-center py-4 italic">පණිවිඩ කිසිවක් නැත.</p>
                     </div>
                 </div>
             </div>
 
-            <div class="lg:col-span-2 space-y-6">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-2xl font-bold text-slate-800">මගේ දැන්වීම් (My Ads)</h3>
-                    <span id="ad-count" class="bg-orange-100 text-orange-600 px-4 py-1 rounded-full font-bold text-sm">0 Ads</span>
+            <div class="lg:col-span-2">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800">මගේ දැන්වීම්</h3>
+                    <a href="post-ad.html" class="bg-orange-500 text-white px-6 py-2 rounded-xl font-bold text-sm shadow-md hover:bg-orange-600 transition">+ අලුත් එකක්</a>
                 </div>
-                
-                <div id="my-ads-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="col-span-full py-20 text-center text-gray-400 font-medium">දැන්වීම් පූරණය වෙමින් පවතී...</div>
+                <div id="my-ads-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="edit-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center hidden z-[100]">
+        <div class="bg-white p-8 rounded-[2rem] w-full max-w-md mx-4">
+            <h3 class="text-xl font-bold mb-4">පැතිකඩ යාවත්කාලීන කරන්න</h3>
+            <div class="space-y-4">
+                <input type="text" id="new-name" placeholder="නම ඇතුළත් කරන්න" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-orange-500">
+                <div class="flex gap-2">
+                    <button id="save-profile" class="flex-1 bg-orange-500 text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-orange-600 transition">Save</button>
+                    <button id="close-modal" class="px-6 bg-gray-100 text-gray-500 rounded-2xl font-bold">Cancel</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, updateProfile, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+        import { getFirestore, collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+
         const firebaseConfig = {
-            apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
-            authDomain: "add-ink.firebaseapp.com",
-            projectId: "add-ink",
-            storageBucket: "add-ink.firebasestorage.app",
-            messagingSenderId: "752189116425",
-            appId: "1:752189116425:web:0acf6e7b3f6b3629e3e8d8"
+            apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
+            authDomain: "adds-ink.firebaseapp.com",
+            projectId: "adds-ink",
+            storageBucket: "adds-ink.firebasestorage.app",
+            messagingSenderId: "638657776631",
+            appId: "1:638657776631:web:44ffdad33137bfefa57cf2",
+            measurementId: "G-Z002TVT7QX"
         };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
 
-        let isEditing = false;
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
 
-        auth.onAuthStateChanged(user => {
+        onAuthStateChanged(auth, (user) => {
             if (user) {
-                document.getElementById('user-email').innerText = user.email;
-                updateEmailStatus(user);
-                loadProfileData(user.uid);
-                loadUserAds(user.uid);
+                updateUI(user);
+                loadMyAds(user.uid);
+                loadInbox(user.uid);
             } else {
                 window.location.href = "login.html";
             }
         });
 
-        function toggleEdit() {
-            isEditing = !isEditing;
-            const fields = ['fullname', 'district', 'address'];
-            const editBtn = document.getElementById('edit-btn');
-            const saveBtn = document.getElementById('save-btn');
-            const infoForm = document.getElementById('info-form');
-
-            fields.forEach(id => {
-                document.getElementById(id).disabled = !isEditing;
-            });
-
-            if(isEditing) {
-                editBtn.innerText = "Cancel Edit";
-                editBtn.className = "bg-red-50 text-red-600 px-6 py-3 rounded-2xl font-bold transition";
-                saveBtn.classList.remove('hidden');
-                infoForm.classList.add('edit-mode');
-            } else {
-                editBtn.innerText = "Edit Profile";
-                editBtn.className = "bg-slate-100 text-slate-600 px-6 py-3 rounded-2xl font-bold transition";
-                saveBtn.classList.add('hidden');
-                infoForm.classList.remove('edit-mode');
-                loadProfileData(auth.currentUser.uid); // Reset data
-            }
-        }
-
-        async function loadProfileData(uid) {
-            const doc = await db.collection("users").doc(uid).get();
-            if (doc.exists) {
-                const data = doc.data();
-                document.getElementById('fullname').value = data.fullName || data.fullname || '';
-                document.getElementById('district').value = data.district || '';
-                document.getElementById('address').value = data.address || '';
-                document.getElementById('display-name').innerText = data.fullName || data.fullname || 'LankaAds User';
-                
-                const savedPic = localStorage.getItem('profilePic_' + uid);
-                if(savedPic) document.getElementById('profile-pic').src = savedPic;
-            }
-        }
-
-        async function saveProfile() {
-            const user = auth.currentUser;
-            const data = {
-                fullname: document.getElementById('fullname').value,
-                district: document.getElementById('district').value,
-                address: document.getElementById('address').value
-            };
-            await db.collection("users").doc(user.uid).set(data, { merge: true });
-            alert("තොරතුරු සාර්ථකව යාවත්කාලීන කළා!");
-            location.reload();
-        }
-
-        async function loadUserAds(uid) {
-            const adsContainer = document.getElementById('my-ads-container');
-            const adCountSpan = document.getElementById('ad-count');
+        function updateUI(user) {
+            document.getElementById('display-name').innerText = user.displayName || "පරිශීලක නම";
+            document.getElementById('display-email').innerText = user.email;
+            document.getElementById('user-initial').innerText = (user.displayName || user.email).charAt(0).toUpperCase();
             
-            // Note: Make sure your 'posts' collection has 'author' field storing user.uid
-            const snapshot = await db.collection("posts").where("author", "==", uid).get();
-            
-            if (snapshot.empty) {
-                adsContainer.innerHTML = `<div class="col-span-full py-10 text-center bg-white rounded-3xl border-2 border-dashed text-gray-400">ඔබ තවමත් දැන්වීම් පළ කර නැත.</div>`;
-                adCountSpan.innerText = "0 Ads";
-                return;
-            }
-
-            adCountSpan.innerText = `${snapshot.size} Ads`;
-            adsContainer.innerHTML = '';
-
-            snapshot.forEach(doc => {
-                const ad = doc.data();
-                const adHtml = `
-                    <div class="bg-white rounded-3xl overflow-hidden shadow-md border border-gray-100 hover:shadow-xl transition relative group">
-                        <img src="${ad.imageUrl || 'https://via.placeholder.com/300'}" class="w-full h-40 object-cover">
-                        <div class="p-4">
-                            <h4 class="font-bold text-slate-800 truncate">${ad.title}</h4>
-                            <p class="text-xs text-gray-500 mt-1">${ad.district || 'Location N/A'}</p>
-                            <div class="flex justify-between items-center mt-4">
-                                <span class="${ad.isFeatured ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-600'} text-[9px] px-2 py-1 rounded font-bold">
-                                    ${ad.isFeatured ? '⭐ PREMIUM' : 'NORMAL'}
-                                </span>
-                                <button onclick="deleteAd('${doc.id}')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                adsContainer.innerHTML += adHtml;
-            });
-        }
-
-        async function deleteAd(adId) {
-            if(confirm("මෙම දැන්වීම සදහටම මකා දැමීමට ඔබට අවශ්‍යද?")) {
-                await db.collection("posts").doc(adId).delete();
-                alert("දැන්වීම සාර්ථකව මකා දැමුවා.");
-                location.reload();
-            }
-        }
-
-        function updateEmailStatus(user) {
-            const badge = document.getElementById('email-badge');
-            const btn = document.getElementById('verify-email-btn');
             if (user.emailVerified) {
-                badge.innerText = "✓ EMAIL VERIFIED";
-                badge.className = "px-4 py-1.5 rounded-full text-[10px] font-bold bg-green-100 text-green-700 border border-green-200";
-                btn.style.display = 'none';
+                document.getElementById('verify-badge').classList.remove('hidden');
+                document.getElementById('verify-box').classList.add('hidden');
             } else {
-                badge.innerText = "⚠ EMAIL UNVERIFIED";
-                badge.className = "px-4 py-1.5 rounded-full text-[10px] font-bold bg-red-100 text-red-700 border border-red-200";
-                btn.classList.remove('hidden');
+                document.getElementById('verify-box').classList.remove('hidden');
             }
         }
 
-        function previewImage(event) {
-            const reader = new FileReader();
-            reader.onload = function() {
-                document.getElementById('profile-pic').src = reader.result;
-                localStorage.setItem('profilePic_' + auth.currentUser.uid, reader.result);
+        // Email Verification යැවීම
+        document.getElementById('resend-verify').addEventListener('click', async () => {
+            await sendEmailVerification(auth.currentUser);
+            alert("තහවුරු කිරීමේ ඊමේල් පණිවිඩයක් ඔබගේ ලිපිනයට එවන ලදී.");
+        });
+
+        // Edit Profile Modal පාලනය
+        const modal = document.getElementById('edit-modal');
+        document.getElementById('edit-profile-btn').addEventListener('click', () => {
+            document.getElementById('new-name').value = auth.currentUser.displayName || "";
+            modal.classList.remove('hidden');
+        });
+        document.getElementById('close-modal').addEventListener('click', () => modal.classList.add('hidden'));
+
+        document.getElementById('save-profile').addEventListener('click', async () => {
+            const newName = document.getElementById('new-name').value;
+            await updateProfile(auth.currentUser, { displayName: newName });
+            alert("පැතිකඩ යාවත්කාලීන කරන ලදී!");
+            location.reload();
+        });
+
+        // Inbox පණිවිඩ ගෙන්වීම
+        async function loadInbox(uid) {
+            const q = query(collection(db, "messages"), where("receiverId", "==", uid), orderBy("createdAt", "desc"));
+            const snapshot = await getDocs(q);
+            const list = document.getElementById('inbox-list');
+            
+            if (!snapshot.empty) {
+                list.innerHTML = "";
+                snapshot.forEach(doc => {
+                    const msg = doc.data();
+                    list.innerHTML += `
+                        <div class="p-3 bg-blue-50 rounded-xl border border-blue-100">
+                            <p class="text-xs font-bold text-blue-600 mb-1">From: ${msg.senderName}</p>
+                            <p class="text-sm text-gray-700">${msg.text}</p>
+                        </div>
+                    `;
+                });
             }
-            reader.readAsDataURL(event.target.files[0]);
         }
 
-        function sendEmailVerification() {
-            auth.currentUser.sendEmailVerification().then(() => alert("Verification Email එකක් එවා ඇත. කරුණාකර Inbox සහ Spam Folder පරීක්ෂා කරන්න."));
+        // දැන්වීම් ගෙන්වීම
+        async function loadMyAds(uid) {
+            const q = query(collection(db, "posts"), where("authorId", "==", uid));
+            const snapshot = await getDocs(q);
+            const container = document.getElementById('my-ads-list');
+            
+            if (!snapshot.empty) {
+                container.innerHTML = "";
+                snapshot.forEach(doc => {
+                    const ad = doc.data();
+                    const statusClass = ad.status === 'approved' ? 'bg-green-100 text-green-600' : 'bg-yellow-100 text-yellow-600';
+                    container.innerHTML += `
+                        <div class="bg-white p-5 rounded-[2rem] border border-gray-100 shadow-sm">
+                            <span class="text-[10px] font-bold px-2 py-1 rounded-full ${statusClass} uppercase">${ad.status}</span>
+                            <h4 class="font-bold mt-2 text-gray-800">${ad.title}</h4>
+                            <p class="text-orange-600 font-bold text-sm">රු. ${Number(ad.price).toLocaleString()}</p>
+                        </div>
+                    `;
+                });
+            }
         }
-
-        function logout() { auth.signOut().then(() => window.location.href = "index.html"); }
     </script>
 </body>
 </html>

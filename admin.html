@@ -3,47 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel | LankaAds</title>
+    <title>Admin Dashboard | LankaAds</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>body { font-family: 'Poppins', sans-serif; }</style>
 </head>
-<body class="bg-slate-50 min-h-screen">
+<body class="bg-gray-100 flex">
 
-    <div id="login-screen" class="flex items-center justify-center min-h-screen">
-        <div class="bg-white p-8 rounded-[2rem] shadow-2xl w-full max-w-md border border-gray-100">
-            <h2 class="text-3xl font-black text-center mb-6 text-slate-800">Admin <span class="text-orange-500">Login</span></h2>
-            <input type="email" id="email" placeholder="Admin Email" class="w-full p-4 rounded-2xl border border-gray-100 mb-4 outline-none focus:ring-2 focus:ring-orange-500">
-            <input type="password" id="password" placeholder="Password" class="w-full p-4 rounded-2xl border border-gray-100 mb-6 outline-none focus:ring-2 focus:ring-orange-500">
-            <button id="loginBtn" class="w-full bg-slate-900 text-white p-4 rounded-2xl font-bold hover:bg-orange-600 transition shadow-lg">ලොග් වන්න</button>
-            <p id="login-error" class="text-red-500 text-sm text-center font-medium mt-4"></p>
-        </div>
+    <div class="min-h-screen w-64 bg-slate-900 text-white p-5 flex flex-col fixed">
+        <h1 class="text-2xl font-bold mb-10 text-orange-400">LankaAds Admin</h1>
+        <nav class="space-y-4 flex-grow">
+            <a href="#" class="block p-3 rounded-lg bg-slate-800 font-semibold border-l-4 border-orange-500">🏠 Dashboard</a>
+            <a href="#" class="block p-3 rounded-lg hover:bg-slate-800 transition">📊 දැන්වීම් පාලනය</a>
+            <a href="#" class="block p-3 rounded-lg hover:bg-slate-800 transition">👥 පරිශීලකයින්</a>
+        </nav>
+        <button class="bg-red-600 hover:bg-red-700 p-3 rounded-lg w-full mt-auto font-semibold transition">Logout</button>
     </div>
 
-    <div id="admin-dashboard" class="hidden">
-        <nav class="bg-white shadow-sm px-8 py-4 flex justify-between items-center sticky top-0 z-50">
-            <h1 class="text-xl font-bold text-slate-800">LankaAds <span class="text-orange-500">Dashboard</span></h1>
-            <button id="logoutBtn" class="text-sm font-bold text-red-500 hover:bg-red-50 p-2 rounded-lg">Log Out</button>
-        </nav>
+    <div class="flex-1 ml-64">
+        <header class="bg-white shadow-sm p-5 flex justify-between items-center sticky top-0 z-10">
+            <h2 class="text-xl font-bold text-gray-800">පාලක පුවරුව (Control Board)</h2>
+            <div class="flex items-center gap-3">
+                <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded">Online</span>
+                <div class="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold">A</div>
+            </div>
+        </header>
 
-        <div class="container mx-auto px-6 py-10">
-            <div class="mb-10">
-                <h2 class="text-2xl font-bold text-orange-600 mb-6 flex items-center gap-2">
-                    <span class="w-2 h-8 bg-orange-500 rounded-full"></span> Premium අනුමත කිරීම්
-                </h2>
-                <div id="premium-requests-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <p class="text-gray-400">Loading...</p>
+        <div class="p-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition">
+                    <p class="text-sm text-gray-500 font-medium">මුළු දැන්වීම් සංඛ්‍යාව</p>
+                    <p id="totalAds" class="text-3xl font-bold text-slate-900 mt-1">...</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition border-l-4 border-blue-500">
+                    <p class="text-sm text-gray-500 font-medium">මුළු අමුත්තන් (Visitors)</p>
+                    <p id="totalVisitors" class="text-3xl font-bold text-blue-600 mt-1">...</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition border-l-4 border-orange-500">
+                    <p class="text-sm text-gray-500 font-medium">අනුමත කිරීමට ඇති දැන්වීම්</p>
+                    <p id="pendingAds" class="text-3xl font-bold text-orange-500 mt-1">...</p>
                 </div>
             </div>
 
-            <hr class="my-10">
-
-            <div>
-                <h2 class="text-2xl font-bold text-slate-700 mb-6 flex items-center gap-2">
-                    <span class="w-2 h-8 bg-slate-500 rounded-full"></span> සාමාන්‍ය දැන්වීම්
-                </h2>
-                <div id="pending-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <p class="text-gray-400">Loading...</p>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+                    <h3 class="text-lg font-bold text-gray-800">නවතම දැන්වීම් ලැයිස්තුව</h3>
+                    <button onclick="window.location.reload()" class="text-sm text-blue-600 hover:underline">Refresh List</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead class="bg-gray-50">
+                            <tr class="text-gray-600 text-sm uppercase">
+                                <th class="p-4">දැන්වීම</th>
+                                <th class="p-4">ප්‍රදේශය</th>
+                                <th class="p-4">තත්ත්වය</th>
+                                <th class="p-4">ක්‍රියාකාරකම්</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adsTableBody" class="text-gray-700">
+                            </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -51,9 +70,9 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
-        import { getFirestore, collection, query, where, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+        import { getFirestore, collection, doc, updateDoc, onSnapshot, deleteDoc, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
+        // ඔබ ලබාදුන් යාවත්කාලීන කළ Config එක
         const firebaseConfig = {
             apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
             authDomain: "adds-ink.firebaseapp.com",
@@ -65,100 +84,77 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // ඔබේ ඊමේල් එක මෙතන සකසන්න
-        const ADMIN_EMAIL = "kularathnashac@gmail.com";
+        // Stats සහ Table Load කිරීම
+        function initAdmin() {
+            // 1. මුළු ඇඩ්ස් ගණන
+            onSnapshot(collection(db, "posts"), (snap) => {
+                document.getElementById('totalAds').innerText = snap.size;
+                
+                const tableBody = document.getElementById('adsTableBody');
+                tableBody.innerHTML = "";
+                let pendingCount = 0;
 
-        // Login
-        document.getElementById('loginBtn').addEventListener('click', async () => {
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('password').value;
-            const errorEl = document.getElementById('login-error');
-            
-            if(email !== ADMIN_EMAIL) {
-                errorEl.innerText = "ඔබ පරිපාලකයෙකු නොවේ!";
-                return;
-            }
+                snap.forEach((adDoc) => {
+                    const ad = adDoc.data();
+                    const id = adDoc.id;
 
-            try {
-                await signInWithEmailAndPassword(auth, email, pass);
-            } catch (err) {
-                errorEl.innerText = "ඊමේල් හෝ මුරපදය වැරදියි!";
-            }
-        });
+                    if (ad.status === "pending" || ad.status === "waiting_approval") pendingCount++;
 
-        // Auth Check
-        onAuthStateChanged(auth, (user) => {
-            if (user && user.email === ADMIN_EMAIL) {
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('admin-dashboard').classList.remove('hidden');
-                loadAllAds();
-            } else {
-                document.getElementById('login-screen').classList.remove('hidden');
-                document.getElementById('admin-dashboard').classList.add('hidden');
-            }
-        });
+                    const row = `
+                        <tr class="border-b border-gray-50 hover:bg-gray-50 transition">
+                            <td class="p-4">
+                                <div class="font-bold text-gray-800">${ad.title}</div>
+                                <div class="text-xs text-gray-500">${ad.category} | රු. ${ad.price}</div>
+                            </td>
+                            <td class="p-4 text-sm">${ad.district}</td>
+                            <td class="p-4">
+                                <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase ${ad.isPremium ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-600'}">
+                                    ${ad.isPremium ? 'Premium' : 'Normal'}
+                                </span>
+                            </td>
+                            <td class="p-4 flex gap-2">
+                                <button onclick="approveAd('${id}')" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded shadow-sm text-xs transition">Approve</button>
+                                <button onclick="makePremium('${id}')" class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1 rounded shadow-sm text-xs transition">⭐ Premium</button>
+                                <button onclick="deleteAd('${id}')" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded shadow-sm text-xs transition">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+                document.getElementById('pendingAds').innerText = pendingCount;
+            });
 
-        // Load Ads Data
-        async function loadAllAds() {
-            const q = query(collection(db, "posts"));
-            const snapshot = await getDocs(q);
-            
-            const premiumList = document.getElementById('premium-requests-list');
-            const pendingList = document.getElementById('pending-list');
-            
-            premiumList.innerHTML = "";
-            pendingList.innerHTML = "";
-
-            snapshot.forEach((documentSnap) => {
-                const ad = documentSnap.data();
-                const id = documentSnap.id;
-
-                const adCard = `
-                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
-                        <h3 class="font-bold text-slate-800 mb-2">${ad.title}</h3>
-                        <p class="text-sm text-gray-500 mb-4">${ad.district} | ${ad.category}</p>
-                        <div class="text-xl font-black text-slate-900 mb-4">රු. ${Number(ad.price).toLocaleString()}</div>
-                        
-                        <div class="flex gap-2">
-                            ${ad.premiumStatus === 'pending' ? 
-                                `<button onclick="approvePremium('${id}')" class="flex-1 bg-orange-500 text-white py-2 rounded-xl font-bold text-sm hover:bg-orange-600">Approve Premium</button>` 
-                                : ''
-                            }
-                            <button onclick="deleteAd('${id}')" class="px-4 bg-red-50 text-red-500 rounded-xl hover:bg-red-100">Delete</button>
-                        </div>
-                    </div>
-                `;
-
-                if (ad.premiumStatus === 'pending') {
-                    premiumList.innerHTML += adCard;
-                } else if (ad.status === 'pending') {
-                    pendingList.innerHTML += adCard;
+            // 2. අමුත්තන් ගණන (Real-time)
+            onSnapshot(doc(db, "analytics", "siteStats"), (docSnap) => {
+                if (docSnap.exists()) {
+                    document.getElementById('totalVisitors').innerText = docSnap.data().totalVisitors;
                 }
             });
         }
 
-        // Functions
-        window.approvePremium = async (id) => {
-            if(confirm("මෙම දැන්වීම Premium ලෙස අනුමත කරනවාද?")) {
-                await updateDoc(doc(db, "posts", id), { 
-                    premiumStatus: "active",
-                    isFeatured: true 
-                });
-                loadAllAds();
-            }
+        // Functions for buttons
+        window.approveAd = async (id) => {
+            await updateDoc(doc(db, "posts", id), { status: "approved" });
+            alert("දැන්වීම සාර්ථකව අනුමත කළා!");
+        };
+
+        window.makePremium = async (id) => {
+            await updateDoc(doc(db, "posts", id), { 
+                isPremium: true,
+                status: "approved"
+            });
+            alert("දැන්වීම Premium ලෙස සකස් කළා!");
         };
 
         window.deleteAd = async (id) => {
-            if(confirm("මෙම දැන්වීම මකා දැමීමට ඔබට විශ්වාසද?")) {
+            if(confirm("මෙම දැන්වීම සදහටම මකා දැමීමට ඔබට විශ්වාසද?")) {
                 await deleteDoc(doc(db, "posts", id));
-                loadAllAds();
             }
         };
 
-        document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
+        initAdmin();
     </script>
 </body>
 </html>

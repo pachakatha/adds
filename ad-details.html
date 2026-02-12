@@ -31,18 +31,19 @@
 
                 <hr class="my-4 border-gray-100">
 
-                <div class="bg-orange-50 p-4 rounded-2xl flex items-center justify-between mb-6">
+                <div class="bg-green-50 p-4 rounded-2xl flex items-center justify-between mb-6 border border-green-200">
                     <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold text-xl" id="sellerInitial">S</div>
+                        <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-xl" id="sellerInitial">S</div>
                         <div>
                             <p class="font-bold text-gray-800" id="sellerName">Seller Name</p>
-                            <div id="sellerRating" class="flex items-center text-yellow-500 text-sm font-bold">
+                            <p class="text-xs text-gray-500" id="sellerPhone">Loading phone...</p>
+                            <div id="sellerRating" class="flex items-center text-yellow-500 text-xs font-bold mt-1">
                                 </div>
                         </div>
                     </div>
-                    <button onclick="openChat()" class="bg-white text-orange-600 border border-orange-600 px-4 py-2 rounded-xl font-bold hover:bg-orange-600 hover:text-white transition">
-                        Chat කරන්න
-                    </button>
+                    <a id="whatsappBtn" href="#" target="_blank" class="bg-green-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-green-700 transition flex items-center gap-2 text-sm">
+                        💬 WhatsApp
+                    </a>
                 </div>
 
                 <div class="mb-8">
@@ -93,7 +94,7 @@
             const doc = await db.collection("posts").doc(adId).get();
             if (doc.exists) {
                 const ad = doc.data();
-                currentSellerId = ad.userId; // විකුණුම්කරුගේ ID එක
+                currentSellerId = ad.userId;
                 
                 document.getElementById('adTitle').innerText = ad.title;
                 document.getElementById('adPrice').innerText = "රු. " + Number(ad.price).toLocaleString();
@@ -101,17 +102,25 @@
                 document.getElementById('adDescription').innerText = ad.description;
                 document.getElementById('adImage').src = ad.imageUrl || "https://via.placeholder.com/600x400";
                 
-                loadSellerData(ad.userId);
+                loadSellerData(ad.userId, ad.title);
             }
         }
 
-        // 2. විකුණුම්කරුගේ දත්ත සහ Rating ලබාගැනීම
-        function loadSellerData(sellerId) {
+        // 2. විකුණුම්කරුගේ දත්ත සහ WhatsApp Link සෑදීම
+        function loadSellerData(sellerId, adTitle) {
             db.collection("users").doc(sellerId).onSnapshot(doc => {
                 if (doc.exists) {
                     const seller = doc.data();
+                    const phone = seller.phone || "N/A";
                     document.getElementById('sellerName').innerText = seller.name || "විකුණුම්කරු";
                     document.getElementById('sellerInitial').innerText = (seller.name || "S").charAt(0).toUpperCase();
+                    document.getElementById('sellerPhone').innerText = phone;
+                    
+                    // WhatsApp Link එක සෑදීම (පොතේ අංකය 9477... ලෙස තිබිය යුතුය)
+                    if (phone !== "N/A") {
+                        const whatsappUrl = `https://wa.me/${phone}?text=Hello, I saw your ad for "${adTitle}" on Adds.ink`;
+                        document.getElementById('whatsappBtn').href = whatsappUrl;
+                    }
                     
                     const avg = seller.averageRating || 0;
                     const total = seller.totalRatings || 0;
@@ -149,16 +158,6 @@
             } catch (e) {
                 console.error(e);
             }
-        }
-
-        // 4. Chat එක විවෘත කිරීම
-        function openChat() {
-            const user = auth.currentUser;
-            if (!user) { alert("කරුණාකර Login වන්න."); return; }
-            
-            // Chat ID එකක් සාදා chat.html වෙත යැවීම
-            const chatId = user.uid > currentSellerId ? user.uid + currentSellerId : currentSellerId + user.uid;
-            window.location.href = `chat.html?chatId=${chatId}&sellerId=${currentSellerId}`;
         }
 
         window.onload = loadAdDetails;

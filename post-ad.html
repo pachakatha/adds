@@ -9,28 +9,27 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
 
     <style>
         body { background-color: #f0f2f5; font-family: 'Inter', sans-serif; color: #1c1e21; }
         .navbar { background: white; border-bottom: 1px solid #ddd; }
         .main-card { background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 40px; border: none; }
         
-        /* Image Upload Area */
-        .upload-area { border: 2px dashed #ccd0d5; border-radius: 12px; padding: 30px; text-align: center; cursor: pointer; transition: 0.3s; background: #f9fafb; }
+        .upload-area { border: 2px dashed #ccd0d5; border-radius: 12px; padding: 30px; text-align: center; cursor: pointer; transition: 0.3s; background: #f9fafb; position: relative; }
         .upload-area:hover { border-color: #ff4757; background: #fff5f5; }
         .upload-icon { font-size: 35px; color: #ff4757; margin-bottom: 10px; }
         .preview-img { width: 100%; max-height: 250px; object-fit: cover; border-radius: 10px; display: none; margin-top: 15px; }
 
-        /* Premium Switch Styling */
         .premium-box { background: #fff9db; border: 1px solid #fab005; border-radius: 12px; padding: 15px; margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between; }
         .form-check-input:checked { background-color: #fab005; border-color: #fab005; }
 
         .btn-post { background: #ff4757; color: white; border: none; padding: 14px; border-radius: 10px; font-weight: 700; font-size: 1.1rem; transition: 0.3s; }
         .btn-post:hover { background: #e03d4a; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255, 71, 87, 0.3); }
-        .form-control { border-radius: 8px; padding: 12px; border: 1px solid #ddd; }
+        .form-control, .form-select { border-radius: 8px; padding: 12px; border: 1px solid #ddd; }
     </style>
 </head>
 <body>
@@ -51,14 +50,28 @@
                     <div class="mb-4 text-center">
                         <label class="form-label fw-bold d-block text-start">භාණ්ඩයේ පින්තූරයක් එක් කරන්න</label>
                         <div class="upload-area" id="uploadArea" onclick="document.getElementById('imageFile').click()">
-                            <i class="fas fa-camera upload-icon"></i>
-                            <p class="mb-0 fw-semibold text-muted">පින්තූරය තෝරන්න (Click to upload)</p>
+                            <div id="uploadPlaceholder">
+                                <i class="fas fa-camera upload-icon"></i>
+                                <p class="mb-0 fw-semibold text-muted">පින්තූරය තෝරන්න (Click to upload)</p>
+                            </div>
                             <input type="file" id="imageFile" hidden accept="image/*">
                             <img id="imagePreview" class="preview-img img-fluid">
                         </div>
                     </div>
 
                     <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label fw-bold">ප්‍රභේදය (Category)</label>
+                            <select class="form-select" id="category" required>
+                                <option value="">ප්‍රභේදය තෝරන්න</option>
+                                <option value="Vehicles">වාහන</option>
+                                <option value="Electronics">ඉලෙක්ට්‍රොනික</option>
+                                <option value="Property">නිවාස/ඉඩම්</option>
+                                <option value="Home">ගෘහ භාණ්ඩ</option>
+                                <option value="Jobs">රැකියා</option>
+                                <option value="Services">සේවා</option>
+                            </select>
+                        </div>
                         <div class="col-md-8 mb-3">
                             <label class="form-label fw-bold">දැන්වීමේ මාතෘකාව</label>
                             <input type="text" class="form-control" id="title" placeholder="උදා: iPhone 13 Pro" required>
@@ -104,36 +117,24 @@
       apiKey: "AIzaSyBvTTRbiSEyuYi7XCM5_tHvjaZzaFN_8IQ",
       authDomain: "add-ink.firebaseapp.com",
       projectId: "add-ink",
-      storageBucket: "add-ink.firebasestorage.app",
+      storageBucket: "add-ink.firebasestorage.app", // මෙතන storage.app ද බලන්න (ඔබේ එක නිවැරදියි)
       messagingSenderId: "752189116425",
-      appId: "1:752189116425:web:3aa935b30b1b9154e3e8d8",
-      measurementId: "G-Q8R7HZVJB0"
+      appId: "1:752189116425:web:3aa935b30b1b9154e3e8d8"
     };
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const storage = firebase.storage();
 
-    // Premium Switch එක Click කළ විට payment.html වෙත යන්න
-    document.getElementById('premiumSwitch').addEventListener('change', function() {
-        if(this.checked) {
-            if(confirm("Premium දැන්වීමක් පල කිරීමට ගෙවීම් සිදුකළ යුතුය. ඔබව Payment පිටුවට යොමු කරන්නද?")) {
-                window.location.href = 'payment.html';
-            } else {
-                this.checked = false; // Cancel කළොත් switch එක off කරන්න
-            }
-        }
-    });
-
-    // Image Preview function
+    // Image Preview
     document.getElementById('imageFile').onchange = e => {
         const [file] = e.target.files;
         if (file) {
             const preview = document.getElementById('imagePreview');
+            const placeholder = document.getElementById('uploadPlaceholder');
             preview.src = URL.createObjectURL(file);
             preview.style.display = 'block';
-            document.querySelector('.upload-icon').style.display = 'none';
-            document.querySelector('.upload-area p').style.display = 'none';
+            placeholder.style.display = 'none';
         }
     }
 
@@ -149,19 +150,20 @@
         btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> ඇඩ් එක පල වෙමින් පවතී...';
 
         try {
-            // 1. Upload Image
-            const storageRef = storage.ref('ad_images/' + Date.now() + "_" + file.name);
-            await storageRef.put(file);
-            const imageUrl = await storageRef.getDownloadURL();
+            // 1. Upload Image to Storage
+            const storageRef = storage.ref('posts/' + Date.now() + "_" + file.name);
+            const uploadTask = await storageRef.put(file);
+            const imageUrl = await uploadTask.ref.getDownloadURL();
 
-            // 2. Save Data
-            await db.collection("ads").add({
+            // 2. Save Data to Firestore (Collection name 'posts' ලෙස වෙනස් කළා index එකට ගැලපෙන්න)
+            await db.collection("posts").add({
                 title: document.getElementById('title').value,
                 price: document.getElementById('price').value,
                 description: document.getElementById('desc').value,
                 location: document.getElementById('location').value,
+                category: document.getElementById('category').value,
                 imageUrl: imageUrl,
-                isPremium: document.getElementById('premiumSwitch').checked,
+                isFeatured: document.getElementById('premiumSwitch').checked, // 'isPremium' වෙනුවට 'isFeatured'
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
 
@@ -169,11 +171,21 @@
             window.location.href = 'index.html';
 
         } catch (error) {
+            console.error(error);
             alert("වැරැද්දක් සිදුවුණා: " + error.message);
             btn.disabled = false;
             btn.innerText = "පල කරන්න (Post Ad)";
         }
     };
+
+    // Premium Switch Logic
+    document.getElementById('premiumSwitch').addEventListener('change', function() {
+        if(this.checked) {
+            if(!confirm("Premium දැන්වීමක් පල කිරීමට ගෙවීම් සිදුකළ යුතුය. ඔබව Payment පිටුවට යොමු කරන්නද?")) {
+                this.checked = false;
+            }
+        }
+    });
 </script>
 
 </body>

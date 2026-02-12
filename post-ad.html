@@ -44,8 +44,9 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">පින්තූරයේ URL (Image URL)</label>
-                <input type="url" id="postImage" placeholder="https://example.com/image.jpg" class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:border-orange-500">
+                <label class="block text-sm font-medium text-gray-700 mb-2">පින්තූරයේ URL (Google Drive හෝ වෙනත්)</label>
+                <input type="url" id="postImage" placeholder="https://..." class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:border-orange-500">
+                <p class="text-xs text-gray-500 mt-2">පින්තූරයක් අවශ්ය නම්, එය Google Drive හෝ වෙනත් අඩවියකට උඩුගත කර එහි සෘජු ලින්ක් එක (Direct Link) මෙතැනට ඇතුළත් කරන්න. (අනිවාර්ය නොවේ)</p>
             </div>
 
             <div>
@@ -69,9 +70,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
         import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
-        import { getAuth } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
 
-        // ඔබේ Config එක
         const firebaseConfig = {
             apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
             authDomain: "adds-ink.firebaseapp.com",
@@ -86,6 +86,14 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
 
+        // --- පරීක්ෂාව: ලොග් වී නැතිනම් පිටුවට ඇතුළු වීමට ඉඩ නොදෙයි ---
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                alert("දැන්වීමක් පළ කිරීමට ප්‍රථම කරුණාකර ලොග් වන්න.");
+                window.location.href = "login.html";
+            }
+        });
+
         async function addPost() {
             const titleInput = document.getElementById('postTitle');
             const contentInput = document.getElementById('postContent');
@@ -94,7 +102,6 @@
             const phoneInput = document.getElementById('postPhone');
             const imageInput = document.getElementById('postImage');
             
-            // දත්ත ලබාගැනීම
             const title = titleInput.value;
             const content = contentInput.value;
             const category = categoryInput.value;
@@ -102,47 +109,35 @@
             const phone = phoneInput.value;
             const imageUrl = imageInput.value;
 
-            // සරල පරීක්ෂාව
             if (title === "" || content === "" || district === "" || phone === "") {
-                alert("සියලුම තොරතුරු ඇතුළත් කරන්න.");
+                alert("කරුණාකර අත්‍යවශ්‍ය තොරතුරු සියල්ල ඇතුළත් කරන්න.");
                 return;
             }
 
             try {
-                // දත්ත Firestore එකට එකතු කිරීම
                 const docRef = await addDoc(collection(db, "posts"), {
                     title: title,
                     content: content,
                     category: category,
                     district: district,
                     phone: phone,
-                    imageUrl: imageUrl,
+                    // පින්තූරයක් දමා නැතිනම් Placeholder එකක් යැවේ
+                    imageUrl: imageUrl || "https://via.placeholder.com/300x200?text=No+Image",
                     createdAt: serverTimestamp(),
-                    author: auth.currentUser ? auth.currentUser.uid : "Anonymous",
-                    // DEFAULT: Normal Ad (Premium නෑ)
+                    author: auth.currentUser.uid,
+                    authorEmail: auth.currentUser.email,
                     isFeatured: false 
                 });
 
-                console.log("Post ID: ", docRef.id);
-                alert("දැන්වීම සාර්ථකව පළ විය! එය Normal දැන්වීමක් ලෙස පෙන්වනු ඇත.");
-                
-                // Fields හිස් කිරීම
-                titleInput.value = "";
-                contentInput.value = "";
-                districtInput.value = "";
-                phoneInput.value = "";
-                imageInput.value = "";
-                
-                // මුල් පිටුවට යාම
+                alert("දැන්වීම සාර්ථකව පළ විය!");
                 window.location.href = "index.html";
                 
             } catch (e) {
                 console.error("Error: ", e);
-                alert("දැන්වීම පළ කිරීමට නොහැකි විය.");
+                alert("දැන්වීම පළ කිරීමට නොහැකි විය. කරුණාකර නැවත උත්සාහ කරන්න.");
             }
         }
 
-        // 5. Button click event එක
         document.getElementById('submitBtn').addEventListener('click', addPost);
     </script>
 </body>

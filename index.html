@@ -28,10 +28,11 @@
             background-size: cover; background-position: center;
         }
         .premium-card { border: 2px solid #FFD700; background: linear-gradient(145deg, #ffffff, #fffef0); box-shadow: 0 10px 20px rgba(255, 215, 0, 0.15); }
-        .glass-effect { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .glass-effect { background: rgba(255, 255, 255, 0.95); backdrop-blur: blur(10px); }
         .category-sidebar button:hover { background: #fff7ed; color: #FF7F00; }
         .active-cat { background: #FF7F00 !important; color: white !important; }
-        .banner-box { overflow: hidden; border-radius: 20px; margin-bottom: 20px; }
+        /* Banner styles to keep layout */
+        .banner-container:empty { display: none; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -42,7 +43,6 @@
                 <span>මුළු සාමාජිකයින්: <span id="userCount" class="text-primary">0</span></span>
                 <span>සජීවී දැන්වීම්: <span id="adCount" class="text-primary">0</span></span>
             </div>
-            <div class="hidden md:block">LankaAds - Sri Lanka's Trusted Marketplace</div>
         </div>
     </div>
 
@@ -53,7 +53,7 @@
         </div>
     </nav>
 
-    <div id="topBanner" class="container mx-auto px-6 mt-4"></div>
+    <div id="topBanner" class="container mx-auto px-6 mt-6 banner-container"></div>
 
     <div class="hero-bg text-white relative overflow-hidden">
         <div class="container mx-auto px-6 py-16 text-center relative z-10">
@@ -63,8 +63,9 @@
                 <input type="text" id="searchInput" onkeyup="filterAds()" placeholder="මොනවද සොයන්නේ?" class="flex-[2] p-4 rounded-full text-dark outline-none bg-transparent px-6 text-lg">
                 <select id="districtFilter" onchange="filterAds()" class="flex-1 p-4 rounded-full text-dark outline-none bg-gray-100 border-none px-6 font-bold cursor-pointer">
                     <option value="All">දිස්ත්‍රික්කය</option>
-                    <option value="Colombo">Colombo</option><option value="Gampaha">Gampaha</option><option value="Kandy">Kandy</option>
-                    </select>
+                    <option value="Colombo">Colombo</option><option value="Gampaha">Gampaha</option>
+                    <option value="Kandy">Kandy</option>
+                </select>
                 <button onclick="filterAds()" class="bg-primary text-white px-10 py-4 rounded-full font-black hover:bg-orange-600 transition shadow-lg">සොයන්න</button>
             </div>
         </div>
@@ -77,24 +78,18 @@
                 <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm sticky top-24">
                     <h4 class="font-black text-dark mb-5 border-b pb-2 uppercase text-xs tracking-widest">වර්ගීකරණයන්</h4>
                     <div class="category-sidebar space-y-1">
-                        <button onclick="setCategory('All')" class="w-full text-left p-3 rounded-xl font-bold text-sm transition flex items-center justify-between active-cat" id="cat-All">
-                            <span>🏠 සියලුම ඇඩ්ස්</span>
-                        </button>
+                        <button onclick="setCategory('All')" class="w-full text-left p-3 rounded-xl font-bold text-sm transition active-cat" id="cat-All">🏠 සියලුම ඇඩ්ස්</button>
                         <button onclick="setCategory('Electronics')" class="w-full text-left p-3 rounded-xl font-bold text-sm transition" id="cat-Electronics">📱 Electronics</button>
                         <button onclick="setCategory('Vehicles')" class="w-full text-left p-3 rounded-xl font-bold text-sm transition" id="cat-Vehicles">🚗 Vehicles</button>
                         <button onclick="setCategory('Property')" class="w-full text-left p-3 rounded-xl font-bold text-sm transition" id="cat-Property">🏠 Property</button>
-                        <button onclick="setCategory('Home & Garden')" class="w-full text-left p-3 rounded-xl font-bold text-sm transition" id="cat-Home">🛋️ Home & Garden</button>
-                        <button onclick="setCategory('Fashion & Beauty')" class="w-full text-left p-3 rounded-xl font-bold text-sm transition" id="cat-Fashion">👗 Fashion</button>
-                        <button onclick="setCategory('Jobs')" class="w-full text-left p-3 rounded-xl font-bold text-sm transition" id="cat-Jobs">💼 Jobs</button>
-                        <button onclick="setCategory('Animals')" class="w-full text-left p-3 rounded-xl font-bold text-sm transition" id="cat-Animals">🐕 Animals</button>
                     </div>
                     
-                    <div id="sideBanner" class="mt-8"></div>
+                    <div id="sideBanner" class="mt-8 banner-container"></div>
                 </div>
             </div>
 
             <div class="w-full lg:w-3/4">
-                <div id="middleBanner"></div>
+                <div id="middleBanner" class="banner-container mb-6"></div>
 
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-xl font-black text-dark uppercase tracking-tight">නවතම දැන්වීම් - <span id="currentCategoryText" class="text-primary">සියල්ල</span></h3>
@@ -104,13 +99,12 @@
                 <div id="adsGrid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                     </div>
 
-                <div id="bottomBanner" class="mt-10"></div>
+                <div id="bottomBanner" class="mt-10 banner-container"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // ඔබගේ නිවැරදි API Config
         const firebaseConfig = {
             apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
             authDomain: "adds-ink.firebaseapp.com",
@@ -127,48 +121,50 @@
 
         let allAds = [];
 
-        // 1. Load Banners from Admin
+        // 1. Load Banners - Only if data exists
         function loadAdminBanners() {
             db.collection("banners").onSnapshot(snap => {
-                const top = document.getElementById('topBanner');
-                const mid = document.getElementById('middleBanner');
-                const bottom = document.getElementById('bottomBanner');
-                const side = document.getElementById('sideBanner');
+                const containers = {
+                    'top': document.getElementById('topBanner'),
+                    'middle': document.getElementById('middleBanner'),
+                    'bottom': document.getElementById('bottomBanner'),
+                    'side': document.getElementById('sideBanner')
+                };
                 
-                top.innerHTML = mid.innerHTML = bottom.innerHTML = side.innerHTML = "";
+                // Clear all
+                Object.values(containers).forEach(c => c.innerHTML = "");
 
                 snap.forEach(doc => {
                     const b = doc.data();
-                    const html = `
-                        <div class="banner-box bg-white border border-gray-100 shadow-sm p-4 mb-6">
-                            ${b.img ? `<img src="${b.img}" class="w-full rounded-xl mb-3 h-auto object-cover">` : ''}
-                            <div class="prose prose-sm max-w-none text-sm">${b.content}</div>
-                        </div>
-                    `;
-                    if(b.pos === 'top') top.innerHTML += html;
-                    if(b.pos === 'middle') mid.innerHTML += html;
-                    if(b.pos === 'bottom') bottom.innerHTML += html;
-                    if(b.pos === 'side') side.innerHTML += html;
+                    if (containers[b.pos]) {
+                        containers[b.pos].innerHTML += `
+                            <div class="bg-white border border-gray-100 shadow-sm p-4 mb-4 rounded-2xl">
+                                ${b.img ? `<img src="${b.img}" class="w-full rounded-xl mb-3 h-auto object-cover">` : ''}
+                                <div class="prose prose-sm max-w-none text-sm">${b.content}</div>
+                            </div>
+                        `;
+                    }
                 });
             });
         }
 
-        // 2. Load Stats (Users and Ads)
+        // 2. Load Stats
         function loadStats() {
-            db.collection("posts").onSnapshot(snap => {
+            db.collection("posts").where("status", "==", "approved").onSnapshot(snap => {
                 document.getElementById('adCount').innerText = snap.size;
             });
-            // Users ගණන සඳහා (මෙය Users collection එකක් තිබේ නම් පමණි)
             db.collection("users").onSnapshot(snap => {
-                document.getElementById('userCount').innerText = snap.size || '150+';
+                document.getElementById('userCount').innerText = snap.size || '100+';
             });
         }
 
-        // 3. Fetch Ads (ikman style logic)
+        // 3. Fetch Ads (ikman style logic - Fixed)
         function fetchAds() {
-            db.collection("posts").where("status", "==", "approved").orderBy("isPremium", "desc").orderBy("createdAt", "desc")
+            db.collection("posts").where("status", "==", "approved").orderBy("createdAt", "desc")
             .onSnapshot(snapshot => {
                 allAds = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                // Sort premium ads to the top locally
+                allAds.sort((a, b) => (b.isPremium === true) - (a.isPremium === true));
                 renderAds(allAds);
             });
         }
@@ -202,7 +198,7 @@
         function setCategory(cat) {
             document.getElementById('currentCategoryText').innerText = (cat === 'All') ? 'සියල්ල' : cat;
             document.querySelectorAll('.category-sidebar button').forEach(b => b.classList.remove('active-cat'));
-            document.getElementById('cat-' + cat.replace(' & ', '')).classList.add('active-cat');
+            document.getElementById('cat-' + cat.replace(' & ', '').replace(' ', '')).classList.add('active-cat');
             
             if (cat === 'All') renderAds(allAds);
             else renderAds(allAds.filter(ad => ad.category === cat));
@@ -215,7 +211,6 @@
             renderAds(filtered);
         }
 
-        // Auth Logic (ඔබේ පැරණි කේතය එලෙසම තබා ඇත)
         auth.onAuthStateChanged(user => {
             const authDiv = document.getElementById('authButtons');
             if (user) {

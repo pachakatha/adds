@@ -8,44 +8,54 @@
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Poppins', sans-serif; }
-        /* Editor එක ලොකුවට පෙන්වීමට */
-        .ql-container { height: 350px !important; font-size: 16px; border-radius: 0 0 15px 15px; }
-        .ql-toolbar { border-radius: 15px 15px 0 0; background: #f1f5f9; }
-        /* Sidebar active link style */
-        .nav-link.active { background-color: #f97316; }
+        body { font-family: 'Poppins', sans-serif; overflow-x: hidden; }
+        /* Editor එකේ උස සහ පළල සම්පූර්ණයෙන්ම පාලනය කිරීම */
+        .ql-container { height: 450px !important; font-size: 18px; border-radius: 0 0 15px 15px; background: white; }
+        .ql-toolbar { border-radius: 15px 15px 0 0; background: #f8fafc; padding: 10px !important; }
+        .nav-link.active { background-color: #f97316 !important; color: white; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3); }
+        .sidebar { transition: all 0.3s ease; }
     </style>
 </head>
-<body class="bg-gray-50 flex">
+<body class="bg-gray-100 flex">
 
-    <div class="min-h-screen w-64 bg-slate-900 text-white p-6 fixed shadow-2xl z-30 flex flex-col">
-        <h1 class="text-2xl font-black mb-10 text-orange-500 border-b border-slate-700 pb-4">Super Admin</h1>
-        <nav class="space-y-4 flex-grow">
-            <button onclick="showSection('ads', this)" class="nav-link w-full text-left p-3 rounded-xl hover:bg-slate-700 transition active">📊 සියලුම දැන්වීම්</button>
-            <button onclick="showSection('premium', this)" class="nav-link w-full text-left p-3 rounded-xl hover:bg-slate-700 transition">⭐ Premium ඉල්ලීම්</button>
-            <button onclick="showSection('banners', this)" class="nav-link w-full text-left p-3 rounded-xl hover:bg-slate-700 transition">🖼️ බැනර් සහ පෙළ ඇඩ්</button>
+    <div class="sidebar min-h-screen w-72 bg-slate-950 text-white p-6 fixed shadow-2xl z-30 flex flex-col">
+        <h1 class="text-2xl font-black mb-10 text-orange-500 border-b border-slate-800 pb-4 text-center tracking-tighter">ADMIN PANEL</h1>
+        
+        <nav class="space-y-3 flex-grow">
+            <button id="btn-ads" onclick="showSection('ads', this)" class="nav-link active w-full text-left p-4 rounded-2xl hover:bg-slate-800 transition flex items-center gap-3 font-medium">
+                <span class="text-xl">📊</span> සියලුම දැන්වීම්
+            </button>
+            <button id="btn-premium" onclick="showSection('premium', this)" class="nav-link w-full text-left p-4 rounded-2xl hover:bg-slate-800 transition flex items-center gap-3 font-medium">
+                <span class="text-xl">⭐</span> Premium ඉල්ලීම්
+            </button>
+            <button id="btn-banners" onclick="showSection('banners', this)" class="nav-link w-full text-left p-4 rounded-2xl hover:bg-slate-800 transition flex items-center gap-3 font-medium">
+                <span class="text-xl">🖼️</span> බැනර් සහ පෙළ ඇඩ්
+            </button>
         </nav>
-        <div class="p-4 bg-slate-800 rounded-2xl mt-auto">
-            <p class="text-xs text-gray-400">මුළු අමුත්තන්</p>
-            <p id="totalVisitors" class="text-2xl font-bold text-blue-400">0</p>
+
+        <div class="p-5 bg-slate-900 rounded-3xl mt-auto border border-slate-800 text-center">
+            <p class="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-1">Live Visitors</p>
+            <p id="totalVisitors" class="text-4xl font-black text-blue-500">0</p>
         </div>
     </div>
 
-    <div class="flex-1 ml-64 p-8">
+    <div class="flex-1 ml-72 p-10">
         
         <div id="adsSection">
-            <div class="flex justify-between items-center mb-8">
-                <h2 id="sectionTitle" class="text-3xl font-bold text-slate-800">සියලුම දැන්වීම්</h2>
-                <span class="bg-white p-3 rounded-xl shadow-sm border text-sm font-bold">මුළු ඇඩ්ස්: <span id="totalAds">0</span></span>
+            <div class="flex justify-between items-center mb-10">
+                <h2 id="sectionTitle" class="text-4xl font-black text-slate-900 tracking-tight">සියලුම දැන්වීම්</h2>
+                <div class="bg-white px-8 py-4 rounded-2xl shadow-sm border border-gray-100 font-bold text-slate-700">
+                    Total: <span id="totalAds" class="text-orange-500 text-xl ml-2">0</span>
+                </div>
             </div>
 
-            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
+            <div class="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-gray-100">
                 <table class="w-full text-left">
-                    <thead class="bg-slate-900 text-white text-xs uppercase tracking-widest">
+                    <thead class="bg-slate-950 text-white text-[11px] uppercase tracking-[0.3em] font-bold">
                         <tr>
-                            <th class="p-5">දැන්වීම</th>
-                            <th class="p-5">තත්ත්වය</th>
-                            <th class="p-5 text-center">ක්‍රියාකාරකම්</th>
+                            <th class="p-7">දැන්වීමේ විස්තර</th>
+                            <th class="p-7">තත්ත්වය</th>
+                            <th class="p-7 text-center">පාලනය</th>
                         </tr>
                     </thead>
                     <tbody id="adsTableBody" class="divide-y divide-gray-100">
@@ -55,34 +65,40 @@
         </div>
 
         <div id="bannersSection" class="hidden">
-            <h2 class="text-3xl font-bold mb-8 text-slate-800">බැනර් සහ පෙළ ඇඩ් එකතු කිරීම</h2>
+            <h2 class="text-4xl font-black text-slate-900 mb-10 tracking-tight">බැනර් සහ පෙළ ඇඩ් කළමනාකරණය</h2>
             
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="bg-white p-8 rounded-3xl shadow-xl border border-gray-100">
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2">පින්තූර ලින්ක් එක (තිබේ නම් පමණක්)</label>
-                            <input type="url" id="bannerImg" placeholder="https://..." class="w-full p-3 bg-gray-50 rounded-xl border border-gray-200 outline-none focus:border-orange-500">
+            <div class="space-y-10">
+                <div class="bg-white p-10 rounded-[2.5rem] shadow-2xl border border-gray-100 w-full">
+                    <h3 class="text-xl font-bold mb-8 text-slate-800 flex items-center gap-2">
+                        <span class="p-2 bg-orange-100 text-orange-500 rounded-lg">➕</span> නව බැනරයක් හෝ පෙළක් එක් කරන්න
+                    </h3>
+                    <div class="space-y-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="text-xs font-black uppercase text-gray-400 ml-2">පින්තූර ලින්ක් එක (Image URL)</label>
+                                <input type="url" id="bannerImg" placeholder="https://..." class="w-full p-5 bg-gray-50 rounded-2xl border-none ring-1 ring-gray-200 outline-none focus:ring-2 focus:ring-orange-500 transition">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-xs font-black uppercase text-gray-400 ml-2">පෙන්විය යුතු ස්ථානය (Position)</label>
+                                <select id="bannerPos" class="w-full p-5 bg-gray-50 rounded-2xl border-none ring-1 ring-gray-200 outline-none focus:ring-2 focus:ring-orange-500">
+                                    <option value="top">🌐 ඉහළින්ම (Top Banner)</option>
+                                    <option value="middle">📰 මැදින් (Middle Banner)</option>
+                                    <option value="bottom">🔻 යටින්ම (Bottom Banner)</option>
+                                </select>
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2">පෙළ සහ විස්තර (විශාල කොටුව)</label>
-                            <div id="editor"></div>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2">පෙන්විය යුතු ස්ථානය</label>
-                            <select id="bannerPos" class="w-full p-3 bg-gray-50 rounded-xl border border-gray-200 outline-none">
-                                <option value="top">ඉහළින්ම (Top)</option>
-                                <option value="middle">මැදින් (Middle)</option>
-                                <option value="bottom">යටින්ම (Bottom)</option>
-                            </select>
-                        </div>
-                        <button onclick="saveBanner()" class="w-full bg-orange-500 text-white p-4 rounded-xl font-bold shadow-lg hover:bg-orange-600 transition">Banner එක පළ කරන්න</button>
+                        
+                        <div class="space-y-2">
+                            <label class="text-xs font-black uppercase text-gray-400 ml-2">විස්තරය (Word Document එකක් මෙන් මෙහි ටයිප් කරන්න)</label>
+                            <div id="editor"></div> </div>
+                        
+                        <button onclick="saveBanner()" class="w-full bg-slate-950 text-white p-6 rounded-2xl font-black shadow-xl hover:bg-orange-500 transition-all duration-300 uppercase tracking-[0.2em]">Banner එක පළ කරන්න</button>
                     </div>
                 </div>
 
-                <div class="bg-white p-8 rounded-3xl shadow-xl border border-gray-100">
-                    <h3 class="font-bold text-xl mb-6">දැනට පවතින බැනර්</h3>
-                    <div id="bannerList" class="space-y-4">
+                <div class="bg-white p-10 rounded-[2.5rem] shadow-2xl border border-gray-100">
+                    <h3 class="text-xl font-bold mb-8 text-slate-800">දැනට පවතින බැනර් ලැයිස්තුව</h3>
+                    <div id="bannerList" class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         </div>
                 </div>
             </div>
@@ -107,33 +123,28 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Quill Editor සකස් කිරීම
+        // Quill Editor - Expanded Toolbar
         var quill = new Quill('#editor', {
             theme: 'snow',
-            modules: { toolbar: [['bold', 'italic', 'underline'], [{ 'color': [] }, { 'background': [] }], [{ 'align': [] }], ['clean']] }
+            placeholder: 'දැන්වීම් විස්තරය මෙහි ලියන්න...',
+            modules: { toolbar: [['bold', 'italic', 'underline', 'strike'], [{ 'header': [1, 2, 3, false] }], [{ 'color': [] }, { 'background': [] }], [{ 'align': [] }], ['clean']] }
         });
 
-        // --- Functions Exposed to Global Window ---
-        
-        let currentSection = 'ads';
         let currentFilter = 'all';
 
         window.showSection = (section, btn) => {
-            currentSection = section;
-            currentFilter = (section === 'premium') ? 'premium' : 'all';
-            
-            // Update active state in nav
-            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             btn.classList.add('active');
 
-            if (section === 'banners') {
+            if(section === 'banners') {
                 document.getElementById('adsSection').classList.add('hidden');
                 document.getElementById('bannersSection').classList.remove('hidden');
             } else {
+                currentFilter = section;
                 document.getElementById('adsSection').classList.remove('hidden');
                 document.getElementById('bannersSection').classList.add('hidden');
                 document.getElementById('sectionTitle').innerText = (section === 'premium') ? "Premium ඉල්ලීම්" : "සියලුම දැන්වීම්";
-                loadAds(); // Reload data
+                loadAds();
             }
         };
 
@@ -143,98 +154,79 @@
         };
 
         window.makePremium = async (id) => {
-            await updateDoc(doc(db, "posts", id), { 
-                isPremium: true, 
-                status: "approved",
-                premiumStatus: "active" 
-            });
-            alert("දැන්වීම Premium කළා!");
+            await updateDoc(doc(db, "posts", id), { isPremium: true, status: "approved", premiumStatus: "active" });
+            alert("ප්‍රිමියම් කළා!");
         };
 
         window.deleteAd = async (id) => {
-            if(confirm("මෙම දැන්වීම සදහටම මකා දමන්නද?")) {
-                await deleteDoc(doc(db, "posts", id));
-            }
+            if(confirm("මෙය සදහටම මකා දමන්නද?")) await deleteDoc(doc(db, "posts", id));
         };
 
         window.saveBanner = async () => {
             const img = document.getElementById('bannerImg').value;
             const content = quill.root.innerHTML;
             const pos = document.getElementById('bannerPos').value;
-
-            if(content === "<p><br></p>" && !img) return alert("විස්තරයක් හෝ පින්තූරයක් ඇතුළත් කරන්න.");
-
+            if(content === "<p><br></p>" && !img) return alert("හිස් බැනර් ඇතුළත් කළ නොහැක!");
+            
             await addDoc(collection(db, "banners"), { img, content, pos, createdAt: new Date() });
-            alert("Banner එක සාර්ථකව එකතු කළා!");
-            quill.setContents([]);
-            document.getElementById('bannerImg').value = "";
+            alert("සාර්ථකව පළ කළා!");
+            quill.setContents([]); document.getElementById('bannerImg').value = "";
         };
 
         window.deleteBanner = async (id) => {
-            if(confirm("බැනර් එක ඉවත් කරන්නද?")) await deleteDoc(doc(db, "banners", id));
+            if(confirm("බැනරය ඉවත් කරන්නද?")) await deleteDoc(doc(db, "banners", id));
         };
-
-        // --- Real-time Data Listeners ---
 
         function loadAds() {
             let q = collection(db, "posts");
-            if (currentFilter === 'premium') {
-                q = query(collection(db, "posts"), where("premiumStatus", "==", "waiting_approval"));
-            }
+            if (currentFilter === 'premium') q = query(q, where("premiumStatus", "==", "waiting_approval"));
 
             onSnapshot(q, (snap) => {
                 const body = document.getElementById('adsTableBody');
-                if (currentFilter === 'all') document.getElementById('totalAds').innerText = snap.size;
+                if(currentFilter === 'all') document.getElementById('totalAds').innerText = snap.size;
                 body.innerHTML = "";
-                
                 snap.forEach(d => {
                     const ad = d.data();
                     body.innerHTML += `
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="p-5">
-                                <div class="font-bold text-slate-800">${ad.title}</div>
-                                <div class="text-[11px] text-gray-500">${ad.category} | රු. ${ad.price}</div>
+                        <tr class="hover:bg-slate-50 transition border-b border-gray-50">
+                            <td class="p-7">
+                                <div class="font-bold text-slate-900 text-lg leading-tight">${ad.title}</div>
+                                <div class="text-[11px] text-gray-400 uppercase font-black mt-2 tracking-widest">${ad.category} | ${ad.district}</div>
                             </td>
-                            <td class="p-5">
-                                <span class="px-3 py-1 rounded-full text-[10px] font-bold ${ad.isPremium ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-500'}">
+                            <td class="p-7">
+                                <span class="px-4 py-2 rounded-xl text-[10px] font-black tracking-widest ${ad.isPremium ? 'bg-orange-100 text-orange-600' : 'bg-slate-100 text-slate-500'}">
                                     ${ad.isPremium ? 'PREMIUM' : 'NORMAL'}
                                 </span>
                             </td>
-                            <td class="p-5 flex gap-2 justify-center">
-                                <button onclick="approveAd('${d.id}')" class="bg-green-600 text-white px-3 py-1 rounded-lg text-xs font-bold shadow-sm">Approve</button>
-                                <button onclick="makePremium('${d.id}')" class="bg-amber-500 text-white px-3 py-1 rounded-lg text-xs font-bold shadow-sm">⭐ Premium</button>
-                                <button onclick="deleteAd('${d.id}')" class="bg-red-500 text-white px-3 py-1 rounded-lg text-xs font-bold shadow-sm">Delete</button>
+                            <td class="p-7 flex gap-3 justify-center">
+                                <button onclick="approveAd('${d.id}')" class="bg-emerald-500 text-white px-5 py-3 rounded-2xl text-xs font-black hover:shadow-lg transition">APPROVE</button>
+                                <button onclick="makePremium('${d.id}')" class="bg-orange-500 text-white px-5 py-3 rounded-2xl text-xs font-black hover:shadow-lg transition">⭐ PREMIUM</button>
+                                <button onclick="deleteAd('${d.id}')" class="bg-rose-500 text-white px-5 py-3 rounded-2xl text-xs font-black hover:shadow-lg transition">DELETE</button>
                             </td>
-                        </tr>
-                    `;
+                        </tr>`;
                 });
             });
         }
 
         onSnapshot(collection(db, "banners"), (snap) => {
-            const list = document.getElementById('bannerList');
-            list.innerHTML = "";
+            const list = document.getElementById('bannerList'); list.innerHTML = "";
             snap.forEach(d => {
                 const b = d.data();
                 list.innerHTML += `
-                    <div class="p-4 bg-gray-50 rounded-2xl border relative border-gray-200">
-                        <div class="text-xs font-black text-orange-600 uppercase mb-2">ස්ථානය: ${b.pos}</div>
-                        ${b.img ? `<img src="${b.img}" class="w-full h-20 object-cover rounded-lg mb-2">` : ''}
-                        <div class="text-sm prose prose-sm max-w-none">${b.content}</div>
-                        <button onclick="deleteBanner('${d.id}')" class="absolute top-2 right-2 bg-red-100 text-red-600 px-2 py-1 rounded-lg text-xs font-bold hover:bg-red-600 hover:text-white transition">ඉවත් කරන්න</button>
-                    </div>
-                `;
+                    <div class="p-8 bg-slate-50 rounded-[2rem] border border-slate-200 relative group overflow-hidden shadow-sm">
+                        <div class="text-[10px] font-black text-orange-500 uppercase tracking-[0.3em] mb-4">Slot: ${b.pos}</div>
+                        ${b.img ? `<img src="${b.img}" class="w-full h-40 object-cover rounded-2xl mb-6 shadow-md">` : ''}
+                        <div class="prose prose-slate max-w-none text-slate-700">${b.content}</div>
+                        <button onclick="deleteBanner('${d.id}')" class="absolute top-6 right-6 bg-white text-rose-500 p-3 rounded-full shadow-lg hover:bg-rose-500 hover:text-white transition-all scale-0 group-hover:scale-100">✕</button>
+                    </div>`;
             });
         });
 
-        // Visitor Count
         onSnapshot(doc(db, "analytics", "siteStats"), (d) => {
             if(d.exists()) document.getElementById('totalVisitors').innerText = d.data().totalVisitors;
         });
 
-        // Initial Load
         loadAds();
-
     </script>
 </body>
 </html>

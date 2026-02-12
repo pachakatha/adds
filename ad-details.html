@@ -44,7 +44,7 @@
                     <div class="flex flex-col items-center md:items-end">
                         <p class="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">විකුණුම්කරු අමතන්න</p>
                         <a id="phoneBtn" href="#" class="bg-blue-600 text-white px-6 py-3 rounded-2xl font-black text-xl hover:bg-blue-700 transition shadow-lg flex items-center gap-2">
-                            📞 <span id="sellerPhone">පූරණය වේ...</span>
+                            📞 <span id="sellerPhone">අංකය පූරණය වේ...</span>
                         </a>
                     </div>
                 </div>
@@ -64,7 +64,7 @@
                             <option value="2">⭐⭐ (අඩුයි)</option>
                             <option value="1">⭐ (නරකයි)</option>
                         </select>
-                        <button onclick="submitRating()" class="bg-dark bg-black text-white px-6 py-2 rounded-lg text-sm font-bold hover:bg-gray-800">Rate</button>
+                        <button onclick="submitRating()" class="bg-black text-white px-6 py-2 rounded-lg text-sm font-bold hover:bg-gray-800">Rate</button>
                     </div>
                 </div>
             </div>
@@ -101,45 +101,57 @@
                 
                 document.getElementById('adTitle').innerText = ad.title;
                 document.getElementById('adPrice').innerText = "රු. " + Number(ad.price).toLocaleString();
-                document.getElementById('adLocation').innerText = "📍 " + (ad.district || "දිස්ත්‍රික්කය සඳහන් කර නැත");
+                document.getElementById('adLocation').innerText = "📍 " + (ad.district || "ලංකාව");
                 document.getElementById('adDescription').innerText = ad.description;
                 document.getElementById('adImage').src = ad.imageUrl || "https://via.placeholder.com/600x400";
                 
-                loadSellerData(ad.userId);
+                // ඇඩ් එකේම තිබෙන දුරකථන අංකය පෙන්වීම (ප්‍රමුඛතාවය)
+                // මෙහිදී 'phone' හෝ 'contact' ලෙස ඔබේ database එකේ ඇති field එකේ නම පරීක්ෂා කරන්න
+                const adPhone = ad.phone || ad.contact; 
+                
+                if (adPhone) {
+                    document.getElementById('sellerPhone').innerText = adPhone;
+                    document.getElementById('phoneBtn').href = `tel:${adPhone}`;
+                } else {
+                    // ඇඩ් එකේ අංකය නැත්නම් user profile එකෙන් සොයන්න
+                    loadPhoneFromProfile(ad.userId);
+                }
+                
+                loadSellerRating(ad.userId);
             }
         }
 
-        // 2. විකුණුම්කරුගේ දත්ත සහ Phone Number ලබාගැනීම
-        function loadSellerData(sellerId) {
-            db.collection("users").doc(sellerId).onSnapshot(doc => {
-                if (doc.exists) {
-                    const seller = doc.data();
-                    const phone = seller.phone || "අංකය නොමැත";
-                    
-                    document.getElementById('sellerName').innerText = seller.name || "විකුණුම්කරු";
-                    document.getElementById('sellerInitial').innerText = (seller.name || "S").charAt(0).toUpperCase();
-                    document.getElementById('sellerPhone').innerText = phone;
-                    
-                    // Phone Button එකට 'tel:' link එක ලබා දීම (Click කළ විට Call යාමට)
-                    if (seller.phone) {
-                        document.getElementById('phoneBtn').href = `tel:${seller.phone}`;
-                    }
-                    
-                    const avg = seller.averageRating || 0;
-                    const total = seller.totalRatings || 0;
-                    document.getElementById('sellerRating').innerHTML = `★ ${avg} (${total} reviews)`;
+        // User Profile එකෙන් අංකය සෙවීම
+        function loadPhoneFromProfile(userId) {
+            db.collection("users").doc(userId).get().then(doc => {
+                if(doc.exists && doc.data().phone) {
+                    const p = doc.data().phone;
+                    document.getElementById('sellerPhone').innerText = p;
+                    document.getElementById('phoneBtn').href = `tel:${p}`;
                 } else {
-                    document.getElementById('sellerPhone').innerText = "අංකය සොයාගත නොහැක";
+                    document.getElementById('sellerPhone').innerText = "අංකය නොමැත";
                 }
             });
         }
 
-        // 3. Rating එකක් ලබා දීම
+        // Rating පෙන්වීම
+        function loadSellerRating(sellerId) {
+            db.collection("users").doc(sellerId).onSnapshot(doc => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    document.getElementById('sellerName').innerText = data.name || "විකුණුම්කරු";
+                    document.getElementById('sellerInitial').innerText = (data.name || "S").charAt(0).toUpperCase();
+                    const avg = data.averageRating || 0;
+                    const total = data.totalRatings || 0;
+                    document.getElementById('sellerRating').innerHTML = `★ ${avg} (${total} reviews)`;
+                }
+            });
+        }
+
+        // Rating ලබාදීම
         async function submitRating() {
             const user = auth.currentUser;
-            if (!user) { alert("කරුණාකර පළමුව ඇතුළු වන්න."); return; }
-            if (user.uid === currentSellerId) { alert("ඔබටම Rating ලබා දිය නොහැක."); return; }
-
+            if (!user) { alert("කරුණාකර Login වන්න."); return; }
             const score = document.getElementById('ratingScore').value;
             const sellerRef = db.collection("users").doc(currentSellerId);
 
@@ -147,22 +159,16 @@
                 const sellerDoc = await sellerRef.get();
                 const sellerData = sellerDoc.data();
                 let ratings = sellerData.ratings || [];
-                
                 ratings.push({ buyerId: user.uid, score: Number(score) });
-                
-                const totalScore = ratings.reduce((sum, r) => sum + r.score, 0);
-                const avgRating = (totalScore / ratings.length).toFixed(1);
+                const avgRating = (ratings.reduce((s, r) => s + r.score, 0) / ratings.length).toFixed(1);
 
                 await sellerRef.update({
                     ratings: ratings,
                     averageRating: Number(avgRating),
                     totalRatings: ratings.length
                 });
-
-                alert("ස්තූතියි! ඔබේ අදහස ඇතුළත් විය.");
-            } catch (e) {
-                console.error("Error: ", e);
-            }
+                alert("ස්තූතියි!");
+            } catch (e) { console.error(e); }
         }
 
         window.onload = loadAdDetails;

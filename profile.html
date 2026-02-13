@@ -1,76 +1,65 @@
 <!DOCTYPE html>
-<html lang="si">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>මගේ පැතිකඩ | LankaAds</title>
+    <title>My Profile | Lanka Ads</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Poppins', sans-serif; }</style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #f0f2f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .cover-photo { height: 200px; background: linear-gradient(to bottom, #1877f2, #0056b3); border-radius: 0 0 15px 15px; }
+        .profile-pic { width: 150px; height: 150px; margin-top: -75px; border: 5px solid white; border-radius: 50%; object-fit: cover; background: #ddd; }
+    </style>
 </head>
-<body class="bg-slate-50 min-h-screen">
+<body>
 
-    <div class="container mx-auto px-4 py-10 max-w-5xl">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            <div class="lg:col-span-1 space-y-6">
-                <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100 text-center">
-                    <div class="relative inline-block">
-                        <div class="h-24 w-24 bg-orange-500 rounded-full mx-auto flex items-center justify-center text-white text-4xl font-bold shadow-lg" id="user-initial">?</div>
-                        <div id="verify-badge" class="absolute bottom-0 right-0 h-8 w-8 bg-white border-4 border-white rounded-full flex items-center justify-center hidden">
-                            <span class="text-green-500">✓</span>
-                        </div>
-                    </div>
-                    
-                    <h2 class="text-xl font-bold mt-4" id="display-name">Loading...</h2>
-                    <p class="text-sm text-gray-400 mb-6" id="display-email"></p>
-
-                    <div id="verify-box" class="hidden bg-red-50 p-4 rounded-2xl mb-6 border border-red-100">
-                        <p class="text-xs text-red-600 font-bold mb-2">ඊමේල් එක තහවුරු කර නැත!</p>
-                        <button id="resend-verify" class="text-xs bg-red-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-red-700 transition">Email එකක් එවන්න</button>
-                    </div>
-
-                    <button id="edit-profile-btn" class="w-full py-3 border-2 border-orange-500 text-orange-600 rounded-2xl font-bold hover:bg-orange-500 hover:text-white transition">Edit Profile</button>
-                </div>
-
-                <div class="bg-white p-6 rounded-[2.5rem] shadow-sm border border-gray-100">
-                    <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
-                        <span class="w-2 h-6 bg-blue-500 rounded-full"></span> Inbox (පණිවිඩ)
-                    </h3>
-                    <div id="inbox-list" class="space-y-4 max-h-80 overflow-y-auto pr-2">
-                        <p class="text-sm text-gray-400 text-center py-4 italic">පණිවිඩ කිසිවක් නැත.</p>
+    <div class="max-w-4xl mx-auto pb-10">
+        <div class="bg-white shadow rounded-b-xl overflow-hidden">
+            <div class="cover-photo"></div>
+            <div class="px-6 pb-6 flex flex-col items-center sm:items-start sm:flex-row sm:space-x-5">
+                <img id="user-img" src="https://via.placeholder.com/150" class="profile-pic shadow-lg">
+                <div class="mt-4 text-center sm:text-left flex-1">
+                    <h1 id="user-name" class="text-3xl font-bold text-gray-900">Loading Name...</h1>
+                    <p id="user-email" class="text-gray-600">Loading Email...</p>
+                    <div id="verify-badge" class="mt-2 hidden">
+                        <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2.5 py-0.5 rounded-full"><i class="fas fa-check-circle"></i> Verified</span>
                     </div>
                 </div>
-            </div>
-
-            <div class="lg:col-span-2">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-2xl font-bold text-gray-800">මගේ දැන්වීම්</h3>
-                    <a href="post-ad.html" class="bg-orange-500 text-white px-6 py-2 rounded-xl font-bold text-sm shadow-md hover:bg-orange-600 transition">+ අලුත් එකක්</a>
+                <div class="mt-6 flex space-x-2">
+                    <button onclick="verifyEmail()" id="verify-btn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg hidden">Verify Email</button>
+                    <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg"><i class="fas fa-sign-out-alt"></i> Logout</button>
                 </div>
-                <div id="my-ads-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    </div>
             </div>
         </div>
-    </div>
 
-    <div id="edit-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center hidden z-[100]">
-        <div class="bg-white p-8 rounded-[2rem] w-full max-w-md mx-4">
-            <h3 class="text-xl font-bold mb-4">පැතිකඩ යාවත්කාලීන කරන්න</h3>
-            <div class="space-y-4">
-                <input type="text" id="new-name" placeholder="නම ඇතුළත් කරන්න" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-orange-500">
-                <div class="flex gap-2">
-                    <button id="save-profile" class="flex-1 bg-orange-500 text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-orange-600 transition">Save</button>
-                    <button id="close-modal" class="px-6 bg-gray-100 text-gray-500 rounded-2xl font-bold">Cancel</button>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 px-4">
+            <div class="space-y-6">
+                <div class="bg-white p-4 shadow rounded-xl">
+                    <h2 class="text-xl font-bold mb-4">Intro</h2>
+                    <div class="space-y-3 text-gray-700">
+                        <p id="info-phone"><i class="fas fa-phone mr-2"></i> Add Phone Number</p>
+                        <p id="info-address"><i class="fas fa-map-marker-alt mr-2"></i> Add Address</p>
+                        <button onclick="openEditModal()" class="w-full bg-gray-200 hover:bg-gray-300 font-semibold py-2 rounded-lg mt-2">Edit Details</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="md:col-span-2">
+                <div class="bg-white p-4 shadow rounded-xl mb-6">
+                    <h2 class="text-xl font-bold mb-4 text-gray-800">My Advertisements</h2>
+                    <div id="my-ads-list" class="space-y-4">
+                        <p class="text-center py-10 text-gray-500">Fetching your ads...</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, updateProfile, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
-        import { getFirestore, collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, sendEmailVerification, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, query, where, getDocs, deleteDoc, doc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
@@ -78,99 +67,103 @@
             projectId: "adds-ink",
             storageBucket: "adds-ink.firebasestorage.app",
             messagingSenderId: "638657776631",
-            appId: "1:638657776631:web:44ffdad33137bfefa57cf2",
-            measurementId: "G-Z002TVT7QX"
+            appId: "1:638657776631:web:44ffdad33137bfefa57cf2"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // Check Auth State
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                updateUI(user);
-                loadMyAds(user.uid);
-                loadInbox(user.uid);
+                document.getElementById('user-name').innerText = user.displayName || "User Name";
+                document.getElementById('user-email').innerText = user.email;
+                if(user.emailVerified) {
+                    document.getElementById('verify-badge').classList.remove('hidden');
+                } else {
+                    document.getElementById('verify-btn').classList.remove('hidden');
+                }
+                fetchMyAds(user.uid);
             } else {
                 window.location.href = "login.html";
             }
         });
 
-        function updateUI(user) {
-            document.getElementById('display-name').innerText = user.displayName || "පරිශීලක නම";
-            document.getElementById('display-email').innerText = user.email;
-            document.getElementById('user-initial').innerText = (user.displayName || user.email).charAt(0).toUpperCase();
-            
-            if (user.emailVerified) {
-                document.getElementById('verify-badge').classList.remove('hidden');
-                document.getElementById('verify-box').classList.add('hidden');
-            } else {
-                document.getElementById('verify-box').classList.remove('hidden');
-            }
-        }
-
-        // Email Verification යැවීම
-        document.getElementById('resend-verify').addEventListener('click', async () => {
-            await sendEmailVerification(auth.currentUser);
-            alert("තහවුරු කිරීමේ ඊමේල් පණිවිඩයක් ඔබගේ ලිපිනයට එවන ලදී.");
-        });
-
-        // Edit Profile Modal පාලනය
-        const modal = document.getElementById('edit-modal');
-        document.getElementById('edit-profile-btn').addEventListener('click', () => {
-            document.getElementById('new-name').value = auth.currentUser.displayName || "";
-            modal.classList.remove('hidden');
-        });
-        document.getElementById('close-modal').addEventListener('click', () => modal.classList.add('hidden'));
-
-        document.getElementById('save-profile').addEventListener('click', async () => {
-            const newName = document.getElementById('new-name').value;
-            await updateProfile(auth.currentUser, { displayName: newName });
-            alert("පැතිකඩ යාවත්කාලීන කරන ලදී!");
-            location.reload();
-        });
-
-        // Inbox පණිවිඩ ගෙන්වීම
-        async function loadInbox(uid) {
-            const q = query(collection(db, "messages"), where("receiverId", "==", uid), orderBy("createdAt", "desc"));
-            const snapshot = await getDocs(q);
-            const list = document.getElementById('inbox-list');
-            
-            if (!snapshot.empty) {
-                list.innerHTML = "";
-                snapshot.forEach(doc => {
-                    const msg = doc.data();
-                    list.innerHTML += `
-                        <div class="p-3 bg-blue-50 rounded-xl border border-blue-100">
-                            <p class="text-xs font-bold text-blue-600 mb-1">From: ${msg.senderName}</p>
-                            <p class="text-sm text-gray-700">${msg.text}</p>
-                        </div>
-                    `;
-                });
-            }
-        }
-
-        // දැන්වීම් ගෙන්වීම
-        async function loadMyAds(uid) {
+        // Fetch User's Ads
+        async function fetchMyAds(uid) {
+            const list = document.getElementById('my-ads-list');
             const q = query(collection(db, "posts"), where("authorId", "==", uid));
-            const snapshot = await getDocs(q);
-            const container = document.getElementById('my-ads-list');
+            const querySnapshot = await getDocs(q);
             
-            if (!snapshot.empty) {
-                container.innerHTML = "";
-                snapshot.forEach(doc => {
-                    const ad = doc.data();
-                    const statusClass = ad.status === 'approved' ? 'bg-green-100 text-green-600' : 'bg-yellow-100 text-yellow-600';
-                    container.innerHTML += `
-                        <div class="bg-white p-5 rounded-[2rem] border border-gray-100 shadow-sm">
-                            <span class="text-[10px] font-bold px-2 py-1 rounded-full ${statusClass} uppercase">${ad.status}</span>
-                            <h4 class="font-bold mt-2 text-gray-800">${ad.title}</h4>
-                            <p class="text-orange-600 font-bold text-sm">රු. ${Number(ad.price).toLocaleString()}</p>
-                        </div>
-                    `;
-                });
+            list.innerHTML = "";
+            if (querySnapshot.empty) {
+                list.innerHTML = "<p class='text-center'>You haven't posted any ads yet.</p>";
+                return;
             }
+
+            querySnapshot.forEach((adDoc) => {
+                const ad = adDoc.data();
+                const adId = adDoc.id;
+                
+                const div = document.createElement('div');
+                div.className = "flex border rounded-xl p-3 bg-gray-50 space-x-4 items-center";
+                div.innerHTML = `
+                    <img src="${ad.imageUrl}" class="w-20 h-20 object-cover rounded-lg">
+                    <div class="flex-1">
+                        <h4 class="font-bold">${ad.title}</h4>
+                        <p class="text-blue-600 font-bold text-sm">Rs. ${ad.price}</p>
+                    </div>
+                    <div class="flex flex-col space-y-2">
+                        <button onclick="boostAd('${adId}', '${ad.title}')" class="bg-orange-500 text-white text-xs px-3 py-1.5 rounded-md font-bold hover:bg-orange-600 transition">🚀 Boost</button>
+                        <button onclick="deleteAd('${adId}')" class="bg-red-100 text-red-600 text-xs px-3 py-1.5 rounded-md font-bold hover:bg-red-200">🗑️ Delete</button>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
         }
+
+        // Boost Ad Function
+        window.boostAd = async (adId, title) => {
+            const user = auth.currentUser;
+            try {
+                // Send Notification to Admin
+                await addDoc(collection(db, "notifications"), {
+                    type: "boost_request",
+                    adId: adId,
+                    adTitle: title,
+                    userId: user.uid,
+                    userEmail: user.email,
+                    timestamp: serverTimestamp(),
+                    status: "unread"
+                });
+                
+                // Redirect to payment
+                window.location.href = `payment.html?adId=${adId}`;
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        // Delete Ad Function
+        window.deleteAd = async (adId) => {
+            if(confirm("Are you sure you want to delete this ad?")) {
+                await deleteDoc(doc(db, "posts", adId));
+                location.reload();
+            }
+        };
+
+        // Verify Email
+        window.verifyEmail = () => {
+            sendEmailVerification(auth.currentUser)
+                .then(() => alert("Verification email sent! Check your inbox."));
+        };
+
+        // Logout
+        window.logout = () => {
+            signOut(auth).then(() => window.location.href = "login.html");
+        };
+
     </script>
 </body>
 </html>

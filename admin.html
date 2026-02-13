@@ -3,230 +3,245 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super Admin | LankaAds</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Lanka Ads - Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { font-family: 'Poppins', sans-serif; overflow-x: hidden; }
-        /* Editor එකේ උස සහ පළල සම්පූර්ණයෙන්ම පාලනය කිරීම */
-        .ql-container { height: 450px !important; font-size: 18px; border-radius: 0 0 15px 15px; background: white; }
-        .ql-toolbar { border-radius: 15px 15px 0 0; background: #f8fafc; padding: 10px !important; }
-        .nav-link.active { background-color: #f97316 !important; color: white; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3); }
-        .sidebar { transition: all 0.3s ease; }
-    </style>
-</head>
-<body class="bg-gray-100 flex">
-
-    <div class="sidebar min-h-screen w-72 bg-slate-950 text-white p-6 fixed shadow-2xl z-30 flex flex-col">
-        <h1 class="text-2xl font-black mb-10 text-orange-500 border-b border-slate-800 pb-4 text-center tracking-tighter">ADMIN PANEL</h1>
-        
-        <nav class="space-y-3 flex-grow">
-            <button id="btn-ads" onclick="showSection('ads', this)" class="nav-link active w-full text-left p-4 rounded-2xl hover:bg-slate-800 transition flex items-center gap-3 font-medium">
-                <span class="text-xl">📊</span> සියලුම දැන්වීම්
-            </button>
-            <button id="btn-premium" onclick="showSection('premium', this)" class="nav-link w-full text-left p-4 rounded-2xl hover:bg-slate-800 transition flex items-center gap-3 font-medium">
-                <span class="text-xl">⭐</span> Premium ඉල්ලීම්
-            </button>
-            <button id="btn-banners" onclick="showSection('banners', this)" class="nav-link w-full text-left p-4 rounded-2xl hover:bg-slate-800 transition flex items-center gap-3 font-medium">
-                <span class="text-xl">🖼️</span> බැනර් සහ පෙළ ඇඩ්
-            </button>
-        </nav>
-
-        <div class="p-5 bg-slate-900 rounded-3xl mt-auto border border-slate-800 text-center">
-            <p class="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-1">Live Visitors</p>
-            <p id="totalVisitors" class="text-4xl font-black text-blue-500">0</p>
-        </div>
-    </div>
-
-    <div class="flex-1 ml-72 p-10">
-        
-        <div id="adsSection">
-            <div class="flex justify-between items-center mb-10">
-                <h2 id="sectionTitle" class="text-4xl font-black text-slate-900 tracking-tight">සියලුම දැන්වීම්</h2>
-                <div class="bg-white px-8 py-4 rounded-2xl shadow-sm border border-gray-100 font-bold text-slate-700">
-                    Total: <span id="totalAds" class="text-orange-500 text-xl ml-2">0</span>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-gray-100">
-                <table class="w-full text-left">
-                    <thead class="bg-slate-950 text-white text-[11px] uppercase tracking-[0.3em] font-bold">
-                        <tr>
-                            <th class="p-7">දැන්වීමේ විස්තර</th>
-                            <th class="p-7">තත්ත්වය</th>
-                            <th class="p-7 text-center">පාලනය</th>
-                        </tr>
-                    </thead>
-                    <tbody id="adsTableBody" class="divide-y divide-gray-100">
-                        </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="bannersSection" class="hidden">
-            <h2 class="text-4xl font-black text-slate-900 mb-10 tracking-tight">බැනර් සහ පෙළ ඇඩ් කළමනාකරණය</h2>
-            
-            <div class="space-y-10">
-                <div class="bg-white p-10 rounded-[2.5rem] shadow-2xl border border-gray-100 w-full">
-                    <h3 class="text-xl font-bold mb-8 text-slate-800 flex items-center gap-2">
-                        <span class="p-2 bg-orange-100 text-orange-500 rounded-lg">➕</span> නව බැනරයක් හෝ පෙළක් එක් කරන්න
-                    </h3>
-                    <div class="space-y-8">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="space-y-2">
-                                <label class="text-xs font-black uppercase text-gray-400 ml-2">පින්තූර ලින්ක් එක (Image URL)</label>
-                                <input type="url" id="bannerImg" placeholder="https://..." class="w-full p-5 bg-gray-50 rounded-2xl border-none ring-1 ring-gray-200 outline-none focus:ring-2 focus:ring-orange-500 transition">
-                            </div>
-                            <div class="space-y-2">
-                                <label class="text-xs font-black uppercase text-gray-400 ml-2">පෙන්විය යුතු ස්ථානය (Position)</label>
-                                <select id="bannerPos" class="w-full p-5 bg-gray-50 rounded-2xl border-none ring-1 ring-gray-200 outline-none focus:ring-2 focus:ring-orange-500">
-                                    <option value="top">🌐 ඉහළින්ම (Top Banner)</option>
-                                    <option value="middle">📰 මැදින් (Middle Banner)</option>
-                                    <option value="bottom">🔻 යටින්ම (Bottom Banner)</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="space-y-2">
-                            <label class="text-xs font-black uppercase text-gray-400 ml-2">විස්තරය (Word Document එකක් මෙන් මෙහි ටයිප් කරන්න)</label>
-                            <div id="editor"></div> </div>
-                        
-                        <button onclick="saveBanner()" class="w-full bg-slate-950 text-white p-6 rounded-2xl font-black shadow-xl hover:bg-orange-500 transition-all duration-300 uppercase tracking-[0.2em]">Banner එක පළ කරන්න</button>
-                    </div>
-                </div>
-
-                <div class="bg-white p-10 rounded-[2.5rem] shadow-2xl border border-gray-100">
-                    <h3 class="text-xl font-bold mb-8 text-slate-800">දැනට පවතින බැනර් ලැයිස්තුව</h3>
-                    <div id="bannerList" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
-        import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
-            authDomain: "adds-ink.firebaseapp.com",
-            projectId: "adds-ink",
-            storageBucket: "adds-ink.firebasestorage.app",
-            messagingSenderId: "638657776631",
-            appId: "1:638657776631:web:44ffdad33137bfefa57cf2",
-            measurementId: "G-Z002TVT7QX"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        // Quill Editor - Expanded Toolbar
-        var quill = new Quill('#editor', {
-            theme: 'snow',
-            placeholder: 'දැන්වීම් විස්තරය මෙහි ලියන්න...',
-            modules: { toolbar: [['bold', 'italic', 'underline', 'strike'], [{ 'header': [1, 2, 3, false] }], [{ 'color': [] }, { 'background': [] }], [{ 'align': [] }], ['clean']] }
-        });
-
-        let currentFilter = 'all';
-
-        window.showSection = (section, btn) => {
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            btn.classList.add('active');
-
-            if(section === 'banners') {
-                document.getElementById('adsSection').classList.add('hidden');
-                document.getElementById('bannersSection').classList.remove('hidden');
-            } else {
-                currentFilter = section;
-                document.getElementById('adsSection').classList.remove('hidden');
-                document.getElementById('bannersSection').classList.add('hidden');
-                document.getElementById('sectionTitle').innerText = (section === 'premium') ? "Premium ඉල්ලීම්" : "සියලුම දැන්වීම්";
-                loadAds();
-            }
-        };
-
-        window.approveAd = async (id) => {
-            await updateDoc(doc(db, "posts", id), { status: "approved" });
-            alert("අනුමත කළා!");
-        };
-
-        window.makePremium = async (id) => {
-            await updateDoc(doc(db, "posts", id), { isPremium: true, status: "approved", premiumStatus: "active" });
-            alert("ප්‍රිමියම් කළා!");
-        };
-
-        window.deleteAd = async (id) => {
-            if(confirm("මෙය සදහටම මකා දමන්නද?")) await deleteDoc(doc(db, "posts", id));
-        };
-
-        window.saveBanner = async () => {
-            const img = document.getElementById('bannerImg').value;
-            const content = quill.root.innerHTML;
-            const pos = document.getElementById('bannerPos').value;
-            if(content === "<p><br></p>" && !img) return alert("හිස් බැනර් ඇතුළත් කළ නොහැක!");
-            
-            await addDoc(collection(db, "banners"), { img, content, pos, createdAt: new Date() });
-            alert("සාර්ථකව පළ කළා!");
-            quill.setContents([]); document.getElementById('bannerImg').value = "";
-        };
-
-        window.deleteBanner = async (id) => {
-            if(confirm("බැනරය ඉවත් කරන්නද?")) await deleteDoc(doc(db, "banners", id));
-        };
-
-        function loadAds() {
-            let q = collection(db, "posts");
-            if (currentFilter === 'premium') q = query(q, where("premiumStatus", "==", "waiting_approval"));
-
-            onSnapshot(q, (snap) => {
-                const body = document.getElementById('adsTableBody');
-                if(currentFilter === 'all') document.getElementById('totalAds').innerText = snap.size;
-                body.innerHTML = "";
-                snap.forEach(d => {
-                    const ad = d.data();
-                    body.innerHTML += `
-                        <tr class="hover:bg-slate-50 transition border-b border-gray-50">
-                            <td class="p-7">
-                                <div class="font-bold text-slate-900 text-lg leading-tight">${ad.title}</div>
-                                <div class="text-[11px] text-gray-400 uppercase font-black mt-2 tracking-widest">${ad.category} | ${ad.district}</div>
-                            </td>
-                            <td class="p-7">
-                                <span class="px-4 py-2 rounded-xl text-[10px] font-black tracking-widest ${ad.isPremium ? 'bg-orange-100 text-orange-600' : 'bg-slate-100 text-slate-500'}">
-                                    ${ad.isPremium ? 'PREMIUM' : 'NORMAL'}
-                                </span>
-                            </td>
-                            <td class="p-7 flex gap-3 justify-center">
-                                <button onclick="approveAd('${d.id}')" class="bg-emerald-500 text-white px-5 py-3 rounded-2xl text-xs font-black hover:shadow-lg transition">APPROVE</button>
-                                <button onclick="makePremium('${d.id}')" class="bg-orange-500 text-white px-5 py-3 rounded-2xl text-xs font-black hover:shadow-lg transition">⭐ PREMIUM</button>
-                                <button onclick="deleteAd('${d.id}')" class="bg-rose-500 text-white px-5 py-3 rounded-2xl text-xs font-black hover:shadow-lg transition">DELETE</button>
-                            </td>
-                        </tr>`;
-                });
-            });
+        :root {
+            --primary: #007bff;
+            --danger: #dc3545;
+            --success: #28a745;
+            --premium: #ffc107;
+            --dark: #2d3436;
         }
 
-        onSnapshot(collection(db, "banners"), (snap) => {
-            const list = document.getElementById('bannerList'); list.innerHTML = "";
-            snap.forEach(d => {
-                const b = d.data();
-                list.innerHTML += `
-                    <div class="p-8 bg-slate-50 rounded-[2rem] border border-slate-200 relative group overflow-hidden shadow-sm">
-                        <div class="text-[10px] font-black text-orange-500 uppercase tracking-[0.3em] mb-4">Slot: ${b.pos}</div>
-                        ${b.img ? `<img src="${b.img}" class="w-full h-40 object-cover rounded-2xl mb-6 shadow-md">` : ''}
-                        <div class="prose prose-slate max-w-none text-slate-700">${b.content}</div>
-                        <button onclick="deleteBanner('${d.id}')" class="absolute top-6 right-6 bg-white text-rose-500 p-3 rounded-full shadow-lg hover:bg-rose-500 hover:text-white transition-all scale-0 group-hover:scale-100">✕</button>
-                    </div>`;
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .admin-container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        h1 { margin: 0; font-size: 24px; color: var(--primary); }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* --- Table Styling --- */
+        .ads-table-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background: #f8f9fa;
+            padding: 15px;
+            font-weight: 700;
+            border-bottom: 2px solid #eee;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+
+        .ad-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .badge-premium { background: var(--premium); color: #000; }
+        .badge-normal { background: #e9ecef; color: #666; }
+
+        /* --- Buttons --- */
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: 0.2s;
+            margin-right: 5px;
+        }
+
+        .btn-delete { background: var(--danger); color: white; }
+        .btn-premium { background: var(--success); color: white; }
+        .btn-remove-premium { background: #6c757d; color: white; }
+        .btn:hover { opacity: 0.8; }
+
+        .loading { text-align: center; padding: 50px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="admin-container">
+    <header>
+        <h1><i class="fas fa-user-shield"></i> Lanka Ads Admin Panel</h1>
+        <button onclick="location.reload()" class="btn" style="background: var(--primary); color:white;">Reload Data</button>
+    </header>
+
+    <div class="ads-table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Title & Price</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="admin-ads-list">
+                </tbody>
+        </table>
+        <div id="loader" class="loading">දත්ත පූරණය වෙමින් පවතී...</div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
+        authDomain: "adds-ink.firebaseapp.com",
+        projectId: "adds-ink",
+        storageBucket: "adds-ink.firebasestorage.app",
+        messagingSenderId: "638657776631",
+        appId: "1:638657776631:web:44ffdad33137bfefa57cf2",
+        measurementId: "G-Z002TVT7QX"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadAdminAds() {
+        const adsList = document.getElementById('admin-ads-list');
+        const loader = document.getElementById('loader');
+        adsList.innerHTML = "";
+
+        try {
+            const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+            const querySnapshot = await getDocs(q);
+            
+            if (querySnapshot.empty) {
+                loader.innerHTML = "දැන්වීම් කිසිවක් හමු නොවීය.";
+                return;
+            }
+
+            loader.style.display = 'none';
+
+            querySnapshot.forEach((adDoc) => {
+                const ad = adDoc.data();
+                const id = adDoc.id;
+                const isPremium = ad.isPremium === true || ad.isFeatured === true;
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><img src="${ad.imageUrl || 'https://via.placeholder.com/60'}" class="ad-img"></td>
+                    <td>
+                        <div style="font-weight:bold;">${ad.title}</div>
+                        <div style="color:var(--primary); font-size:14px;">Rs. ${parseFloat(ad.price).toLocaleString()}</div>
+                    </td>
+                    <td>${ad.category || 'N/A'}</td>
+                    <td>
+                        <span class="badge ${isPremium ? 'badge-premium' : 'badge-normal'}">
+                            ${isPremium ? 'PREMIUM' : 'NORMAL'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn ${isPremium ? 'btn-remove-premium' : 'btn-premium'}" 
+                                onclick="togglePremium('${id}', ${isPremium})">
+                            ${isPremium ? 'Remove Premium' : 'Make Premium'}
+                        </button>
+                        <button class="btn btn-delete" onclick="deleteAd('${id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                adsList.appendChild(row);
             });
-        });
+        } catch (error) {
+            console.error(error);
+            loader.innerHTML = "දෝෂයකි: " + error.message;
+        }
+    }
 
-        onSnapshot(doc(db, "analytics", "siteStats"), (d) => {
-            if(d.exists()) document.getElementById('totalVisitors').innerText = d.data().totalVisitors;
-        });
+    // --- Actions ---
 
-        loadAds();
-    </script>
+    window.togglePremium = async (id, currentStatus) => {
+        if (confirm(`මෙම දැන්වීම ${currentStatus ? 'සාමාන්‍ය' : 'ප්‍රිමියම්'} තත්වයට පත් කිරීමට අවශ්‍යද?`)) {
+            const adRef = doc(db, "posts", id);
+            try {
+                await updateDoc(adRef, {
+                    isPremium: !currentStatus,
+                    isFeatured: !currentStatus // සමහර තැන්වල භාවිතා වන නිසා දෙකම update කරයි
+                });
+                alert("තත්වය යාවත්කාලීන කරන ලදී!");
+                loadAdminAds();
+            } catch (e) { alert("දෝෂයකි!"); }
+        }
+    };
+
+    window.deleteAd = async (id) => {
+        if (confirm("මෙම දැන්වීම ස්ථිරවම මකා දැමීමට ඔබට අවශ්‍යද?")) {
+            try {
+                await deleteDoc(doc(db, "posts", id));
+                alert("දැන්වීම මකා දමන ලදී!");
+                loadAdminAds();
+            } catch (e) { alert("මකා දැමීම අසාර්ථකයි!"); }
+        }
+    };
+
+    loadAdminAds();
+</script>
+
 </body>
 </html>

@@ -318,7 +318,7 @@
             const latestGrid = document.getElementById('latest-grid');
 
             try {
-                // Get all ads from "posts" collection (Changed from ads to posts)
+                // 🛑 🛑 වෙනස මෙතැනයි: "ads" වෙනුවට "posts" භාවිත කරයි 🛑 🛑
                 const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
                 const querySnapshot = await getDocs(q);
                 
@@ -328,12 +328,14 @@
                 querySnapshot.forEach((doc) => {
                     const ad = doc.data();
                     
-                    // Firestore හි ඇති පරිදි Fields නිවැරදිව ලබාගැනීම
+                    // Firestore හි Fields පරීක්ෂා කර ලබාගැනීම
                     const imageUrl = ad.imageUrl || 'https://via.placeholder.com/300';
                     const title = ad.title || 'No Title';
                     const price = ad.price || '0';
                     const district = ad.district || 'Sri Lanka';
-                    const isPremium = ad.isPremium === true || ad.isFeatured === true; // PWA සඳහා දෙකම පරීක්ෂා කරයි
+                    
+                    // ඔබේ Firestore structure එකේ premiumStatus: "active" තියෙන නිසා ඒක පරීක්ෂා කරනවා
+                    const isPremium = ad.premiumStatus === "active" || ad.isFeatured === true;
 
                     const adHTML = `
                         <div class="ad-card ${isPremium ? 'premium-card' : ''}">

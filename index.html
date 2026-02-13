@@ -47,7 +47,7 @@
         .category-item i { font-size: 32px; color: var(--primary); margin-bottom: 15px; }
         .category-item span { display: block; font-weight: 600; font-size: 14px; color: var(--dark); }
 
-        /* Ad Grids */
+        /* Ad Grids - Updated Styling */
         .ads-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
         .ad-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: relative; padding-bottom: 15px; transition: 0.3s; }
         .ad-card img { width: 100%; height: 180px; object-fit: cover; }
@@ -56,6 +56,7 @@
         .ad-price { color: var(--primary); font-weight: 800; font-size: 18px; }
         .premium-tag { position: absolute; top: 10px; left: 10px; background: var(--secondary); color: white; padding: 4px 10px; font-size: 12px; border-radius: 5px; font-weight: 700; }
         .premium-border { border: 2px solid var(--secondary); }
+        .no-ads { text-align: center; color: #888; padding: 30px; grid-column: 1 / -1; }
 
         /* Floating Post Button */
         .post-btn { position: fixed; bottom: 30px; right: 30px; background: #28a745; color: white; width: 65px; height: 65px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4); text-decoration: none; z-index: 1001; transition: 0.3s; }
@@ -111,10 +112,14 @@
         </div>
 
         <div class="section-header" style="margin-top: 50px; color: var(--secondary);">ප්‍රිමියම් දැන්වීම් (Premium Ads)</div>
-        <div class="ads-container" id="premiumAds"></div>
+        <div class="ads-container" id="premiumAds">
+            <div class="no-ads">දැන්වීම් පූරණය වේ...</div>
+        </div>
 
         <div class="section-header" style="margin-top: 50px;">නවතම දැන්වීම් (Latest Ads)</div>
-        <div class="ads-container" id="latestAds"></div>
+        <div class="ads-container" id="latestAds">
+            <div class="no-ads">දැන්වීම් පූරණය වේ...</div>
+        </div>
     </div>
 
     <a href="post-ad.html" class="post-btn"><i class="fas fa-plus"></i></a>
@@ -122,7 +127,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
@@ -138,6 +143,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // Auth status check
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('authSection').style.display = 'none';
@@ -145,34 +151,49 @@
             }
         });
 
+        // දැන්වීම් පූරණය කිරීම
         async function loadAds() {
+            const pContainer = document.getElementById('premiumAds');
+            const lContainer = document.getElementById('latestAds');
+            
             try {
+                // දත්ත ලබාගැනීම
                 const querySnapshot = await getDocs(collection(db, "ads"));
-                const pContainer = document.getElementById('premiumAds');
-                const lContainer = document.getElementById('latestAds');
+                
+                let pHTML = '';
+                let lHTML = '';
 
                 querySnapshot.forEach((doc) => {
                     const ad = doc.data();
-                    const adHTML = `
+                    
+                    const cardHTML = `
                         <div class="ad-card ${ad.isPremium ? 'premium-border' : ''}">
                             ${ad.isPremium ? '<span class="premium-tag">PREMIUM</span>' : ''}
-                            <img src="${ad.imageUrl || 'https://via.placeholder.com/300'}" alt="Ad">
+                            <img src="${ad.imageUrl || 'https://via.placeholder.com/300'}" alt="Ad Image">
                             <div class="ad-info">
                                 <div class="ad-title">${ad.title || 'No Title'}</div>
                                 <div class="ad-price">Rs. ${ad.price || '0'}</div>
                             </div>
                         </div>`;
-                    
+
                     if (ad.isPremium) {
-                        pContainer.innerHTML += adHTML;
+                        pHTML += cardHTML;
                     } else {
-                        lContainer.innerHTML += adHTML;
+                        lHTML += cardHTML;
                     }
                 });
+
+                // දර්ශනය කිරීම
+                pContainer.innerHTML = pHTML || '<div class="no-ads">Premium දැන්වීම් නොමැත</div>';
+                lContainer.innerHTML = lHTML || '<div class="no-ads">දැන්වීම් නොමැත</div>';
+
             } catch (error) {
-                console.error("Error loading ads: ", error);
+                console.error("Error: ", error);
+                pContainer.innerHTML = '<div class="no-ads">දැන්වීම් පූරණය වීමේ දෝෂයක්</div>';
+                lContainer.innerHTML = '<div class="no-ads">දැන්වීම් පූරණය වීමේ දෝෂයක්</div>';
             }
         }
+
         loadAds();
     </script>
 

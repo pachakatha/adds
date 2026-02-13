@@ -23,9 +23,11 @@
         .logo { font-size: 28px; font-weight: 800; color: var(--primary); text-decoration: none; }
         .auth-buttons { display: flex; gap: 15px; align-items: center; }
         .btn-signup { background: var(--primary); color: white; padding: 10px 24px; border-radius: 8px; text-decoration: none; font-weight: 700; }
+        #profile-link { display: none; text-decoration: none; background: #e9ecef; color: var(--dark); padding: 8px 18px; border-radius: 20px; font-weight: 600; border: 1px solid #ddd; }
 
         /* Hero & Search */
         .hero { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center; height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; padding: 0 20px; }
+        .hero h1 { font-size: 38px; margin-bottom: 10px; font-weight: 800; }
         .search-container { width: 90%; max-width: 1000px; background: white; padding: 20px; border-radius: 15px; display: flex; flex-wrap: wrap; gap: 10px; margin-top: -50px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .search-container select, .search-container input { flex: 1; min-width: 150px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; outline: none; }
         .btn-search { background: var(--primary); color: white; border: none; padding: 0 30px; border-radius: 8px; font-weight: 700; cursor: pointer; }
@@ -65,16 +67,22 @@
             <a href="login.html" style="text-decoration:none; color:var(--dark); font-weight:600;">Log In</a>
             <a href="signup.html" class="btn-signup">Sign Up</a>
         </div>
+        <a href="profile.html" id="profile-link"><i class="fas fa-user-circle"></i> Profile</a>
     </nav>
 
     <section class="hero">
-        <h1>Find Your Next Deal</h1>
+        <h1>Buy & Sell Securely in Sri Lanka</h1>
+        <p>Your local marketplace for all your needs.</p>
         <div class="search-container">
             <select id="district-select">
                 <option value="">All Districts</option>
                 <option>Colombo</option><option>Gampaha</option><option>Kandy</option><option>Galle</option><option>Matara</option><option>Jaffna</option><option>Kurunegala</option><option>Kalutara</option><option>Anuradhapura</option><option>Ratnapura</option><option>Badulla</option><option>Kegalle</option><option>Puttalam</option><option>Trincomalee</option><option>Batticaloa</option><option>Ampara</option><option>Matale</option><option>Nuwara Eliya</option><option>Hambantota</option><option>Vavuniya</option><option>Mannar</option><option>Mullaitivu</option><option>Kilinochchi</option><option>Polonnaruwa</option><option>Moneragala</option>
             </select>
-            <input type="text" id="search-input" placeholder="What are you looking for?">
+            <select id="category-select">
+                <option value="">All Categories</option>
+                <option>Mobiles</option><option>Vehicles</option><option>Property</option><option>Electronics</option><option>Fashion</option><option>Jobs</option>
+            </select>
+            <input type="text" id="search-input" placeholder="Search for anything...">
             <button class="btn-search">Search</button>
         </div>
     </section>
@@ -104,6 +112,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -116,7 +125,16 @@
         };
 
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const db = getFirestore(app);
+
+        // Login Status
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('auth-box').style.display = 'none';
+                document.getElementById('profile-link').style.display = 'block';
+            }
+        });
 
         // Google Drive Link Fix
         function convertDriveLink(url) {

@@ -3,49 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>පෝස්ට් එකක් පළ කරන්න</title>
+    <title>අලුත් දැන්වීමක් පළ කරන්න | Lanka Ads</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="bg-gray-100">
 
     <div class="max-w-xl mx-auto my-10 p-6 bg-white rounded-xl shadow-lg">
-        <h2 id="page-title" class="text-2xl font-bold text-center mb-6 text-blue-600">මොනවාද අලුත් තොරතුරු?</h2>
-
-        <div class="flex bg-gray-100 p-1 rounded-lg mb-6">
-            <button id="type-news" onclick="switchForm('news')" class="flex-1 py-2 rounded-lg font-bold transition">News Feed</button>
-            <button id="type-ad" onclick="switchForm('ad')" class="flex-1 py-2 rounded-lg font-bold transition">Marketplace Ad</button>
-        </div>
+        <h2 id="page-title" class="text-2xl font-bold text-center mb-6 text-blue-600">අලුත් දැන්වීමක් පළ කරන්න</h2>
 
         <form id="postForm" class="space-y-4">
             <div>
-                <label class="block font-semibold mb-1">විස්තරය (Description)</label>
-                <textarea id="description" rows="4" class="w-full p-3 border rounded-lg outline-none focus:border-blue-500" placeholder="ඔබේ සිතුවිලි හෝ ඇඩ් එක ගැන විස්තර ලියන්න..." required></textarea>
-            </div>
-
-            <div id="ad-only-fields" class="hidden space-y-4">
-                <div>
-                    <label class="block font-semibold mb-1">දැන්වීමේ මාතෘකාව (Title)</label>
-                    <input type="text" id="title" class="w-full p-3 border rounded-lg" placeholder="උදා: iPhone 13 for sale">
-                </div>
-                <div>
-                    <label class="block font-semibold mb-1">මිල (Price - Rs.)</label>
-                    <input type="number" id="price" class="w-full p-3 border rounded-lg" placeholder="5000">
-                </div>
-                <div>
-                    <label class="block font-semibold mb-1">දිස්ත්‍රික්කය</label>
-                    <select id="district" class="w-full p-3 border rounded-lg">
-                        <option>Colombo</option><option>Gampaha</option><option>Kandy</option> </select>
-                </div>
+                <label class="block font-semibold mb-1">දැන්වීමේ මාතෘකාව (Title)</label>
+                <input type="text" id="title" class="w-full p-3 border rounded-lg outline-none focus:border-blue-500" placeholder="උදා: iPhone 13 for sale" required>
             </div>
 
             <div>
-                <label class="block font-semibold mb-1">පින්තූරයක් එක් කරන්න</label>
-                <input type="file" id="imageFile" accept="image/*" class="w-full p-2 border border-dashed rounded-lg">
+                <label class="block font-semibold mb-1">විස්තරය (Description)</label>
+                <textarea id="description" rows="4" class="w-full p-3 border rounded-lg outline-none focus:border-blue-500" placeholder="ඔබේ භාණ්ඩය හෝ සේවාව ගැන විස්තර ලියන්න..." required></textarea>
+            </div>
+
+            <div>
+                <label class="block font-semibold mb-1">මිල (Price - Rs.)</label>
+                <input type="number" id="price" class="w-full p-3 border rounded-lg outline-none focus:border-blue-500" placeholder="5000" required>
+            </div>
+
+            <div>
+                <label class="block font-semibold mb-1">දිස්ත්‍රික්කය</label>
+                <select id="district" class="w-full p-3 border rounded-lg outline-none focus:border-blue-500">
+                    <option value="Colombo">Colombo</option>
+                    <option value="Gampaha">Gampaha</option>
+                    <option value="Kandy">Kandy</option>
+                    <option value="Kalutara">Kalutara</option>
+                    <option value="Galle">Galle</option>
+                    <option value="Matara">Matara</option>
+                    <option value="Jaffna">Jaffna</option>
+                    <option value="Kurunegala">Kurunegala</option>
+                    <option value="Anuradhapura">Anuradhapura</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block font-semibold mb-1">භාණ්ඩයේ පින්තූරයක් එක් කරන්න</label>
+                <input type="file" id="imageFile" accept="image/*" class="w-full p-2 border border-dashed rounded-lg" required>
             </div>
 
             <button type="submit" id="submitBtn" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition">
-                පෝස්ට් කරන්න
+                දැන්වීම පළ කරන්න
             </button>
         </form>
     </div>
@@ -56,84 +60,70 @@
         import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
-        const firebaseConfig = { /* ඔබේ config එක මෙතනට දාන්න */ };
+        // ඔබේ Firebase Config එක මෙතනට දාන්න
+        const firebaseConfig = {
+            apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
+            authDomain: "adds-ink.firebaseapp.com",
+            projectId: "adds-ink",
+            storageBucket: "adds-ink.firebasestorage.app",
+            messagingSenderId: "638657776631",
+            appId: "1:638657776631:web:44ffdad33137bfefa57cf2"
+        };
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
         const storage = getStorage(app);
 
-        let currentType = 'news'; // Default type
-
-        // URL එකේ ?type=ad කියලා තිබ්බොත් ඒක ගන්නවා
-        const urlParams = new URLSearchParams(window.location.search);
-        if(urlParams.get('type')) currentType = urlParams.get('type');
-
-        // Form එක මාරු කරන Function එක
-        window.switchForm = (type) => {
-            currentType = type;
-            const adFields = document.getElementById('ad-only-fields');
-            const newsBtn = document.getElementById('type-news');
-            const adBtn = document.getElementById('type-ad');
-            const pageTitle = document.getElementById('page-title');
-
-            if(type === 'ad') {
-                adFields.classList.remove('hidden');
-                adBtn.classList.add('bg-blue-600', 'text-white');
-                newsBtn.classList.remove('bg-blue-600', 'text-white');
-                pageTitle.innerText = "අලුත් දැන්වීමක් පළ කරන්න";
-            } else {
-                adFields.classList.add('hidden');
-                newsBtn.classList.add('bg-blue-600', 'text-white');
-                adBtn.classList.remove('bg-blue-600', 'text-white');
-                pageTitle.innerText = "මොනවාද අලුත් තොරතුරු?";
-            }
-        };
-
-        // මුලින්ම Form එක සෙට් කරනවා
-        switchForm(currentType);
-
         const postForm = document.getElementById('postForm');
+        
         postForm.onsubmit = async (e) => {
             e.preventDefault();
             const user = auth.currentUser;
-            if(!user) return alert("කරුණාකර ලොග් වෙන්න!");
+            
+            if(!user) {
+                alert("කරුණාකර දැන්වීමක් පළ කිරීමට පෙර ලොග් වන්න!");
+                return window.location.href = "login.html";
+            }
 
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
-            submitBtn.innerText = "පළ කරමින්...";
+            submitBtn.innerText = "පළ කරමින් පවතී...";
 
             try {
                 let imageUrl = "";
                 const file = document.getElementById('imageFile').files[0];
                 
-                // Image Upload
+                // Image Upload logic
                 if(file) {
                     const storageRef = ref(storage, `posts/${Date.now()}_${file.name}`);
-                    await uploadBytes(storageRef, file);
-                    imageUrl = await getDownloadURL(storageRef);
+                    const snapshot = await uploadBytes(storageRef, file);
+                    imageUrl = await getDownloadURL(snapshot.ref);
                 }
 
-                // Database එකට දත්ත යැවීම
+                // Firestore වෙත දත්ත යැවීම
                 await addDoc(collection(db, "posts"), {
-                    postType: currentType, // 'news' හෝ 'ad'
+                    title: document.getElementById('title').value,
                     description: document.getElementById('description').value,
-                    title: currentType === 'ad' ? document.getElementById('title').value : "",
-                    price: currentType === 'ad' ? document.getElementById('price').value : 0,
-                    district: currentType === 'ad' ? document.getElementById('district').value : "",
+                    price: parseFloat(document.getElementById('price').value),
+                    district: document.getElementById('district').value,
                     imageUrl: imageUrl,
+                    postType: "ad", // සියල්ල දැන්වීම් ලෙස සේව් වේ
                     authorId: user.uid,
                     authorName: user.displayName || "පරිශීලක",
                     authorImg: user.photoURL || "",
                     createdAt: serverTimestamp(),
-                    likesCount: 0
+                    premiumStatus: "none"
                 });
 
-                alert("සාර්ථකව පළ කරන ලදී!");
+                alert("දැන්වීම සාර්ථකව පළ කරන ලදී!");
                 window.location.href = "index.html";
 
             } catch (err) {
+                console.error(err);
                 alert("දෝෂයකි: " + err.message);
                 submitBtn.disabled = false;
+                submitBtn.innerText = "දැන්වීම පළ කරන්න";
             }
         };
     </script>

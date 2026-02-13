@@ -23,9 +23,9 @@
         .btn-signup:hover { background: #0056b3; }
         #profileSection { display: none; text-decoration: none; color: var(--dark); font-weight: 600; }
 
-        /* Hero & Background */
+        /* Hero & Background - මෙහි අලුත් පසුබිම් රූපය එක් කළා */
         .hero { 
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=1350&q=80');
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
             background-size: cover; background-position: center; height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; padding: 0 20px;
         }
         .hero h1 { font-size: 38px; margin-bottom: 10px; }
@@ -47,9 +47,13 @@
         .category-item i { font-size: 32px; color: var(--primary); margin-bottom: 15px; }
         .category-item span { display: block; font-weight: 600; font-size: 14px; color: var(--dark); }
 
-        /* Ad Grids */
+        /* Ad Grids - Dynamic Styling */
         .ads-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-        .ad-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: relative; height: 200px; display: flex; align-items: center; justify-content: center; color: #888; }
+        .ad-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: relative; padding-bottom: 15px; transition: 0.3s; }
+        .ad-card img { width: 100%; height: 180px; object-fit: cover; }
+        .ad-info { padding: 15px; }
+        .ad-title { font-weight: 700; font-size: 16px; margin-bottom: 5px; color: var(--dark); }
+        .ad-price { color: var(--primary); font-weight: 800; font-size: 18px; }
         .premium-tag { position: absolute; top: 10px; left: 10px; background: var(--secondary); color: white; padding: 4px 10px; font-size: 12px; border-radius: 5px; font-weight: 700; }
         .premium-border { border: 2px solid var(--secondary); }
 
@@ -107,17 +111,12 @@
         </div>
 
         <div class="section-header" style="margin-top: 50px; color: var(--secondary);">ප්‍රිමියම් දැන්වීම් (Premium Ads)</div>
-        <div class="ads-container">
-            <div class="ad-card premium-border"><span class="premium-tag">PREMIUM</span>මෙහි දැන්වීම් දිස්වනු ඇත</div>
-            <div class="ad-card premium-border"><span class="premium-tag">PREMIUM</span>මෙහි දැන්වීම් දිස්වනු ඇත</div>
-        </div>
+        <div class="ads-container" id="premiumAds">
+            </div>
 
         <div class="section-header" style="margin-top: 50px;">නවතම දැන්වීම් (Latest Ads)</div>
-        <div class="ads-container">
-            <div class="ad-card">දැන්වීම් දත්ත පූරණය වේ...</div>
-            <div class="ad-card">දැන්වීම් දත්ත පූරණය වේ...</div>
-            <div class="ad-card">දැන්වීම් දත්ත පූරණය වේ...</div>
-        </div>
+        <div class="ads-container" id="latestAds">
+            </div>
     </div>
 
     <a href="post-ad.html" class="post-btn"><i class="fas fa-plus"></i></a>
@@ -125,6 +124,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, query, where, getDocs, limit, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
@@ -138,13 +138,57 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getFirestore(app);
 
+        // Auth status check
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('authSection').style.display = 'none';
                 document.getElementById('profileSection').style.display = 'block';
             }
         });
+
+        // දැන්වීම් දත්ත සමුදායෙන් ලබාගැනීමේ Function එක
+        async function loadAds() {
+            const adsRef = collection(db, "ads");
+
+            // Premium Ads ලබාගැනීම
+            const pQuery = query(adsRef, where("isPremium", "==", true), limit(4));
+            const pSnapshot = await getDocs(pQuery);
+            const premiumContainer = document.getElementById('premiumAds');
+            
+            pSnapshot.forEach((doc) => {
+                const ad = doc.data();
+                premiumContainer.innerHTML += `
+                    <div class="ad-card premium-border">
+                        <span class="premium-tag">PREMIUM</span>
+                        <img src="${ad.imageUrl || 'https://via.placeholder.com/300'}" alt="Ad Image">
+                        <div class="ad-info">
+                            <div class="ad-title">${ad.title}</div>
+                            <div class="ad-price">Rs. ${ad.price}</div>
+                        </div>
+                    </div>`;
+            });
+
+            // Latest Ads ලබාගැනීම
+            const lQuery = query(adsRef, orderBy("createdAt", "desc"), limit(8));
+            const lSnapshot = await getDocs(lQuery);
+            const latestContainer = document.getElementById('latestAds');
+
+            lSnapshot.forEach((doc) => {
+                const ad = doc.data();
+                latestContainer.innerHTML += `
+                    <div class="ad-card">
+                        <img src="${ad.imageUrl || 'https://via.placeholder.com/300'}" alt="Ad Image">
+                        <div class="ad-info">
+                            <div class="ad-title">${ad.title}</div>
+                            <div class="ad-price">Rs. ${ad.price}</div>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        loadAds();
     </script>
 
     <script>

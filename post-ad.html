@@ -12,7 +12,7 @@
             @apply w-full p-4 bg-white border border-gray-200 rounded-xl outline-none transition-all duration-300 shadow-inner;
         }
         .input-box:focus { 
-            @apply border-green-500 ring-2 ring-green-100;
+            @apply border-green-500 ring-4 ring-green-100;
         }
         .label-style { @apply block font-bold mb-2 text-gray-700 text-sm tracking-wide; }
         
@@ -23,11 +23,61 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+        /* Image Preview Styling */
+        .image-preview {
+            @apply mt-4 rounded-xl overflow-hidden border-2 border-dashed border-green-200 p-2;
+        }
+        .image-preview img {
+            @apply w-full h-48 object-cover rounded-lg;
+        }
+
+        /* Loading Animation */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+
+        /* Error Message Styling */
+        .error-message {
+            @apply text-red-500 text-xs mt-1 font-medium;
+        }
     </style>
 </head>
-<body class="bg-slate-50 font-sans">
+<body class="bg-gradient-to-br from-slate-50 to-green-50 font-sans">
 
-    <div class="max-w-2xl mx-auto my-12 p-8 bg-white rounded-[2rem] shadow-2xl border-t-8 border-green-600">
+    <!-- Navigation Bar (Added for consistency) -->
+    <nav class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="index.html" class="text-2xl font-black bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                    🇱🇰 Lanka Ads
+                </a>
+                <div class="flex items-center space-x-4">
+                    <a href="index.html" class="text-gray-600 hover:text-green-600 transition">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-2xl mx-auto my-8 p-8 bg-white/90 backdrop-blur-sm rounded-[2rem] shadow-2xl border-t-8 border-green-600">
+        <!-- Progress Steps -->
+        <div class="flex items-center justify-between mb-10 px-4">
+            <div class="flex items-center">
+                <div class="w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center font-bold">1</div>
+                <div class="ml-2 text-sm font-bold text-green-600">Details</div>
+            </div>
+            <div class="flex-1 h-1 mx-4 bg-gradient-to-r from-green-600 to-gray-200"></div>
+            <div class="flex items-center">
+                <div class="w-10 h-10 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center font-bold">2</div>
+                <div class="ml-2 text-sm font-bold text-gray-400">Payment</div>
+            </div>
+        </div>
+
         <div class="text-center mb-10">
             <h2 class="text-4xl font-black text-gray-800 tracking-tight">
                 Post Your <span class="text-green-600">Ad</span>
@@ -35,39 +85,59 @@
             <p class="text-gray-400 mt-2">Fill the details below to sell your item fast</p>
         </div>
 
-        <form id="postForm" class="space-y-6">
+        <form id="postForm" class="space-y-6" novalidate>
             
             <div>
-                <label class="label-style">Item Name (Title)</label>
-                <input type="text" id="title" class="input-box" placeholder="e.g. Toyota Corolla 2020" required>
+                <label class="label-style">
+                    <i class="fas fa-heading text-green-600 mr-2"></i>
+                    Item Name (Title)
+                </label>
+                <input type="text" id="title" class="input-box" placeholder="e.g. Toyota Corolla 2020" required maxlength="100">
+                <div class="text-xs text-gray-400 mt-1 flex justify-between">
+                    <span>Maximum 100 characters</span>
+                    <span id="titleCount">0/100</span>
+                </div>
             </div>
 
             <div>
-                <label class="label-style">Description</label>
-                <textarea id="description" rows="4" class="input-box" placeholder="Tell more about your product..." required></textarea>
+                <label class="label-style">
+                    <i class="fas fa-align-left text-green-600 mr-2"></i>
+                    Description
+                </label>
+                <textarea id="description" rows="4" class="input-box" placeholder="Tell more about your product..." required maxlength="1000"></textarea>
+                <div class="text-xs text-gray-400 mt-1 flex justify-between">
+                    <span>Maximum 1000 characters</span>
+                    <span id="descCount">0/1000</span>
+                </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label class="label-style">Category</label>
+                    <label class="label-style">
+                        <i class="fas fa-tag text-green-600 mr-2"></i>
+                        Category
+                    </label>
                     <select id="category" class="input-box" required>
                         <option value="">Select Category</option>
-                        <option value="Vehicles">Vehicles</option>
-                        <option value="Electronics">Electronics</option>
-                        <option value="Property">Property</option>
-                        <option value="Home & Garden">Home & Garden</option>
-                        <option value="Fashion & Beauty">Fashion & Beauty</option>
-                        <option value="Services">Services</option>
-                        <option value="Business & Industry">Business & Industry</option>
-                        <option value="Education">Education</option>
-                        <option value="Pets">Pets</option>
-                        <option value="Food & Agriculture">Food & Agriculture</option>
-                        <option value="Other">Other</option>
+                        <option value="Vehicles">🚗 Vehicles</option>
+                        <option value="Electronics">📱 Electronics</option>
+                        <option value="Property">🏠 Property</option>
+                        <option value="Home & Garden">🌱 Home & Garden</option>
+                        <option value="Fashion & Beauty">👕 Fashion & Beauty</option>
+                        <option value="Services">🔧 Services</option>
+                        <option value="Business & Industry">🏢 Business & Industry</option>
+                        <option value="Education">📚 Education</option>
+                        <option value="Pets">🐕 Pets</option>
+                        <option value="Food & Agriculture">🌾 Food & Agriculture</option>
+                        <option value="Other">📦 Other</option>
                     </select>
                 </div>
 
                 <div>
-                    <label class="label-style">District</label>
+                    <label class="label-style">
+                        <i class="fas fa-map-marker-alt text-green-600 mr-2"></i>
+                        District
+                    </label>
                     <select id="district" class="input-box" required>
                         <option value="">Select District</option>
                         <option value="Ampara">Ampara</option><option value="Anuradhapura">Anuradhapura</option><option value="Badulla">Badulla</option><option value="Batticaloa">Batticaloa</option><option value="Colombo">Colombo</option><option value="Galle">Galle</option><option value="Gampaha">Gampaha</option><option value="Hambantota">Hambantota</option><option value="Jaffna">Jaffna</option><option value="Kalutara">Kalutara</option><option value="Kandy">Kandy</option><option value="Kegalle">Kegalle</option><option value="Kilinochchi">Kilinochchi</option><option value="Kurunegala">Kurunegala</option><option value="Mannar">Mannar</option><option value="Matale">Matale</option><option value="Matara">Matara</option><option value="Moneragala">Moneragala</option><option value="Mullaitivu">Mullaitivu</option><option value="Nuwara Eliya">Nuwara Eliya</option><option value="Polonnaruwa">Polonnaruwa</option><option value="Puttalam">Puttalam</option><option value="Ratnapura">Ratnapura</option><option value="Trincomalee">Trincomalee</option><option value="Vavuniya">Vavuniya</option>
@@ -75,58 +145,121 @@
                 </div>
             </div>
 
-            <div class="bg-green-50 border-2 border-dashed border-green-200 rounded-[2rem] p-8 text-center">
-                <p class="font-black text-green-800 mb-6 flex items-center justify-center">
-                    <i class="fab fa-google-drive mr-2 text-2xl"></i> Google Drive Photo Setup
+            <!-- Google Drive Section with Preview -->
+            <div class="bg-gradient-to-br from-green-50 to-blue-50 border-2 border-dashed border-green-300 rounded-[2rem] p-6 text-center">
+                <p class="font-black text-green-800 mb-4 flex items-center justify-center">
+                    <i class="fab fa-google-drive mr-2 text-2xl"></i> 
+                    Google Drive Photo Setup
                 </p>
                 
-                <div class="video-container mb-6">
+                <div class="video-container mb-4">
                     <iframe src="https://www.youtube.com/embed/xs-amsA8m0E" frameborder="0" allowfullscreen></iframe>
                 </div>
 
-                <input type="text" id="imageUrl" class="input-box border-green-200" placeholder="Paste Shared Link Here..." required>
-                <p class="text-[10px] text-green-600 mt-3 font-medium uppercase tracking-tighter">Must be: "Anyone with the link can view"</p>
+                <div class="relative">
+                    <input type="url" id="imageUrl" class="input-box border-green-200 pr-12" 
+                           placeholder="Paste Shared Link Here..." required>
+                    <button type="button" id="previewBtn" 
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-green-600 hover:text-green-700">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                
+                <!-- Image Preview -->
+                <div id="imagePreview" class="image-preview hidden">
+                    <img src="" alt="Preview" id="previewImage">
+                    <p class="text-xs text-green-600 mt-2">✓ Image loaded successfully</p>
+                </div>
+
+                <p class="text-[10px] text-red-500 mt-3 font-medium uppercase tracking-tighter">
+                    ⚠️ Must be: "Anyone with the link can view"
+                </p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label class="label-style">Price (Rs.)</label>
-                    <input type="number" id="price" class="input-box font-bold text-green-600" placeholder="0.00" required>
+                    <label class="label-style">
+                        <i class="fas fa-tag text-green-600 mr-2"></i>
+                        Price (Rs.)
+                    </label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">Rs.</span>
+                        <input type="number" id="price" class="input-box font-bold text-green-600 pl-12" 
+                               placeholder="0.00" min="0" step="0.01" required>
+                    </div>
                 </div>
 
                 <div>
-                    <label class="label-style">Contact Number</label>
-                    <input type="tel" id="phone" class="input-box" placeholder="+94XXXXXXXXX" required>
+                    <label class="label-style">
+                        <i class="fas fa-phone text-green-600 mr-2"></i>
+                        Contact Number
+                    </label>
+                    <input type="tel" id="phone" class="input-box" placeholder="+94 XX XXX XXXX" 
+                           pattern="^(?:0|94|\+94)?[0-9]{9,10}$" required>
                 </div>
             </div>
 
             <div>
-                <label class="label-style">WhatsApp Number</label>
-                <input type="tel" id="whatsapp" class="input-box" placeholder="+94XXXXXXXXX" required>
+                <label class="label-style">
+                    <i class="fab fa-whatsapp text-green-600 mr-2"></i>
+                    WhatsApp Number (Optional)
+                </label>
+                <input type="tel" id="whatsapp" class="input-box" placeholder="+94 XX XXX XXXX" 
+                       pattern="^(?:0|94|\+94)?[0-9]{9,10}$">
+                <p class="text-xs text-gray-400 mt-1">Leave empty if same as contact number</p>
             </div>
 
-            <div class="bg-gradient-to-r from-yellow-400 to-orange-500 p-6 rounded-2xl flex items-center justify-between text-white shadow-xl shadow-orange-100 transition hover:scale-[1.02]">
+            <!-- Premium Boost Card -->
+            <div class="bg-gradient-to-r from-yellow-400 to-orange-500 p-6 rounded-2xl flex items-center justify-between text-white shadow-xl shadow-orange-100 transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl cursor-pointer" onclick="togglePremium()">
                 <div class="flex items-center space-x-4">
                     <div class="bg-white/20 p-3 rounded-full">
                         <i class="fas fa-rocket text-2xl"></i>
                     </div>
                     <div>
-                        <h4 class="font-black text-xl italic uppercase">Boost Ad</h4>
+                        <h4 class="font-black text-xl italic uppercase">Boost Your Ad</h4>
                         <p class="text-xs font-medium opacity-90">Get 10x more views instantly</p>
                     </div>
                 </div>
-                <input type="checkbox" id="premiumCheck" class="w-8 h-8 cursor-pointer accent-orange-600 bg-white">
+                <div class="relative">
+                    <input type="checkbox" id="premiumCheck" class="w-8 h-8 cursor-pointer accent-orange-600 bg-white">
+                </div>
             </div>
 
-            <button type="submit" id="submitBtn" class="w-full bg-green-600 text-white font-black py-5 rounded-[1.5rem] hover:bg-green-700 hover:shadow-2xl hover:shadow-green-200 transition-all duration-300 text-xl uppercase tracking-widest flex items-center justify-center space-x-2">
-                <span>Post Now</span> <i class="fas fa-paper-plane text-sm"></i>
+            <!-- Terms and Conditions -->
+            <div class="flex items-center space-x-2 text-sm text-gray-600">
+                <input type="checkbox" id="terms" required>
+                <label for="terms">I agree to the <a href="#" class="text-green-600 hover:underline">Terms & Conditions</a> and <a href="#" class="text-green-600 hover:underline">Privacy Policy</a></label>
+            </div>
+
+            <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white font-black py-5 rounded-[1.5rem] hover:from-green-700 hover:to-emerald-700 hover:shadow-2xl hover:shadow-green-200 transition-all duration-300 text-xl uppercase tracking-widest flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                <span>Post Now</span> 
+                <i class="fas fa-paper-plane text-sm"></i>
             </button>
         </form>
     </div>
 
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-3xl p-8 max-w-md mx-4 text-center transform scale-0 transition-transform duration-300" id="modalContent">
+            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-check-circle text-4xl text-green-600"></i>
+            </div>
+            <h3 class="text-2xl font-black mb-2">Success!</h3>
+            <p class="text-gray-600 mb-6">Your ad has been posted successfully.</p>
+            <div class="flex gap-4">
+                <a href="index.html" class="flex-1 bg-gray-100 text-gray-800 py-3 rounded-xl font-bold hover:bg-gray-200 transition">
+                    Go Home
+                </a>
+                <a href="#" id="viewAdBtn" class="flex-1 bg-green-600 text-white py-3 rounded-xl font-bold hover:bg-green-700 transition">
+                    View Ad
+                </a>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -142,14 +275,102 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // Check authentication
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                if (confirm("Please log in to post an ad. Go to login page?")) {
+                    window.location.href = "login.html";
+                } else {
+                    window.location.href = "index.html";
+                }
+            }
+        });
+
+        // Character counters
+        document.getElementById('title').addEventListener('input', function() {
+            document.getElementById('titleCount').textContent = this.value.length + '/100';
+        });
+
+        document.getElementById('description').addEventListener('input', function() {
+            document.getElementById('descCount').textContent = this.value.length + '/1000';
+        });
+
+        // Image preview
+        document.getElementById('previewBtn').addEventListener('click', function() {
+            const driveLink = document.getElementById('imageUrl').value;
+            const preview = document.getElementById('imagePreview');
+            const previewImg = document.getElementById('previewImage');
+            
+            if (driveLink) {
+                const finalUrl = convertDriveLink(driveLink);
+                previewImg.src = finalUrl;
+                preview.classList.remove('hidden');
+            }
+        });
+
+        // Convert Google Drive Link
+        function convertDriveLink(url) {
+            if (!url) return '';
+            
+            // Google Drive direct link conversion
+            let fileId = '';
+            
+            // Match /d/ID format
+            const match1 = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+            if (match1) fileId = match1[1];
+            
+            // Match id=ID format
+            const match2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+            if (match2) fileId = match2[1];
+            
+            if (fileId) {
+                // Use multiple formats for reliability
+                return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`;
+            }
+            
+            return url;
+        }
+
+        // Toggle premium checkbox
+        window.togglePremium = function() {
+            const checkbox = document.getElementById('premiumCheck');
+            checkbox.checked = !checkbox.checked;
+        };
+
         const postForm = document.getElementById('postForm');
         
         postForm.onsubmit = async (e) => {
             e.preventDefault();
+            
             const user = auth.currentUser;
             
-            if(!user) {
+            if (!user) {
                 alert("Please log in first!");
+                window.location.href = "login.html";
+                return;
+            }
+
+            // Validate phone numbers
+            const phone = document.getElementById('phone').value;
+            const whatsapp = document.getElementById('whatsapp').value || phone;
+            
+            // Phone validation
+            const phoneRegex = /^(?:0|94|\+94)?[0-9]{9,10}$/;
+            if (!phoneRegex.test(phone.replace(/\s/g, ''))) {
+                alert("Please enter a valid Sri Lankan phone number");
+                return;
+            }
+
+            // Validate price
+            const price = parseFloat(document.getElementById('price').value);
+            if (price <= 0) {
+                alert("Please enter a valid price");
+                return;
+            }
+
+            // Check terms
+            if (!document.getElementById('terms').checked) {
+                alert("Please accept the terms and conditions");
                 return;
             }
 
@@ -158,47 +379,66 @@
             const isPremium = document.getElementById('premiumCheck').checked;
             
             submitBtn.disabled = true;
-            submitBtn.innerHTML = `<i class="fas fa-circle-notch animate-spin"></i> Posting...`;
+            submitBtn.innerHTML = `<i class="fas fa-circle-notch animate-spin mr-2"></i> Posting...`;
 
             try {
-                // FIXED: Better Google Drive link conversion
-                let finalImageUrl = driveLink;
-                const driveIdMatch = driveLink.match(/\/d\/([a-zA-Z0-9_-]+)/) || driveLink.match(/id=([a-zA-Z0-9_-]+)/);
-                
-                if (driveIdMatch && driveIdMatch[1]) {
-                    const driveId = driveIdMatch[1];
-                    // Using direct link bypass
-                    finalImageUrl = `https://lh3.googleusercontent.com/u/0/d/${driveId}=w1000-iv1`;
-                }
+                // Convert Google Drive link
+                const finalImageUrl = convertDriveLink(driveLink);
 
-                const docRef = await addDoc(collection(db, "posts"), {
-                    title: document.getElementById('title').value,
-                    description: document.getElementById('description').value,
+                // Create post object
+                const postData = {
+                    title: document.getElementById('title').value.trim(),
+                    description: document.getElementById('description').value.trim(),
                     category: document.getElementById('category').value,
                     district: document.getElementById('district').value,
                     imageUrl: finalImageUrl,
-                    price: parseFloat(document.getElementById('price').value),
-                    phone: document.getElementById('phone').value,
-                    whatsapp: document.getElementById('whatsapp').value,
+                    price: price,
+                    phone: phone.trim(),
+                    whatsapp: whatsapp.trim(),
                     authorId: user.uid,
+                    authorName: user.displayName || 'Anonymous',
+                    authorEmail: user.email,
                     createdAt: serverTimestamp(),
                     status: "approved",
+                    views: 0,
+                    likes: 0,
                     premiumStatus: isPremium ? "pending" : "none"
-                });
+                };
 
-                alert("Ad posted successfully!");
-                if(isPremium) {
-                    window.location.href = `payment.html?adId=${docRef.id}`;
-                } else {
-                    window.location.href = "index.html";
+                const docRef = await addDoc(collection(db, "posts"), postData);
+
+                // Show success modal
+                const modal = document.getElementById('successModal');
+                const modalContent = document.getElementById('modalContent');
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modalContent.classList.remove('scale-0');
+                }, 10);
+
+                // Set view ad button
+                document.getElementById('viewAdBtn').href = `ad-details.html?id=${docRef.id}`;
+
+                // Redirect to payment if premium
+                if (isPremium) {
+                    setTimeout(() => {
+                        window.location.href = `payment.html?adId=${docRef.id}`;
+                    }, 2000);
                 }
 
             } catch (err) {
-                alert("Error: " + err.message);
+                console.error("Error posting ad:", err);
+                alert("Error posting ad: " + err.message);
                 submitBtn.disabled = false;
-                submitBtn.innerText = "Post Now";
+                submitBtn.innerHTML = `<span>Post Now</span> <i class="fas fa-paper-plane text-sm"></i>`;
             }
         };
+
+        // Close modal when clicking outside
+        document.getElementById('successModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.add('hidden');
+            }
+        });
     </script>
 </body>
 </html>

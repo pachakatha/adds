@@ -1,101 +1,123 @@
 <!DOCTYPE html>
-<html lang="si">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>දැන්වීමක් පළ කරන්න | Lanka Ads</title>
+    <title>Post Ad | Lanka Ads</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .input-box { @apply w-full p-3 border border-gray-300 rounded-lg outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500; }
-        .label-style { @apply block font-semibold mb-1 text-gray-700; }
-        /* YouTube Shorts Embed Responsive CSS */
-        .video-container { position: relative; padding-bottom: 177.77%; height: 0; overflow: hidden; max-width: 250px; margin: auto; border-radius: 15px; }
+        /* Modern Glassmorphism effect for inputs */
+        .input-box { 
+            @apply w-full p-3.5 bg-white border border-gray-200 rounded-xl outline-none transition-all duration-300 shadow-sm;
+        }
+        .input-box:focus { 
+            @apply border-green-500 ring-4 ring-green-100;
+        }
+        .label-style { @apply block font-bold mb-1.5 text-gray-600 text-sm uppercase tracking-wide; }
+        
+        /* Video Container Styling */
+        .video-container { 
+            position: relative; padding-bottom: 177.77%; height: 0; overflow: hidden; 
+            max-width: 240px; margin: auto; border-radius: 20px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
     </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-slate-50 font-sans">
 
-    <div class="max-w-2xl mx-auto my-10 p-6 bg-white rounded-2xl shadow-lg border-t-8 border-orange-500">
-        <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">
-            <i class="fas fa-plus-circle text-orange-600 mr-2"></i>නව දැන්වීමක් පළ කරන්න
-        </h2>
+    <div class="max-w-2xl mx-auto my-12 p-8 bg-white rounded-[2rem] shadow-2xl border-b-8 border-green-600">
+        <div class="text-center mb-10">
+            <h2 class="text-4xl font-black text-gray-800 tracking-tight">
+                Post Your <span class="text-green-600">Ad</span>
+            </h2>
+            <p class="text-gray-400 mt-2">Fill the details below to sell your item fast</p>
+        </div>
 
-        <form id="postForm" class="space-y-6">
+        <form id="postForm" class="space-y-8">
             
             <div>
-                <label class="label-style">1. භාණ්ඩයේ නම (Title)</label>
-                <input type="text" id="title" class="input-box" placeholder="උදා: Toyota Corolla 2020" required>
+                <label class="label-style">Item Name</label>
+                <input type="text" id="title" class="input-box" placeholder="e.g. iPhone 15 Pro Max" required>
             </div>
 
             <div>
-                <label class="label-style">2. භාණ්ඩයේ විස්තර (Description)</label>
-                <textarea id="description" rows="4" class="input-box" placeholder="භාණ්ඩය ගැන සම්පූර්ණ විස්තරයක් ලියන්න..." required></textarea>
+                <label class="label-style">Description</label>
+                <textarea id="description" rows="4" class="input-box" placeholder="Tell more about your product..." required></textarea>
             </div>
 
-            <div>
-                <label class="label-style">3. ප්‍රවර්ගය (Category)</label>
-                <select id="category" class="input-box" required>
-                    <option value="">කැටගරි එකක් තෝරන්න</option>
-                    <option value="Vehicles">Vehicles (වාහන)</option>
-                    <option value="Electronics">Electronics (විදුලි උපකරණ)</option>
-                    <option value="Property">Property (ඉඩම් සහ නිවාස)</option>
-                    <option value="Home & Garden">Home & Garden</option>
-                    <option value="Fashion & Beauty">Fashion & Beauty</option>
-                    <option value="Services">Services (සේවා)</option>
-                    <option value="Business & Industry">Business & Industry</option>
-                    <option value="Education">Education (අධ්‍යාපන)</option>
-                    <option value="Pets">Pets (සතුන්)</option>
-                    <option value="Food & Agriculture">Food & Agriculture</option>
-                    <option value="Other">Other</option>
-                </select>
-            </div>
-
-            <div>
-                <label class="label-style">4. දිස්ත්‍රික්කය (District)</label>
-                <select id="district" class="input-box" required>
-                    <option value="">දිස්ත්‍රික්කයක් තෝරන්න</option>
-                    <option value="Ampara">Ampara</option><option value="Anuradhapura">Anuradhapura</option><option value="Badulla">Badulla</option><option value="Batticaloa">Batticaloa</option><option value="Colombo">Colombo</option><option value="Galle">Galle</option><option value="Gampaha">Gampaha</option><option value="Hambantota">Hambantota</option><option value="Jaffna">Jaffna</option><option value="Kalutara">Kalutara</option><option value="Kandy">Kandy</option><option value="Kegalle">Kegalle</option><option value="Kilinochchi">Kilinochchi</option><option value="Kurunegala">Kurunegala</option><option value="Mannar">Mannar</option><option value="Matale">Matale</option><option value="Matara">Matara</option><option value="Moneragala">Moneragala</option><option value="Mullaitivu">Mullaitivu</option><option value="Nuwara Eliya">Nuwara Eliya</option><option value="Polonnaruwa">Polonnaruwa</option><option value="Puttalam">Puttalam</option><option value="Ratnapura">Ratnapura</option><option value="Trincomalee">Trincomalee</option><option value="Vavuniya">Vavuniya</option>
-                </select>
-            </div>
-
-            <div class="border-2 border-blue-300 rounded-xl p-5 bg-blue-50">
-                <p class="font-bold text-blue-900 mb-4 text-center">Google Drive හරහා Photo එක දාන විදිය</p>
-                
-                <div class="video-container mb-4">
-                    <iframe src="https://www.youtube.com/embed/xs-amsA8m0E" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="label-style">Category</label>
+                    <select id="category" class="input-box" required>
+                        <option value="">Select Category</option>
+                        <option value="Vehicles">Vehicles</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Property">Property</option>
+                        <option value="Services">Services</option>
+                        <option value="Other">Other</option>
+                    </select>
                 </div>
 
-                <p class="text-sm text-blue-800 font-semibold mb-2 text-center italic">ඉහත වීඩියෝව බලා Drive ලින්ක් එක පහතින් දාන්න</p>
-                <input type="text" id="imageUrl" class="input-box border-blue-400" placeholder="මෙතන ලින්ක් එක Paste කරන්න..." required>
-                <p class="text-[11px] text-red-500 mt-2 text-center font-bold italic">වැදගත්: ලින්ක් එක "Anyone with the link" ලෙස සකසා තිබිය යුතුය.</p>
+                <div>
+                    <label class="label-style">District</label>
+                    <select id="district" class="input-box" required>
+                        <option value="">Select Location</option>
+                        <option value="Colombo">Colombo</option>
+                        <option value="Kandy">Kandy</option>
+                        <option value="Gampaha">Gampaha</option>
+                        <option value="Galle">Galle</option>
+                        <option value="Kurunegala">Kurunegala</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="bg-green-50 border-2 border-dashed border-green-200 rounded-[2rem] p-8 text-center">
+                <p class="font-black text-green-800 mb-6 flex items-center justify-center">
+                    <i class="fab fa-google-drive mr-2 text-2xl"></i> Google Drive Photo Setup
+                </p>
+                
+                <div class="video-container mb-6">
+                    <iframe src="https://www.youtube.com/embed/xs-amsA8m0E" frameborder="0" allowfullscreen></iframe>
+                </div>
+
+                <input type="text" id="imageUrl" class="input-box border-green-200" placeholder="Paste Shared Link Here..." required>
+                <p class="text-[10px] text-green-600 mt-3 font-medium uppercase tracking-tighter">Must be: "Anyone with the link can view"</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="label-style">Price (Rs.)</label>
+                    <input type="number" id="price" class="input-box font-bold text-green-600" placeholder="0.00" required>
+                </div>
+
+                <div>
+                    <label class="label-style">Contact Number</label>
+                    <input type="tel" id="phone" class="input-box" placeholder="+94XXXXXXXXX" required>
+                </div>
             </div>
 
             <div>
-                <label class="label-style">5. භාණ්ඩයේ මිල (Price - Rs.)</label>
-                <input type="number" id="price" class="input-box" placeholder="උදා: 5000" required>
-            </div>
-
-            <div>
-                <label class="label-style">6. දුරකථන අංකය (Country Code සමග)</label>
-                <input type="tel" id="phone" class="input-box" placeholder="+94XXXXXXXXX" required>
-            </div>
-
-            <div>
-                <label class="label-style">7. WhatsApp අංකය (Country Code සමග)</label>
+                <label class="label-style">WhatsApp Number</label>
                 <input type="tel" id="whatsapp" class="input-box" placeholder="+94XXXXXXXXX" required>
             </div>
 
-            <div class="border-4 border-amber-400 p-4 rounded-xl flex items-center justify-between bg-gradient-to-r from-red-600 to-amber-500 text-white shadow-lg">
-                <div>
-                    <h4 class="font-bold text-xl uppercase italic tracking-wider">Premium Boost</h4>
-                    <p class="text-xs">දැන්වීම ඉහළින්ම පෙන්වීමට මෙය Tick කරන්න.</p>
+            <div class="bg-gradient-to-r from-yellow-400 to-orange-500 p-6 rounded-2xl flex items-center justify-between text-white shadow-xl shadow-orange-100 transition hover:scale-[1.02]">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-white/20 p-3 rounded-full">
+                        <i class="fas fa-rocket text-2xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-black text-xl italic uppercase">Boost Ad</h4>
+                        <p class="text-xs font-medium opacity-90">Get 10x more views instantly</p>
+                    </div>
                 </div>
-                <input type="checkbox" id="premiumCheck" class="w-10 h-10 cursor-pointer accent-orange-500">
+                <input type="checkbox" id="premiumCheck" class="w-8 h-8 cursor-pointer accent-orange-600 bg-white">
             </div>
 
-            <button type="submit" id="submitBtn" class="w-full bg-orange-600 text-white font-bold py-4 rounded-lg hover:bg-orange-700 transition duration-300 text-xl shadow-xl">
-                දැන්වීම පළ කරන්න
+            <button type="submit" id="submitBtn" class="w-full bg-green-600 text-white font-black py-5 rounded-[1.5rem] hover:bg-green-700 hover:shadow-2xl hover:shadow-green-200 transition-all duration-300 text-xl uppercase tracking-widest flex items-center justify-center space-x-2">
+                <span>Post Now</span> <i class="fas fa-paper-plane text-sm"></i>
             </button>
         </form>
     </div>
@@ -105,7 +127,6 @@
         import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // ඔබේ Firebase Config එක
         const firebaseConfig = {
             apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
             authDomain: "adds-ink.firebaseapp.com",
@@ -126,28 +147,25 @@
             const user = auth.currentUser;
             
             if(!user) {
-                alert("කරුණාකර දැන්වීමක් පළ කිරීමට පෙර ලොග් වන්න!");
-                return window.location.href = "login.html";
+                alert("Please log in first!");
+                return;
             }
 
             const submitBtn = document.getElementById('submitBtn');
-            const isPremium = document.getElementById('premiumCheck').checked;
             const driveLink = document.getElementById('imageUrl').value;
             
             submitBtn.disabled = true;
-            submitBtn.innerText = "දැන්වීම පළ කරමින්...";
+            submitBtn.innerHTML = `<i class="fas fa-circle-notch animate-spin"></i> Posting...`;
 
             try {
-                // වීඩියෝවේ පියවර අනුව Link එක Direct Image එකක් කිරීම
+                // FIXED: Better Google Drive link conversion
                 let finalImageUrl = driveLink;
-                if (driveLink.includes("drive.google.com")) {
-                    // මෙය Google Drive එකේ ID එක පමණක් ගෙන Direct Link එකක් හදන ක්‍රමයයි
-                    const driveId = driveLink.match(/[-\w]{25,}/);
-                    if(driveId) {
-                        finalImageUrl = `https://lh3.googleusercontent.com/u/0/d/${driveId[0]}=w1000`;
-                        // Fallback conversion
-                        if(!finalImageUrl) finalImageUrl = driveLink.replace("file/d/", "uc?export=view&id=").replace("/view?usp=sharing", "");
-                    }
+                const driveIdMatch = driveLink.match(/\/d\/([a-zA-Z0-9_-]+)/) || driveLink.match(/id=([a-zA-Z0-9_-]+)/);
+                
+                if (driveIdMatch && driveIdMatch[1]) {
+                    const driveId = driveIdMatch[1];
+                    // Using direct link bypass
+                    finalImageUrl = `https://lh3.googleusercontent.com/u/0/d/${driveId}=w1000-iv1`;
                 }
 
                 const docRef = await addDoc(collection(db, "posts"), {
@@ -159,26 +177,18 @@
                     price: parseFloat(document.getElementById('price').value),
                     phone: document.getElementById('phone').value,
                     whatsapp: document.getElementById('whatsapp').value,
-                    postType: "ad",
                     authorId: user.uid,
-                    authorName: user.displayName || "පරිශීලක",
                     createdAt: serverTimestamp(),
-                    status: "pending", 
-                    premiumStatus: isPremium ? "pending" : "none"
+                    status: "approved" 
                 });
 
-                alert("දැන්වීම සාර්ථකව පළ කරන ලදී!");
-                
-                if(isPremium) {
-                    window.location.href = `payment.html?adId=${docRef.id}`;
-                } else {
-                    window.location.href = "index.html";
-                }
+                alert("Ad posted successfully!");
+                window.location.href = "index.html";
 
             } catch (err) {
-                alert("දෝෂයකි: " + err.message);
+                alert("Error: " + err.message);
                 submitBtn.disabled = false;
-                submitBtn.innerText = "දැන්වීම පළ කරන්න";
+                submitBtn.innerText = "Post Now";
             }
         };
     </script>

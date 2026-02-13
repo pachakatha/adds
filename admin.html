@@ -1,211 +1,320 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="si">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Panel - Lanka Ads</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>😂 Lanka Ads - ජෝකර් Admin Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        .bounce-animation {
+            animation: bounce 2s infinite;
+        }
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
+        }
+        .wiggle:hover {
+            animation: wiggle 0.5s ease-in-out;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 p-8">
+<body class="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 min-h-screen p-4">
+
+<!-- Confetti Cannon 🎉 -->
+<canvas id="confetti" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999;"></canvas>
 
 <div class="max-w-6xl mx-auto">
-    <!-- Header -->
-    <div class="bg-white rounded-2xl shadow-lg p-6 mb-6 flex justify-between items-center">
-        <h1 class="text-2xl font-bold text-blue-600">Lanka Ads Admin Panel</h1>
-        <div id="adminStatus" class="text-sm"></div>
+    <!-- 🃏 Joker Header -->
+    <div class="bg-yellow-300 rounded-[40px] shadow-2xl p-8 mb-8 text-center relative overflow-hidden border-8 border-purple-600 bounce-animation">
+        <div class="absolute top-0 left-0 w-32 h-32 bg-red-500 rounded-full -translate-x-16 -translate-y-16"></div>
+        <div class="absolute bottom-0 right-0 w-40 h-40 bg-blue-500 rounded-full translate-x-20 translate-y-20"></div>
+        
+        <h1 class="text-7xl font-black text-purple-800 mb-4 relative">
+            🤡 ජෝකර් ADMIN පැනලය 🤡
+        </h1>
+        <p class="text-2xl text-pink-700 font-bold mb-6">
+            ⚡ මෙතනදි වෙන දේවල් කාටවත් කියන්න එපා! ⚡
+        </p>
+        <div class="flex justify-center gap-4 text-4xl">
+            <span class="wiggle cursor-pointer">😂</span>
+            <span class="wiggle cursor-pointer">🤣</span>
+            <span class="wiggle cursor-pointer">😅</span>
+            <span class="wiggle cursor-pointer">😆</span>
+            <span class="wiggle cursor-pointer">🤪</span>
+        </div>
     </div>
 
-    <!-- Ads Container -->
-    <div id="adsContainer" class="space-y-4"></div>
+    <!-- 🎪 Admin Status (Comedy Version) -->
+    <div class="bg-white/90 backdrop-blur-xl rounded-[40px] shadow-2xl p-6 mb-8 flex justify-between items-center border-4 border-green-400">
+        <div class="flex items-center gap-4">
+            <div class="w-20 h-20 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center text-4xl animate-pulse">
+                🃏
+            </div>
+            <div>
+                <h2 class="text-2xl font-bold text-gray-800" id="adminName">Loading Admin...</h2>
+                <p class="text-pink-600" id="adminStatus">🤔 අද මොන පොරක්ද කියලා බලමු...</p>
+            </div>
+        </div>
+        <div class="flex gap-2">
+            <button onclick="partyMode()" class="bg-purple-600 text-white px-6 py-3 rounded-full font-bold hover:bg-purple-700 transition transform hover:scale-110">
+                🎉 Party Mode
+            </button>
+            <button onclick="logout()" class="bg-red-500 text-white px-6 py-3 rounded-full font-bold hover:bg-red-600 transition">
+                🏃‍♂️ පැනලා යන්න
+            </button>
+        </div>
+    </div>
+
+    <!-- 📊 Stats Cards (Funny Version) -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-gradient-to-br from-yellow-300 to-orange-400 rounded-[30px] p-6 text-center transform hover:rotate-2 transition shadow-2xl">
+            <div class="text-5xl mb-3">📦</div>
+            <div class="text-3xl font-black" id="totalAdsJoke">0</div>
+            <div class="font-bold">අපේ පොඩ්ඩන්ගේ ඇඩ්ස්</div>
+            <div class="text-xs text-gray-700">(සමහරක් බොරු ඇඩ්ස් 😂)</div>
+        </div>
+        
+        <div class="bg-gradient-to-br from-pink-300 to-red-400 rounded-[30px] p-6 text-center transform hover:-rotate-2 transition shadow-2xl">
+            <div class="text-5xl mb-3">👑</div>
+            <div class="text-3xl font-black" id="premiumAdsJoke">0</div>
+            <div class="font-bold">Premium මාමලා</div>
+            <div class="text-xs text-gray-700">(සල්ලි කාරයෝ 🤵)</div>
+        </div>
+        
+        <div class="bg-gradient-to-br from-green-300 to-teal-400 rounded-[30px] p-6 text-center transform hover:rotate-2 transition shadow-2xl">
+            <div class="text-5xl mb-3">⏳</div>
+            <div class="text-3xl font-black" id="pendingAdsJoke">0</div>
+            <div class="font-bold">හිරවෙලා ඉන්න ඇඩ්ස්</div>
+            <div class="text-xs text-gray-700">(අපේ boss බලන් ඉන්නේ 🤷)</div>
+        </div>
+        
+        <div class="bg-gradient-to-br from-blue-300 to-indigo-400 rounded-[30px] p-6 text-center transform hover:-rotate-2 transition shadow-2xl">
+            <div class="text-5xl mb-3">👻</div>
+            <div class="text-3xl font-black" id="deletedJoke">0</div>
+            <div class="font-bold">මැරිච්ච ඇඩ්ස්</div>
+            <div class="text-xs text-gray-700">(RIP 🪦)</div>
+        </div>
+    </div>
+
+    <!-- 🔍 Search Bar (Funny) -->
+    <div class="bg-white/80 backdrop-blur-xl rounded-[40px] shadow-2xl p-6 mb-8">
+        <div class="relative">
+            <input type="text" id="searchInput" placeholder="🔍 මොනාහරි හොයන්නද? (බොරුවට විතරයි වැඩ කරේ 😜)" 
+                   class="w-full p-6 pr-40 rounded-[30px] border-4 border-pink-300 text-xl outline-none focus:border-purple-500">
+            <button onclick="searchJoke()" class="absolute right-3 top-3 bottom-3 bg-gradient-to-r from-green-400 to-blue-500 text-white px-10 rounded-[30px] font-bold hover:from-purple-500 hover:to-pink-500 transition">
+                හොයන්න ගියා වගේ 😂
+            </button>
+        </div>
+    </div>
+
+    <!-- 🎪 Ads Container (Comedy Edition) -->
+    <div id="adsContainer" class="space-y-6 mb-8"></div>
+
+    <!-- 🎯 Joke Button -->
+    <div class="text-center mb-8">
+        <button onclick="tellJoke()" class="bg-gradient-to-r from-red-500 to-pink-500 text-white text-2xl font-black py-6 px-16 rounded-full shadow-2xl hover:from-purple-600 hover:to-indigo-600 transition transform hover:scale-110">
+            🤡 මට ජෝක් එකක් කියපන් 🤡
+        </button>
+    </div>
+
+    <!-- 💬 Joke Modal -->
+    <div id="jokeModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-[50px] p-12 max-w-2xl mx-4 text-center transform scale-0 transition-all duration-500" id="jokeContent">
+            <div class="text-8xl mb-6 animate-bounce">🤡</div>
+            <h3 class="text-4xl font-black mb-4 text-purple-600" id="jokeQuestion"></h3>
+            <p class="text-2xl text-gray-600 mb-8" id="jokeAnswer"></p>
+            <button onclick="closeJoke()" class="bg-green-500 text-white px-10 py-4 rounded-full text-xl font-bold hover:bg-green-600">
+                හොඳ ජෝක් එකක් 😂
+            </button>
+        </div>
+    </div>
+
+    <!-- 🎉 Party Mode Modal -->
+    <div id="partyModal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 hidden">
+        <div class="bg-gradient-to-r from-yellow-300 via-pink-300 to-purple-300 rounded-[60px] p-12 max-w-lg text-center">
+            <div class="text-8xl mb-4 animate-spin">🎉</div>
+            <h2 class="text-5xl font-black mb-4">PARTY TIME!</h2>
+            <p class="text-2xl mb-8">අද හැමෝටම Premium FREE! 🎁</p>
+            <button onclick="closeParty()" class="bg-red-500 text-white px-12 py-4 rounded-full text-2xl font-bold">
+                OK අපි යනවා 🏃
+            </button>
+        </div>
+    </div>
 </div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { 
-        getFirestore, 
-        collection, 
-        getDocs, 
-        doc, 
-        updateDoc, 
-        deleteDoc, 
-        query, 
-        orderBy 
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-    import { 
-        getAuth, 
-        onAuthStateChanged,
-        signInWithEmailAndPassword 
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
-        authDomain: "adds-ink.firebaseapp.com",
-        projectId: "adds-ink",
-        storageBucket: "adds-ink.firebasestorage.app",
-        messagingSenderId: "638657776631",
-        appId: "1:638657776631:web:44ffdad33137bfefa57cf2"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-
-    // Check login status
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            document.getElementById('adminStatus').innerHTML = `
-                <span class="text-green-600 font-bold">
-                    <i class="fas fa-circle text-xs mr-1"></i> Logged in as: ${user.email}
-                </span>
-                <button onclick="logout()" class="ml-4 text-red-600 text-sm">Logout</button>
-            `;
-            await loadAds();
-        } else {
-            // Show login form if not logged in
-            document.getElementById('adminStatus').innerHTML = `
-                <div class="text-red-600">Not logged in</div>
-            `;
-            showLoginForm();
-        }
-    });
-
-    // Login form
-    function showLoginForm() {
-        document.getElementById('adsContainer').innerHTML = `
-            <div class="bg-white rounded-2xl shadow-lg p-8 max-w-md mx-auto">
-                <h2 class="text-xl font-bold mb-6">Admin Login</h2>
-                <input type="email" id="loginEmail" placeholder="Email" class="w-full p-3 border rounded-xl mb-4">
-                <input type="password" id="loginPassword" placeholder="Password" class="w-full p-3 border rounded-xl mb-4">
-                <button onclick="adminLogin()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">
-                    Login as Admin
-                </button>
-            </div>
-        `;
+<script>
+// 🎭 ජෝක්ස් ලිස්ට් එක
+const jokes = [
+    {
+        question: "🤔 Premium Ad එකක් දාපු කෙනා...",
+        answer: "තාම අපේ bank account එකට සල්ලි ඇවිල්ලා නෑ! 😂"
+    },
+    {
+        question: "🇱🇰 සිංහල අයියා admin ට කියපු දේ...",
+        answer: "මගේ ad එක මොකද delete කළේ? එකට උත්තරේ: මොකද ඒකේ තිබ්බේ අපේ තරඟකාරයෙක්ගේ photo එකක්! 😅"
+    },
+    {
+        question: "👑 Premium Member අයියා...",
+        answer: "Premium දාලා අවුරුද්දක් වෙනකන් විකුණන්න බැරි වුණාම අහනවා: 'මේ premium එක refund කරන්න පුළුවන්ද?' 🤣"
+    },
+    {
+        question: "📱 Mobile phone විකුණන්න ආපු මහත්තයා...",
+        answer: "Phone එක හොඳටම බැටරි ගහනවා කියලා කිව්වා. බලනකොට phone එකට charger එකක් නෑ! 😆"
+    },
+    {
+        question: "🚗 Car එකක් විකුණන්න ආපු කෙනා...",
+        answer: "මේක super condition කියලා කිව්වා. බලනකොට wheel එකක් නෑ! අනික් තුන තියෙනවා! 😂"
     }
+];
 
-    // Admin login function
-    window.adminLogin = async () => {
-        const email = document.getElementById('loginEmail').value;
-        const password = document.getElementById('loginPassword').value;
-        
-        try {
-            await signInWithEmailAndPassword(auth, email, password);
-            // After login, onAuthStateChanged will trigger loadAds()
-        } catch (error) {
-            alert("Login failed: " + error.message);
-        }
-    };
+// Party Mode
+window.partyMode = () => {
+    document.getElementById('partyModal').classList.remove('hidden');
+    startConfetti();
+    setTimeout(() => {
+        document.getElementById('partyModal').classList.add('hidden');
+    }, 3000);
+};
 
-    // Load all ads
-    async function loadAds() {
-        try {
-            const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-            const snapshot = await getDocs(q);
-            
-            let html = '';
-            
-            snapshot.forEach((doc) => {
-                const ad = doc.data();
-                const isPremium = ad.premiumStatus === "active" || ad.isPremium === true;
-                
-                html += `
-                    <div class="bg-white rounded-2xl shadow-lg p-6">
-                        <div class="flex gap-6">
-                            <img src="${ad.imageUrl || 'https://via.placeholder.com/100'}" 
-                                 class="w-24 h-24 rounded-xl object-cover">
-                            
-                            <div class="flex-1">
-                                <div class="flex justify-between items-start">
-                                    <div>
-                                        <h3 class="font-bold text-lg">${ad.title || 'No title'}</h3>
-                                        <p class="text-gray-600 text-sm">${ad.description?.substring(0, 100)}...</p>
-                                        <div class="flex gap-4 mt-2 text-sm">
-                                            <span><i class="fas fa-map-marker-alt text-gray-400"></i> ${ad.district || 'N/A'}</span>
-                                            <span><i class="fas fa-tag text-gray-400"></i> ${ad.category || 'N/A'}</span>
-                                            <span class="font-bold text-blue-600">Rs. ${(ad.price || 0).toLocaleString()}</span>
-                                        </div>
-                                    </div>
-                                    <span class="px-3 py-1 rounded-full text-xs font-bold ${isPremium ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'}">
-                                        ${isPremium ? '⭐ PREMIUM' : 'NORMAL'}
-                                    </span>
-                                </div>
-                                
-                                <div class="flex gap-2 mt-4">
-                                    <button onclick="togglePremium('${doc.id}', ${isPremium})" 
-                                            class="px-4 py-2 ${isPremium ? 'bg-gray-600' : 'bg-yellow-500'} text-white rounded-lg text-sm font-bold">
-                                        ${isPremium ? 'Remove Premium' : 'Make Premium'}
-                                    </button>
-                                    <button onclick="deleteAd('${doc.id}')" 
-                                            class="px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-bold">
-                                        <i class="fas fa-trash"></i> Delete
-                                    </button>
-                                    <button onclick="viewAd('${doc.id}')" 
-                                            class="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-bold">
-                                        <i class="fas fa-eye"></i> View
-                                    </button>
-                                </div>
-                            </div>
+// Random Joke
+window.tellJoke = () => {
+    const joke = jokes[Math.floor(Math.random() * jokes.length)];
+    document.getElementById('jokeQuestion').textContent = joke.question;
+    document.getElementById('jokeAnswer').textContent = joke.answer;
+    
+    const modal = document.getElementById('jokeModal');
+    const content = document.getElementById('jokeContent');
+    modal.classList.remove('hidden');
+    setTimeout(() => content.classList.remove('scale-0'), 100);
+};
+
+window.closeJoke = () => {
+    document.getElementById('jokeModal').classList.add('hidden');
+    document.getElementById('jokeContent').classList.add('scale-0');
+};
+
+window.closeParty = () => {
+    document.getElementById('partyModal').classList.add('hidden');
+    stopConfetti();
+};
+
+// Search Joke
+window.searchJoke = () => {
+    const searchTerm = document.getElementById('searchInput').value;
+    if(searchTerm.toLowerCase().includes('premium')) {
+        alert('😂 Premium ගැන හොයනවා නම් මුදල් ඇමතිකාරයාට කතා කරන්න! 📞');
+    } else if(searchTerm.toLowerCase().includes('delete')) {
+        alert('😱 Delete button එක අපේ CTO ගාව! උන්නැහේ තාම නිදාගෙන! 💤');
+    } else {
+        alert('🔍 හොයන දේ හම්බුනේ නෑ! උත්තරේ අපි ළඟ නෑ! 🤷');
+    }
+};
+
+// Confetti
+let confettiInterval;
+function startConfetti() {
+    const canvas = document.getElementById('confetti');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const particles = [];
+    for(let i = 0; i < 50; i++) {
+        particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 10 + 5,
+            speed: Math.random() * 5 + 2,
+            color: `hsl(${Math.random() * 360}, 100%, 50%)`
+        });
+    }
+    
+    confettiInterval = setInterval(() => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+            p.y += p.speed;
+            if(p.y > canvas.height) p.y = 0;
+            ctx.fillStyle = p.color;
+            ctx.fillRect(p.x, p.y, p.size, p.size);
+        });
+    }, 30);
+}
+
+function stopConfetti() {
+    clearInterval(confettiInterval);
+    document.getElementById('confetti').getContext('2d').clearRect(0, 0, window.innerWidth, window.innerHeight);
+}
+
+// Logout Joke
+window.logout = () => {
+    if(confirm('😱 ඇත්තටම යනවද? Premium Ads ටික විකුණන්න තව කෙනෙක් නෑ!')){
+        alert('🏃‍♂️ යන්න එපා... ආයෙත් එන්නම් කියලා හිතන්නකෝ! 😢');
+        setTimeout(() => {
+            alert('😂 ජෝක් එකක්! ඔයාට යන්න බෑ! Admin හැමදාම මෙතන! 🎪');
+        }, 1000);
+    }
+};
+
+// Load Mock Data (Comedy)
+window.onload = () => {
+    document.getElementById('adminName').innerHTML = '🤵 අපේ මහත්තයා (Boss)';
+    document.getElementById('adminStatus').innerHTML = '😂 අද Premium Ads ටික බෙදන දවස!';
+    
+    document.getElementById('totalAdsJoke').innerHTML = '99';
+    document.getElementById('premiumAdsJoke').innerHTML = '1 (ඒකත් මගේ 😂)';
+    document.getElementById('pendingAdsJoke').innerHTML = '50ක් හිරවෙලා';
+    document.getElementById('deletedJoke').innerHTML = '1000ක් මැරිලා';
+    
+    // Load funny ads
+    loadFunnyAds();
+};
+
+function loadFunnyAds() {
+    const funnyAds = [
+        { title: '🚗 Toyota Corolla - 1,500,000', desc: 'Wheel 3යි, එකක් නෑ!', price: '1500000', type: 'normal' },
+        { title: '📱 iPhone 15 Pro Max - 350,000', desc: 'Waterproof කියලා වතුරට දැම්මා, දැන් නෑ!', price: '350000', type: 'premium' },
+        { title: '🏠 House for Sale - 25,000,000', desc: 'Door එක විතරයි තියෙන්නේ!', price: '25000000', type: 'normal' },
+        { title: '🐶 පුංචි puppy - 15,000', desc: 'මේකා රෑට අම්මටත් බනිනවා!', price: '15000', type: 'pending' },
+    ];
+    
+    let html = '';
+    funnyAds.forEach(ad => {
+        html += `
+            <div class="bg-white/90 backdrop-blur-xl rounded-[40px] shadow-2xl p-6 mb-4 transform hover:scale-105 transition border-4 ${ad.type === 'premium' ? 'border-yellow-400' : 'border-gray-300'}">
+                <div class="flex gap-6">
+                    <div class="w-24 h-24 bg-gradient-to-br from-purple-400 to-pink-400 rounded-[30px] flex items-center justify-center text-5xl">
+                        ${ad.title.split(' ')[0]}
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between">
+                            <h3 class="text-2xl font-bold">${ad.title}</h3>
+                            ${ad.type === 'premium' ? '<span class="bg-yellow-400 px-4 py-1 rounded-full text-sm font-bold">👑 PREMIUM</span>' : ''}
+                        </div>
+                        <p class="text-gray-600 mt-2">${ad.desc}</p>
+                        <div class="flex gap-4 mt-4">
+                            <button onclick="alert('මේක විකුණන්න නම් අපේ සර්ට කතා කරන්න! 😂')" 
+                                    class="px-6 py-2 bg-green-500 text-white rounded-full hover:bg-green-600">
+                                Make Premium 🤡
+                            </button>
+                            <button onclick="alert('Delete කරන්න බෑ! මේක admin ගේ බූට් එක! 😜')" 
+                                    class="px-6 py-2 bg-red-500 text-white rounded-full hover:bg-red-600">
+                                Delete 🗑️
+                            </button>
                         </div>
                     </div>
-                `;
-            });
-            
-            if (html === '') {
-                html = '<div class="bg-white rounded-2xl shadow-lg p-12 text-center text-gray-500">No ads found</div>';
-            }
-            
-            document.getElementById('adsContainer').innerHTML = html;
-            
-        } catch (error) {
-            console.error("Error loading ads:", error);
-            document.getElementById('adsContainer').innerHTML = `
-                <div class="bg-red-50 rounded-2xl shadow-lg p-12 text-center">
-                    <i class="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
-                    <h3 class="font-bold text-red-800 mb-2">Error Loading Ads</h3>
-                    <p class="text-red-600">${error.message}</p>
-                    <p class="text-sm text-gray-600 mt-4">Check Firebase Security Rules</p>
                 </div>
-            `;
-        }
-    }
-
-    // Toggle premium status
-    window.togglePremium = async (id, currentStatus) => {
-        try {
-            await updateDoc(doc(db, "posts", id), {
-                isPremium: !currentStatus,
-                premiumStatus: !currentStatus ? "active" : "none"
-            });
-            alert("Status updated!");
-            loadAds(); // Reload
-        } catch (error) {
-            alert("Error: " + error.message);
-        }
-    };
-
-    // Delete ad
-    window.deleteAd = async (id) => {
-        if (confirm("Are you sure you want to delete this ad?")) {
-            try {
-                await deleteDoc(doc(db, "posts", id));
-                alert("Ad deleted!");
-                loadAds(); // Reload
-            } catch (error) {
-                alert("Error: " + error.message);
-            }
-        }
-    };
-
-    // View ad
-    window.viewAd = (id) => {
-        window.open(`ad-details.html?id=${id}`, '_blank');
-    };
-
-    // Logout
-    window.logout = async () => {
-        await auth.signOut();
-        window.location.reload();
-    };
+            </div>
+        `;
+    });
+    
+    document.getElementById('adsContainer').innerHTML = html;
+}
 </script>
 
 </body>

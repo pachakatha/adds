@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Comment Box</title>
+    <title>Comment Box - Adds Ink</title>
     <style>
         * {
             margin: 0;
@@ -182,6 +182,7 @@
             line-height: 1.5;
             margin-bottom: 8px;
             font-size: 14px;
+            white-space: pre-wrap;
         }
         
         .comment-phone {
@@ -190,6 +191,11 @@
             display: flex;
             align-items: center;
             gap: 5px;
+            background: #e8f5e9;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 8px;
         }
         
         .comment-phone:before {
@@ -239,11 +245,36 @@
             margin-top: 10px;
             display: none;
             text-align: center;
+            animation: slideIn 0.3s ease;
         }
         
         .success-message.show {
             display: block;
-            animation: slideIn 0.3s ease;
+        }
+        
+        /* Error message */
+        .error-message {
+            background: #f44336;
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            display: none;
+            text-align: center;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        .stats-box {
+            background: #e3f2fd;
+            padding: 8px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 10px;
+            font-size: 13px;
+            color: #1976d2;
         }
     </style>
 </head>
@@ -251,7 +282,7 @@
     <div class="container">
         <!-- ඉහළ Welcome Message එක -->
         <div class="welcome-message">
-            <h2>🌟 අපගේ Comment Box වෙත සාදරයෙන් පිළිගනිමු!</h2>
+            <h2>🌟 Adds Ink Comment Box වෙත සාදරයෙන් පිළිගනිමු!</h2>
             <p>ඔබට අවශ්‍ය දේවල් තිබේනම්, ඒවා මෙහි සටහන් කරන්න.</p>
             <p>ඔබගේ දුරකථන අංකය සමග පණිවිඩය තබන්න,<br>එම සේවාව ඇති කෙනෙක් ඔබට කෙලින්ම අමතනු ඇත.</p>
             <div class="highlight">👇 පහතින් ඔබගේ විස්තර ඇතුළත් කරන්න 👇</div>
@@ -272,13 +303,17 @@
                 </div>
                 
                 <div class="form-group">
-                    <textarea id="message" placeholder="ඔබගේ පණිවිඩය මෙහි ලියන්න..." required></textarea>
+                    <textarea id="message" placeholder="ඔබගේ පණිවිඩය මෙහි ලියන්න... (උදා: මට පාවිච්චි කළ බයිසිකලයක් ඕන, මගේ අංකය 07XXXXXXXX)" required></textarea>
                 </div>
                 
-                <button type="submit">💬 පණිවිඩය එක් කරන්න</button>
+                <button type="submit" id="submitBtn">💬 පණිවිඩය එක් කරන්න</button>
                 
                 <div id="successMessage" class="success-message">
                     ✅ ඔබගේ පණිවිඩය සාර්ථකව එක් විය!
+                </div>
+                
+                <div id="errorMessage" class="error-message">
+                    ❌ සමාවන්න, පණිවිඩය එක් කිරීමට අපොහොසත් විය.
                 </div>
             </form>
         </div>
@@ -286,6 +321,7 @@
         <!-- Comments Box එක (scroll වෙන) -->
         <div class="comments-box">
             <h3>📝 පණිවිඩ සටහන්</h3>
+            <div id="stats"></div>
             <div id="commentsList">
                 <div class="loading">පණිවිඩ පූරණය වෙමින්...</div>
             </div>
@@ -294,105 +330,83 @@
 
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
     
     <script>
-        // ඔයාගේ Firebase Config එක මෙතන දාන්න
+        // Firebase Config එක - ඔයාගේ API key එක ඇතුළත්
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            databaseURL: "YOUR_DATABASE_URL",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
+            authDomain: "adds-ink.firebaseapp.com",
+            projectId: "adds-ink",
+            storageBucket: "adds-ink.firebasestorage.app",
+            messagingSenderId: "638657776631",
+            appId: "1:638657776631:web:44ffdad33137bfefa57cf2",
+            measurementId: "G-Z002TVT7QX"
         };
 
         // Firebase initialize කරන්න
         firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-        const commentsRef = database.ref('comments');
+        
+        // Firestore database එක initialize කරන්න
+        const db = firebase.firestore();
+        
+        // 'comments' collection එකට reference එකක් හදාගන්න
+        const commentsCollection = db.collection('comments');
 
-        // Form එක submit කරන කොට
-        document.getElementById('commentForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // දත්ත ලබාගන්න
-            const name = document.getElementById('name').value.trim();
-            const phone = document.getElementById('phone').value.trim();
-            const message = document.getElementById('message').value.trim();
-            
-            // නම සහ පණිවිඩය හිස්ද කියලා check කරන්න
-            if(name && message) {
-                // Firebase වලට save කරන්න
-                const newCommentRef = commentsRef.push();
-                newCommentRef.set({
-                    name: name,
-                    phone: phone || 'දුරකථන අංකයක් නොමැත',
-                    message: message,
-                    timestamp: Date.now()
-                }).then(() => {
-                    // Form එක reset කරන්න
-                    document.getElementById('commentForm').reset();
-                    
-                    // Success message පෙන්වන්න
-                    const successMsg = document.getElementById('successMessage');
-                    successMsg.classList.add('show');
-                    setTimeout(() => {
-                        successMsg.classList.remove('show');
-                    }, 3000);
-                }).catch((error) => {
-                    console.error("Error adding comment: ", error);
-                    alert("සමාවන්න, පණිවිඩය එක් කිරීමට අපොහොසත් විය. නැවත උත්සාහ කරන්න.");
-                });
-            } else {
-                alert("කරුණාකර නම සහ පණිවිඩය ඇතුළත් කරන්න.");
-            }
-        });
+        // DOM elements
+        const commentForm = document.getElementById('commentForm');
+        const nameInput = document.getElementById('name');
+        const phoneInput = document.getElementById('phone');
+        const messageInput = document.getElementById('message');
+        const submitBtn = document.getElementById('submitBtn');
+        const commentsList = document.getElementById('commentsList');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const statsDiv = document.getElementById('stats');
 
-        // Comments load කරන්න (real-time updates)
-        commentsRef.orderByChild('timestamp').on('value', (snapshot) => {
-            const commentsList = document.getElementById('commentsList');
-            
-            if(snapshot.exists()) {
+        // Real-time listener එක - comments collection එකේ වෙනස්කම් වලට සවන් දෙන්න
+        commentsCollection.orderBy('timestamp', 'desc').onSnapshot((snapshot) => {
+            if (!snapshot.empty) {
                 let html = '';
+                let commentCount = 0;
                 
-                // අලුත්ම comments උඩින් පෙන්වන්න (timestamp අනුව බස්සට)
-                const comments = [];
-                snapshot.forEach((childSnapshot) => {
-                    comments.push({
-                        id: childSnapshot.key,
-                        ...childSnapshot.val()
-                    });
-                });
-                
-                // Timestamp අනුව sort කරන්න (අලුත්ම එක උඩින්)
-                comments.sort((a, b) => b.timestamp - a.timestamp);
-                
-                comments.forEach((comment) => {
-                    const date = new Date(comment.timestamp);
-                    const timeStr = date.toLocaleString('si-LK', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    });
+                snapshot.forEach((doc) => {
+                    const comment = doc.data();
+                    const commentId = doc.id;
+                    commentCount++;
+                    
+                    // timestamp එක JavaScript Date object එකකට convert කරන්න
+                    let timeStr = 'දිනය නොදනී';
+                    if (comment.timestamp) {
+                        // Firestore timestamp එක JavaScript Date එකකට convert කරන්න
+                        const date = comment.timestamp.toDate ? 
+                            comment.timestamp.toDate() : 
+                            new Date(comment.timestamp);
+                        
+                        timeStr = date.toLocaleString('si-LK', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                    }
                     
                     html += `
-                        <div class="comment-item">
+                        <div class="comment-item" id="comment-${commentId}">
                             <div class="comment-header">
-                                <span class="comment-name">${escapeHtml(comment.name)}</span>
+                                <span class="comment-name">${escapeHtml(comment.name || 'නම නොදනී')}</span>
                                 <span class="comment-time">${timeStr}</span>
                             </div>
-                            <div class="comment-message">${escapeHtml(comment.message)}</div>
-                            ${comment.phone && comment.phone !== 'දුරකථන අංකයක් නොමැත' ? 
+                            <div class="comment-message">${escapeHtml(comment.message || '')}</div>
+                            ${comment.phone ? 
                                 `<div class="comment-phone">${escapeHtml(comment.phone)}</div>` : ''}
                         </div>
                     `;
                 });
                 
                 commentsList.innerHTML = html;
+                statsDiv.innerHTML = `<div class="stats-box">📊 මුළු පණිවිඩ: ${commentCount}</div>`;
             } else {
                 commentsList.innerHTML = `
                     <div class="no-comments">
@@ -400,11 +414,81 @@
                         පළමු පණිවිඩය එක් කිරීමට ඉහත පෝරමය පුරවන්න!
                     </div>
                 `;
+                statsDiv.innerHTML = '';
+            }
+        }, (error) => {
+            console.error("Error loading comments: ", error);
+            commentsList.innerHTML = `
+                <div class="no-comments">
+                    ❌ දත්ත පූරණය කිරීමේ දෝෂයකි.<br>
+                    කරුණාකර පිටුව refresh කරන්න.
+                </div>
+            `;
+        });
+
+        // Form එක submit කරන කොට
+        commentForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // දත්ත ලබාගන්න
+            const name = nameInput.value.trim();
+            const phone = phoneInput.value.trim();
+            const message = messageInput.value.trim();
+            
+            // Validate කරන්න
+            if (!name) {
+                alert("කරුණාකර ඔබගේ නම ඇතුළත් කරන්න.");
+                nameInput.focus();
+                return;
+            }
+            
+            if (!message) {
+                alert("කරුණාකර පණිවිඩය ඇතුළත් කරන්න.");
+                messageInput.focus();
+                return;
+            }
+            
+            // Submit button එක disable කරන්න (double submission වැළැක්වීමට)
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ එකතු වෙමින්...';
+            
+            try {
+                // comments collection එකට new document එකක් add කරන්න
+                await commentsCollection.add({
+                    name: name,
+                    phone: phone || '',  // ඉලක්කම් නැත්නම් හිස් string එකක්
+                    message: message,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()  // Firestore server timestamp
+                });
+                
+                // Form එක reset කරන්න
+                commentForm.reset();
+                
+                // Success message පෙන්වන්න
+                successMessage.classList.add('show');
+                setTimeout(() => {
+                    successMessage.classList.remove('show');
+                }, 3000);
+                
+            } catch (error) {
+                console.error("Error adding comment: ", error);
+                
+                // Error message පෙන්වන්න
+                errorMessage.classList.add('show');
+                setTimeout(() => {
+                    errorMessage.classList.remove('show');
+                }, 3000);
+                
+            } finally {
+                // Submit button එක re-enable කරන්න
+                submitBtn.disabled = false;
+                submitBtn.textContent = '💬 පණිවිඩය එක් කරන්න';
             }
         });
 
         // HTML escape කරන්න (XSS attacks වලින් ආරක්ෂා වෙන්න)
         function escapeHtml(unsafe) {
+            if (!unsafe) return '';
             return unsafe
                 .replace(/&/g, "&amp;")
                 .replace(/</g, "&lt;")
@@ -412,6 +496,9 @@
                 .replace(/"/g, "&quot;")
                 .replace(/'/g, "&#039;");
         }
+
+        // Initial load එකේදී loading message එක පෙන්වන්න
+        console.log("Firebase initialized successfully with API key");
     </script>
 </body>
 </html>

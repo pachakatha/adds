@@ -3,175 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>දැන්වීම් විස්තර | Adds.ink</title>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Ad Details - Adds Ink</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-green: #2ecc71;
+            --dark-green: #27ae60;
+            --light-bg: #f4f7f6;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            border-bottom: 2px solid var(--primary-green);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        h2 { color: var(--dark-green); margin: 0; }
+        .category { color: #7f8c8d; font-size: 0.9em; text-transform: uppercase; }
+
+        .details-section { margin-bottom: 20px; }
+        .label { font-weight: bold; color: #333; display: block; margin-top: 10px; }
+        .value { color: #555; margin-bottom: 5px; }
+
+        /* Buttons */
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-call { background-color: var(--primary-green); }
+        .btn-whatsapp { background-color: #25D366; }
+        .btn-call:hover, .btn-whatsapp:hover { opacity: 0.9; }
+
+        .btn i { margin-right: 10px; }
+
+        /* Share Section */
+        .share-section {
+            margin-top: 30px;
+            text-align: center;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+
+        .share-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .share-icon {
+            font-size: 24px;
+            color: var(--dark-green);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .share-icon:hover { transform: scale(1.2); }
+
+    </style>
 </head>
-<body class="bg-gray-50">
+<body>
 
-    <div class="container mx-auto px-4 py-8 max-w-4xl">
-        <div class="bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100">
-            
-            <div id="adImageContainer" class="h-64 md:h-96 bg-gray-200">
-                <img id="adImage" src="" class="w-full h-full object-cover">
-            </div>
-
-            <div class="p-6">
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <h1 id="adTitle" class="text-2xl font-bold text-gray-800">පූරණය වෙමින්...</h1>
-                        <p id="adLocation" class="text-gray-500 text-sm">📍 පූරණය වෙමින්...</p>
-                    </div>
-                    <div class="text-right">
-                        <p id="adPrice" class="text-2xl font-black text-orange-600">රු. 0</p>
-                    </div>
-                </div>
-
-                <hr class="my-4 border-gray-100">
-
-                <div class="bg-blue-50 p-4 rounded-2xl flex flex-col md:flex-row items-center justify-between mb-6 border border-blue-100 gap-4">
-                    <div class="flex items-center gap-3">
-                        <div class="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-md" id="sellerInitial">S</div>
-                        <div>
-                            <p class="font-bold text-gray-800 text-lg" id="sellerName">විකුණුම්කරු</p>
-                            <div id="sellerRating" class="flex items-center text-yellow-500 text-sm font-bold">
-                                </div>
-                        </div>
-                    </div>
-                    
-                    <div class="flex flex-col items-center md:items-end">
-                        <p class="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">විකුණුම්කරු අමතන්න</p>
-                        <a id="phoneBtn" href="#" class="bg-blue-600 text-white px-6 py-3 rounded-2xl font-black text-xl hover:bg-blue-700 transition shadow-lg flex items-center gap-2">
-                            📞 <span id="sellerPhone">අංකය පූරණය වේ...</span>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="mb-8">
-                    <h3 class="font-bold text-lg mb-2">දැන්වීමේ විස්තර:</h3>
-                    <p id="adDescription" class="text-gray-600 leading-relaxed text-sm bg-gray-50 p-4 rounded-xl">දැන්වීමේ විස්තර මෙහි දැක්වේ...</p>
-                </div>
-
-                <div class="border-t pt-6">
-                    <h3 class="font-bold text-sm mb-3">විකුණුම්කරු ගැන ඔබේ අදහස:</h3>
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <select id="ratingScore" class="border p-2 rounded-lg text-sm outline-none bg-white">
-                            <option value="5">⭐⭐⭐⭐⭐ (විශිෂ්ටයි)</option>
-                            <option value="4">⭐⭐⭐⭐ (හොඳයි)</option>
-                            <option value="3">⭐⭐⭐ (සාමාන්‍යයි)</option>
-                            <option value="2">⭐⭐ (අඩුයි)</option>
-                            <option value="1">⭐ (නරකයි)</option>
-                        </select>
-                        <button onclick="submitRating()" class="bg-black text-white px-6 py-2 rounded-lg text-sm font-bold hover:bg-gray-800">Rate</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="container">
+    <div class="header">
+        <span class="category" id="displayCategory">ප්‍රවර්ගය: ඉලෙක්ට්‍රොනික උපකරණ</span>
+        <h2 id="displayTitle">භාණ්ඩයේ නම මෙතනට</h2>
     </div>
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
-            authDomain: "adds-ink.firebaseapp.com",
-            projectId: "adds-ink",
-            storageBucket: "adds-ink.firebasestorage.app",
-            messagingSenderId: "638657776631",
-            appId: "1:638657776631:web:44ffdad33137bfefa57cf2",
-            measurementId: "G-Z002TVT7QX"
-        };
+    <div class="details-section">
+        <span class="label">විස්තරය:</span>
+        <p class="value" id="displayDesc">මෙම භාණ්ඩය පිළිබඳ සම්පූර්ණ විස්තරය මෙහි දැකගත හැක.</p>
+        
+        <span class="label">ස්ථානය:</span>
+        <p class="value" id="displayLocation"><i class="fas fa-map-marker-alt"></i> කොළඹ, ශ්‍රී ලංකාව</p>
+    </div>
 
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const auth = firebase.auth();
+    <a href="tel:0771234567" id="callBtn" class="btn btn-call">
+        <i class="fas fa-phone"></i> ඇමතුමක් ගන්න
+    </a>
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const adId = urlParams.get('id');
-        let currentSellerId = "";
+    <a href="https://wa.me/94771234567" id="waBtn" target="_blank" class="btn btn-whatsapp">
+        <i class="fab fa-whatsapp"></i> WhatsApp හරහා විමසන්න
+    </a>
 
-        // 1. දැන්වීමේ දත්ත ලබාගැනීම
-        async function loadAdDetails() {
-            if (!adId) return;
-            
-            const doc = await db.collection("posts").doc(adId).get();
-            if (doc.exists) {
-                const ad = doc.data();
-                currentSellerId = ad.userId;
-                
-                document.getElementById('adTitle').innerText = ad.title;
-                document.getElementById('adPrice').innerText = "රු. " + Number(ad.price).toLocaleString();
-                document.getElementById('adLocation').innerText = "📍 " + (ad.district || "ලංකාව");
-                document.getElementById('adDescription').innerText = ad.description;
-                document.getElementById('adImage').src = ad.imageUrl || "https://via.placeholder.com/600x400";
-                
-                // ඇඩ් එකේම තිබෙන දුරකථන අංකය පෙන්වීම (ප්‍රමුඛතාවය)
-                // මෙහිදී 'phone' හෝ 'contact' ලෙස ඔබේ database එකේ ඇති field එකේ නම පරීක්ෂා කරන්න
-                const adPhone = ad.phone || ad.contact; 
-                
-                if (adPhone) {
-                    document.getElementById('sellerPhone').innerText = adPhone;
-                    document.getElementById('phoneBtn').href = `tel:${adPhone}`;
-                } else {
-                    // ඇඩ් එකේ අංකය නැත්නම් user profile එකෙන් සොයන්න
-                    loadPhoneFromProfile(ad.userId);
-                }
-                
-                loadSellerRating(ad.userId);
-            }
+    <div class="share-section">
+        <p>මෙම දැන්වීම මිතුරන් අතර බෙදාගන්න</p>
+        <div class="share-buttons">
+            <i class="fab fa-facebook share-icon" onclick="shareAd('facebook')"></i>
+            <i class="fab fa-twitter share-icon" onclick="shareAd('twitter')"></i>
+            <i class="fab fa-whatsapp share-icon" onclick="shareAd('whatsapp')"></i>
+            <i class="fas fa-copy share-icon" onclick="copyLink()" title="Link එක කොපි කරන්න"></i>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  
+  const firebaseConfig = {
+    apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
+    authDomain: "adds-ink.firebaseapp.com",
+    projectId: "adds-ink",
+    storageBucket: "adds-ink.firebasestorage.app",
+    messagingSenderId: "638657776631",
+    appId: "1:638657776631:web:44ffdad33137bfefa57cf2",
+    measurementId: "G-Z002TVT7QX"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+</script>
+
+<script>
+    // Share Functionality
+    function shareAd(platform) {
+        const url = window.location.href;
+        const text = "බලන්න මේ දැන්වීම: " + document.getElementById('displayTitle').innerText;
+        let shareUrl = '';
+
+        if(platform === 'facebook') {
+            shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+        } else if(platform === 'twitter') {
+            shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+        } else if(platform === 'whatsapp') {
+            shareUrl = `https://wa.me/?text=${encodeURIComponent(text + " " + url)}`;
         }
+        
+        window.open(shareUrl, '_blank');
+    }
 
-        // User Profile එකෙන් අංකය සෙවීම
-        function loadPhoneFromProfile(userId) {
-            db.collection("users").doc(userId).get().then(doc => {
-                if(doc.exists && doc.data().phone) {
-                    const p = doc.data().phone;
-                    document.getElementById('sellerPhone').innerText = p;
-                    document.getElementById('phoneBtn').href = `tel:${p}`;
-                } else {
-                    document.getElementById('sellerPhone').innerText = "අංකය නොමැත";
-                }
-            });
-        }
+    function copyLink() {
+        navigator.clipboard.writeText(window.location.href);
+        alert("Link එක කොපි කරගත්තා!");
+    }
+</script>
 
-        // Rating පෙන්වීම
-        function loadSellerRating(sellerId) {
-            db.collection("users").doc(sellerId).onSnapshot(doc => {
-                if (doc.exists) {
-                    const data = doc.data();
-                    document.getElementById('sellerName').innerText = data.name || "විකුණුම්කරු";
-                    document.getElementById('sellerInitial').innerText = (data.name || "S").charAt(0).toUpperCase();
-                    const avg = data.averageRating || 0;
-                    const total = data.totalRatings || 0;
-                    document.getElementById('sellerRating').innerHTML = `★ ${avg} (${total} reviews)`;
-                }
-            });
-        }
-
-        // Rating ලබාදීම
-        async function submitRating() {
-            const user = auth.currentUser;
-            if (!user) { alert("කරුණාකර Login වන්න."); return; }
-            const score = document.getElementById('ratingScore').value;
-            const sellerRef = db.collection("users").doc(currentSellerId);
-
-            try {
-                const sellerDoc = await sellerRef.get();
-                const sellerData = sellerDoc.data();
-                let ratings = sellerData.ratings || [];
-                ratings.push({ buyerId: user.uid, score: Number(score) });
-                const avgRating = (ratings.reduce((s, r) => s + r.score, 0) / ratings.length).toFixed(1);
-
-                await sellerRef.update({
-                    ratings: ratings,
-                    averageRating: Number(avgRating),
-                    totalRatings: ratings.length
-                });
-                alert("ස්තූතියි!");
-            } catch (e) { console.error(e); }
-        }
-
-        window.onload = loadAdDetails;
-    </script>
 </body>
 </html>

@@ -456,6 +456,73 @@
             z-index: 1000;
         }
 
+        /* Login Page Styles */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h2 {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: var(--gray);
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .login-input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .login-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
         /* Responsive */
         @media (max-width: 1024px) {
             .sidebar {
@@ -472,73 +539,98 @@
 </head>
 <body>
 
-<!-- ===== SIDEBAR ===== -->
-<div class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-        <div class="logo">🇱🇰 Lanka Ads</div>
+<!-- ===== LOGIN PAGE ===== -->
+<div id="loginPage" class="login-container">
+    <div class="login-box">
+        <div class="login-header">
+            <h2>👑 Admin Login</h2>
+            <p>Lanka Ads - Ultimate Admin Panel</p>
+        </div>
+        
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <input type="email" id="loginEmail" class="login-input" placeholder="Email" value="kularathnashac@gmail.com" required>
+            <input type="password" id="loginPassword" class="login-input" placeholder="Password" required>
+            <button type="submit" class="login-btn">
+                <i class="fas fa-lock-open"></i> Login to Admin Panel
+            </button>
+        </form>
+        
+        <div style="text-align: center; margin-top: 20px; color: var(--gray); font-size: 12px;">
+            <i class="fas fa-shield-alt"></i> Secure Admin Access
+        </div>
     </div>
-
-    <div class="admin-info">
-        <div class="admin-avatar">
-            <i class="fas fa-crown"></i>
-        </div>
-        <h3 id="adminName">Loading...</h3>
-        <p style="color: #94a3b8; font-size: 12px;" id="adminEmail"></p>
-    </div>
-
-    <nav>
-        <div class="nav-item active" onclick="switchTab('dashboard')">
-            <i class="fas fa-chart-pie"></i>
-            <span>Dashboard</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('ads')">
-            <i class="fas fa-ad"></i>
-            <span>All Ads</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('premium')">
-            <i class="fas fa-crown"></i>
-            <span>Premium Ads</span>
-            <span class="badge" style="margin-left: auto; background: var(--warning); color: white;">NEW</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('pending')">
-            <i class="fas fa-clock"></i>
-            <span>Pending Approval</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('users')">
-            <i class="fas fa-users"></i>
-            <span>Users</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('reports')">
-            <i class="fas fa-flag"></i>
-            <span>Reports</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('settings')">
-            <i class="fas fa-cog"></i>
-            <span>Settings</span>
-        </div>
-        <div class="nav-item" onclick="logout()">
-            <i class="fas fa-sign-out-alt"></i>
-            <span>Logout</span>
-        </div>
-    </nav>
 </div>
 
-<!-- ===== MAIN CONTENT ===== -->
-<div class="main-content" id="mainContent">
-    <!-- Top Bar -->
-    <div class="top-bar">
-        <div class="page-title">
-            <h1 id="pageTitle">Dashboard</h1>
-            <p id="pageSubtitle">Welcome back, Admin! Here's what's happening today.</p>
+<!-- ===== ADMIN PANEL ===== (Initially Hidden) -->
+<div id="adminPanel" style="display: none;">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">🇱🇰 Lanka Ads</div>
         </div>
-        <div class="admin-badge" id="adminBadge">
-            <i class="fas fa-shield-alt"></i>
-            <span>Super Admin</span>
+
+        <div class="admin-info">
+            <div class="admin-avatar">
+                <i class="fas fa-crown"></i>
+            </div>
+            <h3 id="adminName">Admin User</h3>
+            <p style="color: #94a3b8; font-size: 12px;" id="adminEmail">kularathnashac@gmail.com</p>
         </div>
+
+        <nav>
+            <div class="nav-item active" onclick="switchTab('dashboard')">
+                <i class="fas fa-chart-pie"></i>
+                <span>Dashboard</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('ads')">
+                <i class="fas fa-ad"></i>
+                <span>All Ads</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('premium')">
+                <i class="fas fa-crown"></i>
+                <span>Premium Ads</span>
+                <span class="badge" style="margin-left: auto; background: var(--warning); color: white;">NEW</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('pending')">
+                <i class="fas fa-clock"></i>
+                <span>Pending Approval</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('users')">
+                <i class="fas fa-users"></i>
+                <span>Users</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('reports')">
+                <i class="fas fa-flag"></i>
+                <span>Reports</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('settings')">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </div>
+            <div class="nav-item" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </div>
+        </nav>
     </div>
 
-    <!-- Dynamic Content -->
-    <div id="contentArea"></div>
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="page-title">
+                <h1 id="pageTitle">Dashboard</h1>
+                <p id="pageSubtitle">Welcome back, Admin! Here's what's happening today.</p>
+            </div>
+            <div class="admin-badge" id="adminBadge">
+                <i class="fas fa-shield-alt"></i>
+                <span>Super Admin</span>
+            </div>
+        </div>
+
+        <!-- Dynamic Content -->
+        <div id="contentArea"></div>
+    </div>
 </div>
 
 <!-- ===== MODALS ===== -->
@@ -651,13 +743,13 @@
         deleteDoc, 
         query, 
         orderBy,
-        limit,
         where
     } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
     import { 
         getAuth, 
-        onAuthStateChanged,
-        signOut 
+        signInWithEmailAndPassword,
+        signOut,
+        onAuthStateChanged 
     } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
     // Firebase Config
@@ -674,35 +766,86 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
 
+    // ===== ADMIN CREDENTIALS =====
+    const ADMIN_EMAIL = "kularathnashac@gmail.com";
+    const ADMIN_PASSWORD = "cha1996AM";
+
     // Global Variables
     let currentUser = null;
     let allAds = [];
     let currentAdId = null;
 
-    // ===== AUTHENTICATION =====
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            currentUser = user;
-            document.getElementById('adminName').textContent = user.displayName || 'Admin User';
-            document.getElementById('adminEmail').textContent = user.email;
+    // ===== HANDLE LOGIN =====
+    window.handleLogin = async (event) => {
+        event.preventDefault();
+        
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        
+        // Check if it's the admin email
+        if (email !== ADMIN_EMAIL) {
+            showToast('Access Denied: Invalid admin email', 'error');
+            return;
+        }
+        
+        try {
+            // Try to sign in
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            currentUser = userCredential.user;
             
-            // Check if admin (you can add admin email check)
-            const adminEmails = ['admin@lankaads.com', 'your-email@gmail.com'];
-            if (!adminEmails.includes(user.email)) {
-                showToast('Access Denied: Not an admin account', 'error');
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 2000);
-                return;
-            }
+            // Hide login, show admin panel
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
             
+            // Update admin info
+            document.getElementById('adminName').textContent = 'Admin User';
+            document.getElementById('adminEmail').textContent = email;
+            
+            // Load dashboard
             await loadDashboard();
-        } else {
-            window.location.href = 'login.html';
+            
+            showToast('Welcome to Admin Panel! 👑');
+            
+        } catch (error) {
+            console.error("Login error:", error);
+            
+            if (error.code === 'auth/user-not-found') {
+                // User doesn't exist - need to create in Firebase Console
+                showToast('Admin account not found! Please create this user in Firebase Console first.', 'error');
+                
+                // Show instructions
+                alert(`
+                    🔥 Firebase Console එකෙන් මේ user එක create කරන්න:
+                    
+                    1. https://console.firebase.google.com/ වෙබ් අඩවියට යන්න
+                    2. "adds-ink" project එකට යන්න
+                    3. Authentication >> Users >> Add User
+                    4. Email: ${ADMIN_EMAIL}
+                    5. Password: ${ADMIN_PASSWORD}
+                    
+                    ඊට පස්සේ ආයෙත් login කරන්න!
+                `);
+            } else if (error.code === 'auth/wrong-password') {
+                showToast('Wrong password! Please check and try again.', 'error');
+            } else {
+                showToast('Login failed: ' + error.message, 'error');
+            }
+        }
+    };
+
+    // ===== CHECK AUTH STATE =====
+    onAuthStateChanged(auth, async (user) => {
+        if (user && user.email === ADMIN_EMAIL) {
+            currentUser = user;
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            document.getElementById('adminName').textContent = 'Admin User';
+            document.getElementById('adminEmail').textContent = user.email;
+            await loadDashboard();
         }
     });
 
-    // ===== DASHBOARD =====
+    // ===== LOAD DASHBOARD =====
     async function loadDashboard() {
         await loadAllAds();
         renderDashboard();
@@ -1236,7 +1379,9 @@
     window.logout = async () => {
         if (confirm('Are you sure you want to logout?')) {
             await signOut(auth);
-            window.location.href = 'login.html';
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('loginPage').style.display = 'flex';
+            showToast('Logged out successfully');
         }
     };
 

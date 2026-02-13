@@ -9,12 +9,12 @@
     <style>
         /* Modern Glassmorphism effect for inputs */
         .input-box { 
-            @apply w-full p-3.5 bg-white border border-gray-200 rounded-xl outline-none transition-all duration-300 shadow-sm;
+            @apply w-full p-4 bg-white border border-gray-200 rounded-xl outline-none transition-all duration-300 shadow-inner;
         }
         .input-box:focus { 
-            @apply border-green-500 ring-4 ring-green-100;
+            @apply border-green-500 ring-2 ring-green-100;
         }
-        .label-style { @apply block font-bold mb-1.5 text-gray-600 text-sm uppercase tracking-wide; }
+        .label-style { @apply block font-bold mb-2 text-gray-700 text-sm tracking-wide; }
         
         /* Video Container Styling */
         .video-container { 
@@ -27,7 +27,7 @@
 </head>
 <body class="bg-slate-50 font-sans">
 
-    <div class="max-w-2xl mx-auto my-12 p-8 bg-white rounded-[2rem] shadow-2xl border-b-8 border-green-600">
+    <div class="max-w-2xl mx-auto my-12 p-8 bg-white rounded-[2rem] shadow-2xl border-t-8 border-green-600">
         <div class="text-center mb-10">
             <h2 class="text-4xl font-black text-gray-800 tracking-tight">
                 Post Your <span class="text-green-600">Ad</span>
@@ -35,11 +35,11 @@
             <p class="text-gray-400 mt-2">Fill the details below to sell your item fast</p>
         </div>
 
-        <form id="postForm" class="space-y-8">
+        <form id="postForm" class="space-y-6">
             
             <div>
-                <label class="label-style">Item Name</label>
-                <input type="text" id="title" class="input-box" placeholder="e.g. iPhone 15 Pro Max" required>
+                <label class="label-style">Item Name (Title)</label>
+                <input type="text" id="title" class="input-box" placeholder="e.g. Toyota Corolla 2020" required>
             </div>
 
             <div>
@@ -55,7 +55,13 @@
                         <option value="Vehicles">Vehicles</option>
                         <option value="Electronics">Electronics</option>
                         <option value="Property">Property</option>
+                        <option value="Home & Garden">Home & Garden</option>
+                        <option value="Fashion & Beauty">Fashion & Beauty</option>
                         <option value="Services">Services</option>
+                        <option value="Business & Industry">Business & Industry</option>
+                        <option value="Education">Education</option>
+                        <option value="Pets">Pets</option>
+                        <option value="Food & Agriculture">Food & Agriculture</option>
                         <option value="Other">Other</option>
                     </select>
                 </div>
@@ -63,12 +69,8 @@
                 <div>
                     <label class="label-style">District</label>
                     <select id="district" class="input-box" required>
-                        <option value="">Select Location</option>
-                        <option value="Colombo">Colombo</option>
-                        <option value="Kandy">Kandy</option>
-                        <option value="Gampaha">Gampaha</option>
-                        <option value="Galle">Galle</option>
-                        <option value="Kurunegala">Kurunegala</option>
+                        <option value="">Select District</option>
+                        <option value="Ampara">Ampara</option><option value="Anuradhapura">Anuradhapura</option><option value="Badulla">Badulla</option><option value="Batticaloa">Batticaloa</option><option value="Colombo">Colombo</option><option value="Galle">Galle</option><option value="Gampaha">Gampaha</option><option value="Hambantota">Hambantota</option><option value="Jaffna">Jaffna</option><option value="Kalutara">Kalutara</option><option value="Kandy">Kandy</option><option value="Kegalle">Kegalle</option><option value="Kilinochchi">Kilinochchi</option><option value="Kurunegala">Kurunegala</option><option value="Mannar">Mannar</option><option value="Matale">Matale</option><option value="Matara">Matara</option><option value="Moneragala">Moneragala</option><option value="Mullaitivu">Mullaitivu</option><option value="Nuwara Eliya">Nuwara Eliya</option><option value="Polonnaruwa">Polonnaruwa</option><option value="Puttalam">Puttalam</option><option value="Ratnapura">Ratnapura</option><option value="Trincomalee">Trincomalee</option><option value="Vavuniya">Vavuniya</option>
                     </select>
                 </div>
             </div>
@@ -153,6 +155,7 @@
 
             const submitBtn = document.getElementById('submitBtn');
             const driveLink = document.getElementById('imageUrl').value;
+            const isPremium = document.getElementById('premiumCheck').checked;
             
             submitBtn.disabled = true;
             submitBtn.innerHTML = `<i class="fas fa-circle-notch animate-spin"></i> Posting...`;
@@ -179,11 +182,16 @@
                     whatsapp: document.getElementById('whatsapp').value,
                     authorId: user.uid,
                     createdAt: serverTimestamp(),
-                    status: "approved" 
+                    status: "approved",
+                    premiumStatus: isPremium ? "pending" : "none"
                 });
 
                 alert("Ad posted successfully!");
-                window.location.href = "index.html";
+                if(isPremium) {
+                    window.location.href = `payment.html?adId=${docRef.id}`;
+                } else {
+                    window.location.href = "index.html";
+                }
 
             } catch (err) {
                 alert("Error: " + err.message);

@@ -1,105 +1,127 @@
 <!DOCTYPE html>
-<html lang="si">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lanka Connect | Social & Market</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Lanka Ads - No. 1 Marketplace</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <style>
-        body { background-color: #f0f2f5; font-family: 'Segoe UI', Helvetica, Arial, sans-serif; }
-        .nav-icon { font-size: 24px; color: #65676b; cursor: pointer; padding: 10px 30px; border-bottom: 3px solid transparent; }
-        .active-nav { color: #1877f2; border-bottom-color: #1877f2; }
-        .post-card { background: white; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); margin-bottom: 15px; }
-        .sidebar-item { display: flex; align-items: center; padding: 12px; cursor: pointer; border-radius: 10px; transition: 0.2s; }
-        .sidebar-item:hover { background-color: #e4e6eb; }
+        :root {
+            --primary: #007bff;
+            --secondary: #ffc107; /* Gold */
+            --premium-red: #ff4d4d;
+            --dark: #2d3436;
+        }
+
+        body { font-family: 'Inter', sans-serif; margin: 0; background-color: #f0f2f5; color: var(--dark); }
+
+        /* Navigation */
+        nav { background: white; padding: 12px 6%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 28px; font-weight: 800; color: var(--primary); text-decoration: none; }
+        .auth-buttons { display: flex; gap: 15px; align-items: center; }
+        .btn-signup { background: var(--primary); color: white; padding: 10px 24px; border-radius: 8px; text-decoration: none; font-weight: 700; }
+        #profile-link { display: none; text-decoration: none; background: #e9ecef; color: var(--dark); padding: 8px 18px; border-radius: 20px; font-weight: 600; border: 1px solid #ddd; }
+        
+        /* Language Selector */
+        .lang-selector { padding: 5px; border-radius: 5px; border: 1px solid #ddd; cursor: pointer; }
+
+        /* Hero & Search */
+        .hero { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center; height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; padding: 0 20px; }
+        .hero h1 { font-size: 38px; margin-bottom: 10px; font-weight: 800; }
+        .search-container { width: 90%; max-width: 1000px; background: white; padding: 20px; border-radius: 15px; display: flex; flex-wrap: wrap; gap: 10px; margin-top: -50px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .search-container select, .search-container input { flex: 1; min-width: 150px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; outline: none; }
+        .btn-search { background: var(--primary); color: white; border: none; padding: 0 30px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+
+        /* Categories */
+        .categories { padding: 60px 6% 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; text-align: center; }
+        .cat-item { background: white; padding: 15px; border-radius: 12px; cursor: pointer; transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .cat-item i { font-size: 24px; color: var(--primary); margin-bottom: 8px; display: block; }
+        .cat-item span { font-size: 12px; font-weight: 600; }
+
+        /* Ads Grid */
+        .ads-section { padding: 30px 6%; }
+        .section-title { font-size: 22px; font-weight: 800; margin-bottom: 20px; border-left: 5px solid var(--primary); padding-left: 15px; }
+        .ads-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+
+        /* Ad Card */
+        .ad-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); position: relative; transition: 0.3s; text-decoration: none; color: inherit; display: block; }
+        .ad-card:hover { transform: translateY(-5px); }
+        .premium-card { border: 3px solid var(--premium-red); outline: 3px solid var(--secondary); }
+        .ad-card img { width: 100%; height: 170px; object-fit: cover; background: #eee; }
+        .ad-content { padding: 15px; }
+        .ad-price { color: var(--primary); font-size: 18px; font-weight: 800; }
+        .ad-title { font-weight: 600; margin: 5px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .premium-badge { position: absolute; top: 10px; left: 10px; background: var(--premium-red); color: white; padding: 4px 10px; font-size: 11px; font-weight: 800; border-radius: 5px; }
+
+        /* Floating Button */
+        .btn-post { position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; background: #28a745; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; box-shadow: 0 6px 20px rgba(0,0,0,0.2); text-decoration: none; z-index: 1001; }
+        
+        .loading-text { text-align: center; grid-column: 1/-1; padding: 50px; color: #888; }
     </style>
 </head>
-<body class="hidden" id="main-body">
+<body>
 
-    <nav class="bg-white shadow-sm sticky top-0 z-50 flex justify-between items-center px-4 h-16">
-        <div class="flex items-center space-x-2">
-            <div class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-2xl shadow-lg">L</div>
-            <div class="bg-gray-100 rounded-full px-4 py-2 flex items-center ml-2 hidden md:flex">
-                <i class="fas fa-search text-gray-400 mr-2"></i>
-                <input type="text" placeholder="සොයන්න..." class="bg-transparent outline-none w-64">
-            </div>
+    <nav>
+        <a href="index.html" class="logo">Lanka Ads</a>
+        <div class="auth-buttons" id="auth-box">
+            <select id="languageSelect" class="lang-selector" onchange="changeLanguage()">
+                <option value="en">English</option>
+                <option value="si">සිංහල</option>
+                <option value="ta">தமிழ்</option>
+            </select>
+            <a href="login.html" style="text-decoration:none; color:var(--dark); font-weight:600;" id="login-text">Log In</a>
+            <a href="signup.html" class="btn-signup" id="signup-text">Sign Up</a>
         </div>
-
-        <div class="flex h-full">
-            <div id="btn-feed" onclick="switchTab('feed')" class="nav-icon active-nav flex items-center"><i class="fas fa-home"></i></div>
-            <div id="btn-friends" onclick="switchTab('friends')" class="nav-icon flex items-center"><i class="fas fa-user-friends"></i></div>
-            <div id="btn-ads" onclick="switchTab('ads')" class="nav-icon flex items-center"><i class="fas fa-store"></i></div>
-        </div>
-
-        <div class="flex items-center space-x-2">
-            <a href="profile.html" class="flex items-center hover:bg-gray-100 p-1 rounded-full border">
-                <img id="user-img" src="https://via.placeholder.com/32" class="w-8 h-8 rounded-full">
-                <span class="ml-2 font-semibold text-sm hidden md:inline" id="user-display-name">Profile</span>
-            </a>
-        </div>
+        <a href="profile.html" id="profile-link"><i class="fas fa-user-circle"></i> Profile</a>
     </nav>
 
-    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6 mt-6 px-4">
-        
-        <div class="hidden md:block">
-            <div class="bg-white p-2 rounded-xl shadow-sm border sticky top-20">
-                <div class="sidebar-item" onclick="switchTab('feed')"><i class="fas fa-newspaper text-blue-500 w-10 text-xl"></i> <span>News Feed</span></div>
-                <div class="sidebar-item" onclick="switchTab('friends')"><i class="fas fa-users text-blue-400 w-10 text-xl"></i> <span>Friend Requests</span></div>
-                <div class="sidebar-item" onclick="switchTab('ads')"><i class="fas fa-shopping-bag text-orange-500 w-10 text-xl"></i> <span>Marketplace</span></div>
-                <div class="sidebar-item"><i class="fas fa-bookmark text-purple-500 w-10 text-xl"></i> <span>Saved Posts</span></div>
-                <hr class="my-2">
-                <div class="sidebar-item" onclick="logout()"><i class="fas fa-sign-out-alt text-red-500 w-10 text-xl"></i> <span>Logout</span></div>
-            </div>
+    <section class="hero">
+        <h1 id="hero-title">Buy & Sell Securely in Sri Lanka</h1>
+        <p id="hero-subtitle">Your local marketplace for all your needs.</p>
+        <div class="search-container">
+            <select id="district-select">
+                <option value="">All Districts</option>
+                <option>Colombo</option><option>Gampaha</option><option>Kandy</option><option>Galle</option><option>Matara</option><option>Jaffna</option><option>Kurunegala</option><option>Kalutara</option><option>Anuradhapura</option><option>Ratnapura</option><option>Badulla</option><option>Kegalle</option><option>Puttalam</option><option>Trincomalee</option><option>Batticaloa</option><option>Ampara</option><option>Matale</option><option>Nuwara Eliya</option><option>Hambantota</option><option>Vavuniya</option><option>Mannar</option><option>Mullaitivu</option><option>Kilinochchi</option><option>Polonnaruwa</option><option>Moneragala</option>
+            </select>
+            <select id="category-select">
+                <option value="">All Categories</option>
+                <option>Mobiles</option><option>Vehicles</option><option>Property</option><option>Electronics</option><option>Fashion</option><option>Jobs</option>
+            </select>
+            <input type="text" id="search-input" placeholder="Search for anything...">
+            <button class="btn-search" id="search-btn">Search</button>
+        </div>
+    </section>
+
+    <div class="categories">
+        <div class="cat-item"><i class="fas fa-mobile-alt"></i><span>Mobiles</span></div>
+        <div class="cat-item"><i class="fas fa-car"></i><span>Vehicles</span></div>
+        <div class="cat-item"><i class="fas fa-home"></i><span>Property</span></div>
+        <div class="cat-item"><i class="fas fa-laptop"></i><span>Electronics</span></div>
+        <div class="cat-item"><i class="fas fa-tshirt"></i><span>Fashion</span></div>
+        <div class="cat-item"><i class="fas fa-briefcase"></i><span>Jobs</span></div>
+    </div>
+
+    <div class="ads-section">
+        <div class="section-title" id="featured-title">Featured Ads</div>
+        <div class="ads-grid" id="premium-grid">
+            <div class="loading-text">Loading premium ads...</div>
         </div>
 
-        <div class="md:col-span-2">
-            
-            <div class="bg-white p-4 rounded-xl shadow-sm border mb-5">
-                <div class="flex items-center space-x-3 mb-4">
-                    <img id="user-img-post" src="https://via.placeholder.com/40" class="rounded-full w-10 h-10">
-                    <button onclick="openPostModal()" class="bg-gray-100 hover:bg-gray-200 text-gray-500 text-left px-4 py-2 rounded-full flex-1">ඔබේ හිතේ තියෙන්නේ මොනවාද?</button>
-                </div>
-            </div>
-
-            <div id="section-feed" class="space-y-4"> </div>
-            <div id="section-ads" class="hidden space-y-4"> </div>
-            <div id="section-friends" class="hidden space-y-4">
-                <h3 class="font-bold text-xl mb-4">Friend Requests</h3>
-                <p class="text-gray-500 text-center py-10">දැනට Friend Requests කිසිවක් නොමැත.</p>
-            </div>
-        </div>
-
-        <div class="hidden md:block">
-            <div class="bg-white p-4 rounded-xl shadow-sm border sticky top-20">
-                <h3 class="font-bold text-gray-500 border-b pb-2 mb-3">Premium Ads</h3>
-                <div id="premium-ads-sidebar" class="space-y-3">
-                    </div>
-            </div>
+        <div class="section-title" id="recent-title" style="margin-top: 40px;">Recent Ads</div>
+        <div class="ads-grid" id="latest-grid">
+            <div class="loading-text">Loading ads...</div>
         </div>
     </div>
 
-    <div id="postModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-[60] flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl w-full max-w-md p-6">
-            <h3 class="text-xl font-bold mb-4 text-center">ඔබ පළ කරන්නේ කුමක්ද?</h3>
-            <div class="grid grid-cols-2 gap-4">
-                <button onclick="goToPost('news')" class="p-6 border-2 border-blue-100 hover:border-blue-500 rounded-xl flex flex-col items-center group">
-                    <i class="fas fa-newspaper text-blue-500 text-4xl mb-2"></i>
-                    <span class="font-bold">News Feed Post</span>
-                </button>
-                <button onclick="goToPost('ad')" class="p-6 border-2 border-orange-100 hover:border-orange-500 rounded-xl flex flex-col items-center group">
-                    <i class="fas fa-shopping-bag text-orange-500 text-4xl mb-2"></i>
-                    <span class="font-bold">Marketplace Ad</span>
-                </button>
-            </div>
-            <button onclick="closePostModal()" class="w-full mt-6 py-2 text-gray-500 font-semibold">Cancel</button>
-        </div>
-    </div>
+    <a href="post-ad.html" class="btn-post"><i class="fas fa-plus"></i></a>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, collection, query, orderBy, getDocs, doc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
@@ -114,85 +136,111 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Security Check & Auth
+        // Login Status
         onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                window.location.href = "login.html"; // කෙලින්ම Login එකට යවනවා
-            } else {
-                document.getElementById('main-body').classList.remove('hidden');
-                document.getElementById('user-display-name').innerText = user.displayName || "User";
-                if(user.photoURL) {
-                    document.getElementById('user-img').src = user.photoURL;
-                    document.getElementById('user-img-post').src = user.photoURL;
-                }
-                loadPosts();
+            if (user) {
+                document.getElementById('auth-box').style.display = 'none';
+                document.getElementById('profile-link').style.display = 'block';
             }
         });
 
-        // Modals & Navigation
-        window.openPostModal = () => document.getElementById('postModal').classList.remove('hidden');
-        window.closePostModal = () => document.getElementById('postModal').classList.add('hidden');
-        window.goToPost = (type) => window.location.href = `post-ad.html?type=${type}`;
-        window.logout = () => signOut(auth).then(() => window.location.href = "login.html");
-
-        window.switchTab = (tab) => {
-            document.querySelectorAll('.nav-icon').forEach(i => i.classList.remove('active-nav'));
-            document.getElementById('section-feed').classList.add('hidden');
-            document.getElementById('section-ads').classList.add('hidden');
-            document.getElementById('section-friends').classList.add('hidden');
-
-            document.getElementById(`btn-${tab}`).classList.add('active-nav');
-            document.getElementById(`section-${tab}`).classList.remove('hidden');
-        };
-
-        // Fetching Posts & Ads
-        async function loadPosts() {
-            const feedContainer = document.getElementById('section-feed');
-            const adsContainer = document.getElementById('section-ads');
-            const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-            const querySnapshot = await getDocs(q);
-
-            feedContainer.innerHTML = "";
-            adsContainer.innerHTML = "";
-
-            querySnapshot.forEach((docSnap) => {
-                const data = docSnap.data();
-                const postId = docSnap.id;
-
-                if (data.postType === 'news') {
-                    // News Feed Card
-                    const card = `
-                        <div class="post-card p-4">
-                            <div class="flex items-center mb-3">
-                                <img src="${data.authorImg || 'https://via.placeholder.com/40'}" class="w-10 h-10 rounded-full mr-3">
-                                <div><h4 class="font-bold text-sm">${data.authorName}</h4><p class="text-xs text-gray-500">Public</p></div>
-                            </div>
-                            <p class="mb-3">${data.description || ''}</p>
-                            ${data.imageUrl ? `<img src="${data.imageUrl}" class="w-full rounded-lg mb-3">` : ''}
-                            <div class="flex border-t pt-2 mt-2">
-                                <button onclick="likePost('${postId}')" class="flex-1 py-2 hover:bg-gray-50 font-bold text-gray-600"><i class="far fa-thumbs-up"></i> Like</button>
-                                <button class="flex-1 py-2 hover:bg-gray-50 font-bold text-gray-600"><i class="far fa-comment"></i> Comment</button>
-                            </div>
-                        </div>`;
-                    feedContainer.innerHTML += card;
-                } else {
-                    // Ad Card
-                    const adCard = `
-                        <div class="bg-white p-4 rounded-xl shadow-sm border">
-                            <img src="${data.imageUrl}" class="w-full h-48 object-cover rounded-lg mb-3">
-                            <h4 class="font-bold">${data.title}</h4>
-                            <p class="text-blue-600 font-bold">Rs. ${data.price}</p>
-                            <button class="w-full mt-3 bg-blue-600 text-white py-2 rounded-lg font-bold">Details</button>
-                        </div>`;
-                    adsContainer.innerHTML += adCard;
-                }
-            });
+        // Google Drive Link Fix
+        function convertDriveLink(url) {
+            if (url && url.includes('drive.google.com')) {
+                let id = "";
+                if (url.includes('/d/')) id = url.split('/d/')[1].split('/')[0];
+                else if (url.includes('id=')) id = url.split('id=')[1].split('&')[0];
+                return id ? `https://drive.google.com/uc?export=view&id=${id}` : url;
+            }
+            return url;
         }
 
-        window.likePost = async (id) => {
-            alert("Liked!");
-            // මෙතනදී Firestore Update කරන කෝඩ් එක දැමිය හැක
+        async function fetchAds() {
+            const premiumGrid = document.getElementById('premium-grid');
+            const latestGrid = document.getElementById('latest-grid');
+
+            try {
+                const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
+                
+                let premiumHTML = "";
+                let latestHTML = "";
+
+                querySnapshot.forEach((doc) => {
+                    const ad = doc.data();
+                    const adId = doc.id;
+                    const imageUrl = convertDriveLink(ad.imageUrl);
+                    const isPremium = ad.premiumStatus === "active" || ad.isPremium === true;
+
+                    const adHTML = `
+                        <a href="ad-details.html?id=${adId}" class="ad-card ${isPremium ? 'premium-card' : ''}">
+                            ${isPremium ? '<div class="premium-badge">PREMIUM</div>' : ''}
+                            <img src="${imageUrl}" onerror="this.src='https://via.placeholder.com/300?text=No+Image'">
+                            <div class="ad-content">
+                                <div class="ad-title">${ad.title}</div>
+                                <div class="ad-price">Rs. ${parseFloat(ad.price).toLocaleString()}</div>
+                                <div style="font-size:12px; color:#777;"><i class="fas fa-map-marker-alt"></i> ${ad.district}</div>
+                            </div>
+                        </a>
+                    `;
+
+                    if (isPremium) premiumHTML += adHTML;
+                    else latestHTML += adHTML;
+                });
+
+                premiumGrid.innerHTML = premiumHTML || '<p class="loading-text">No featured ads.</p>';
+                latestGrid.innerHTML = latestHTML || '<p class="loading-text">No ads found.</p>';
+
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        fetchAds();
+    </script>
+    
+    <script>
+        // Language Translation System
+        const translations = {
+            'en': {
+                'hero-title': 'Buy & Sell Securely in Sri Lanka',
+                'hero-subtitle': 'Your local marketplace for all your needs.',
+                'search-btn': 'Search',
+                'featured-title': 'Featured Ads',
+                'recent-title': 'Recent Ads',
+                'login-text': 'Log In',
+                'signup-text': 'Sign Up'
+            },
+            'si': {
+                'hero-title': 'ශ්‍රී ලංකාවේ ආරක්ෂිතව මිලදී ගන්න සහ විකුණන්න',
+                'hero-subtitle': 'ඔබේ සියලු අවශ්‍යතා සඳහා දේශීය වෙළඳපොළ.',
+                'search-btn': 'සොයන්න',
+                'featured-title': 'ප්‍රිමියම් දැන්වීම්',
+                'recent-title': 'නවතම දැන්වීම්',
+                'login-text': 'ඇතුල් වන්න',
+                'signup-text': 'ගිණුමක් සාදන්න'
+            },
+            'ta': {
+                'hero-title': 'இலங்கையில் பாதுகாப்பாக வாங்கவும் விற்கவும்',
+                'hero-subtitle': 'உங்கள் அனைத்து தேவைகளுக்கும் உங்கள் உள்ளூர் சந்தை.',
+                'search-btn': 'தேடுங்கள்',
+                'featured-title': 'சிறப்பு விளம்பரங்கள்',
+                'recent-title': 'சமீபத்திய விளம்பரங்கள்',
+                'login-text': 'உள்நுழைய',
+                'signup-text': 'பதிவு செய்யவும்'
+            }
         };
+
+        function changeLanguage() {
+            const lang = document.getElementById('languageSelect').value;
+            document.getElementById('hero-title').innerText = translations[lang]['hero-title'];
+            document.getElementById('hero-subtitle').innerText = translations[lang]['hero-subtitle'];
+            document.getElementById('search-btn').innerText = translations[lang]['search-btn'];
+            document.getElementById('featured-title').innerText = translations[lang]['featured-title'];
+            document.getElementById('recent-title').innerText = translations[lang]['recent-title'];
+            document.getElementById('login-text').innerText = translations[lang]['login-text'];
+            document.getElementById('signup-text').innerText = translations[lang]['signup-text'];
+        }
     </script>
 </body>
-</html>
+    </html>

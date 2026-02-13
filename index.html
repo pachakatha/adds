@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="si">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lanka Ads - ශ්‍රී ලංකාවේ විශාලතම වෙළඳ පොළ</title>
+    <title>Lanka Ads - Classifieds in Sri Lanka</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#007bff">
@@ -241,20 +241,20 @@
     </nav>
 
     <section class="hero">
-        <h1>Lanka Ads වෙත සාදරයෙන් පිළිගනිමු</h1>
-        <p>ශ්‍රී ලංකාවේ ඕනෑම දෙයක් ආරක්ෂිතව විකුණා ගැනීමට සහ මිලදී ගැනීමට ඇති අංක 1 වෙළඳ පොළ.</p>
+        <h1>Welcome to Lanka Ads</h1>
+        <p>No. 1 marketplace in Sri Lanka to buy and sell securely.</p>
         
         <div class="search-container">
             <select id="district-select">
-                <option value="">සියලුම දිස්ත්‍රික්ක (25)</option>
+                <option value="">All Districts (25)</option>
                 <option>Colombo</option><option>Gampaha</option><option>Kalutara</option><option>Kandy</option><option>Matale</option><option>Nuwara Eliya</option><option>Galle</option><option>Matara</option><option>Hambantota</option><option>Jaffna</option><option>Kilinochchi</option><option>Mannar</option><option>Vavuniya</option><option>Mullaitivu</option><option>Batticaloa</option><option>Ampara</option><option>Trincomalee</option><option>Kurunegala</option><option>Puttalam</option><option>Anuradhapura</option><option>Polonnaruwa</option><option>Badulla</option><option>Monaragala</option><option>Ratnapura</option><option>Kegalle</option>
             </select>
             <select id="category-select">
-                <option value="">සියලුම වර්ගීකරණයන්</option>
+                <option value="">All Categories</option>
                 <option>Mobile Phones</option><option>Electronics</option><option>Vehicles</option><option>Property</option><option>Home & Garden</option><option>Fashion & Beauty</option><option>Services</option><option>Jobs</option><option>Animals</option><option>Education</option><option>Food & Agriculture</option>
             </select>
-            <input type="text" placeholder="ඔබ සොයන දේ මෙහි ලියන්න...">
-            <button class="btn-search">සොයන්න</button>
+            <input type="text" placeholder="Search for anything...">
+            <button class="btn-search">Search</button>
         </div>
     </section>
 
@@ -272,14 +272,14 @@
     </div>
 
     <div class="ads-section">
-        <div class="section-title">ප්‍රිමියම් දැන්වීම් (Premium Ads)</div>
+        <div class="section-title">Premium Ads</div>
         <div class="ads-grid" id="premium-grid">
-            <div class="loading-text">පූරණය වෙමින්...</div>
+            <div class="loading-text">Loading...</div>
         </div>
 
-        <div class="section-title" style="margin-top: 50px;">නවතම දැන්වීම් (Latest Ads)</div>
+        <div class="section-title" style="margin-top: 50px;">Latest Ads</div>
         <div class="ads-grid" id="latest-grid">
-            <div class="loading-text">පූරණය වෙමින්...</div>
+            <div class="loading-text">Loading...</div>
         </div>
     </div>
 
@@ -318,7 +318,7 @@
             const latestGrid = document.getElementById('latest-grid');
 
             try {
-                // 🛑 🛑 වෙනස මෙතැනයි: "ads" වෙනුවට "posts" භාවිත කරයි 🛑 🛑
+                // 🛑 Fetching from "posts" collection 🛑
                 const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
                 const querySnapshot = await getDocs(q);
                 
@@ -328,13 +328,13 @@
                 querySnapshot.forEach((doc) => {
                     const ad = doc.data();
                     
-                    // Firestore හි Fields පරීක්ෂා කර ලබාගැනීම
+                    // Fields from Firestore structure
                     const imageUrl = ad.imageUrl || 'https://via.placeholder.com/300';
                     const title = ad.title || 'No Title';
                     const price = ad.price || '0';
                     const district = ad.district || 'Sri Lanka';
                     
-                    // ඔබේ Firestore structure එකේ premiumStatus: "active" තියෙන නිසා ඒක පරීක්ෂා කරනවා
+                    // Check Premium Status
                     const isPremium = ad.premiumStatus === "active" || ad.isFeatured === true;
 
                     const adHTML = `
@@ -356,12 +356,12 @@
                     }
                 });
 
-                premiumGrid.innerHTML = premiumContent || '<div class="loading-text">දැනට ප්‍රිමියම් දැන්වීම් නොමැත.</div>';
-                latestGrid.innerHTML = latestContent || '<div class="loading-text">දැන්වීම් කිසිවක් හමු නොවීය.</div>';
+                premiumGrid.innerHTML = premiumContent || '<div class="loading-text">No premium ads at the moment.</div>';
+                latestGrid.innerHTML = latestContent || '<div class="loading-text">No ads found.</div>';
 
             } catch (error) {
                 console.error("Error fetching ads:", error);
-                document.querySelectorAll('.loading-text').forEach(el => el.innerHTML = "දත්ත පූරණය කිරීමේ දෝෂයකි.");
+                document.querySelectorAll('.loading-text').forEach(el => el.innerHTML = "Error loading data.");
             }
         }
 

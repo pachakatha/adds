@@ -3,131 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ඇඩ් විස්තර - Adds Ink</title>
+    <title>දැන්වීමේ විස්තර | Lanka Ads</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root { --green: #27ae60; --light-green: #2ecc71; }
-        body { font-family: sans-serif; background: #f0f2f5; margin: 0; padding: 15px; }
-        .ad-card { max-width: 500px; margin: auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .green-header { background: var(--green); color: white; padding: 15px; text-align: center; }
-        .content { padding: 20px; }
-        .category-tag { background: #e8f5e9; color: var(--green); padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; }
-        h2 { margin: 15px 0 5px 0; color: #333; }
-        .location { color: #666; font-size: 14px; margin-bottom: 15px; }
-        .desc { line-height: 1.6; color: #444; border-top: 1px solid #eee; padding-top: 15px; }
-        
-        /* Buttons */
-        .action-btns { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
-        .btn { display: flex; align-items: center; justify-content: center; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: bold; color: white; border: none; cursor: pointer; }
-        .btn-call { background: var(--green); }
-        .btn-wa { background: #25D366; }
-        .btn i { margin-right: 8px; }
-
-        /* Social Share */
-        .share-bar { display: flex; justify-content: space-around; padding: 20px; border-top: 1px solid #eee; margin-top: 20px; }
-        .share-btn { font-size: 22px; color: #555; cursor: pointer; transition: 0.2s; }
-        .share-btn:hover { color: var(--green); }
-        #loader { text-align: center; margin-top: 50px; font-weight: bold; color: var(--green); }
-    </style>
 </head>
-<body>
+<body class="bg-gray-100">
 
-<div id="loader">දත්ත පරීක්ෂා කරමින්...</div>
+    <nav class="bg-green-600 p-4 text-white shadow-md">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <a href="index.html" class="flex items-center space-x-2">
+                <i class="fas fa-arrow-left"></i> <span>ආපසු</span>
+            </a>
+            <h1 class="font-bold text-lg">දැන්වීමේ විස්තර</h1>
+            <div></div>
+        </div>
+    </nav>
 
-<div class="ad-card" id="ad-page" style="display:none;">
-    <div class="green-header">
-        <h3 style="margin:0;">භාණ්ඩයේ විස්තර</h3>
-    </div>
-    
-    <div class="content">
-        <span class="category-tag" id="view-category">Category</span>
-        <h2 id="view-name">භාණ්ඩයේ නම</h2>
-        <div class="location"><i class="fas fa-map-marker-alt"></i> <span id="view-location">ස්ථානය</span></div>
-        
-        <div class="desc" id="view-desc">විස්තරය මෙතනට...</div>
-
-        <div class="action-btns">
-            <a href="" id="call-link" class="btn btn-call"><i class="fas fa-phone"></i> Call කරන්න</a>
-            <a href="" id="wa-link" target="_blank" class="btn btn-wa"><i class="fab fa-whatsapp"></i> WhatsApp පණිවිඩයක්</a>
+    <div id="ad-content" class="max-w-3xl mx-auto my-6 p-4 md:p-0">
+        <div id="loader" class="text-center py-10">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
+            <p class="mt-3 text-gray-500">විස්තර ලබාගනිමින්...</p>
         </div>
     </div>
 
-    <div class="share-bar">
-        <i class="fab fa-facebook share-btn" onclick="share('fb')"></i>
-        <i class="fab fa-whatsapp share-btn" onclick="share('wa')"></i>
-        <i class="fas fa-link share-btn" onclick="copyURL()"></i>
+    <div class="max-w-3xl mx-auto my-6 p-4 md:p-0">
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+            <h3 class="font-bold text-xl mb-4 border-b pb-2">අදහස් (Comments)</h3>
+            
+            <div class="flex space-x-2 mb-6">
+                <input type="text" id="commentInput" placeholder="ඔබේ අදහස ලියන්න..." class="flex-1 p-3 border rounded-lg outline-none focus:border-green-500">
+                <button onclick="addComment()" class="bg-green-600 text-white px-5 py-2 rounded-lg font-bold hover:bg-green-700">යවන්න</button>
+            </div>
+
+            <div id="commentsList" class="space-y-4">
+                <p class="text-gray-500 text-center">Loading comments...</p>
+            </div>
+        </div>
     </div>
-</div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, doc, getDoc, collection, addDoc, query, where, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
-        authDomain: "adds-ink.firebaseapp.com",
-        projectId: "adds-ink",
-        storageBucket: "adds-ink.firebasestorage.app",
-        messagingSenderId: "638657776631",
-        appId: "1:638657776631:web:44ffdad33137bfefa57cf2",
-        measurementId: "G-Z002TVT7QX"
-    };
+        const firebaseConfig = {
+            apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
+            authDomain: "adds-ink.firebaseapp.com",
+            projectId: "adds-ink",
+            storageBucket: "adds-ink.firebasestorage.app",
+            messagingSenderId: "638657776631",
+            appId: "1:638657776631:web:44ffdad33137bfefa57cf2"
+        };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
 
-    // URL එකෙන් ඇඩ් එකේ ID එක ගන්න (details.html?id=ඇඩ්_අයිඩී_එක)
-    const params = new URLSearchParams(window.location.search);
-    const adId = params.get('id');
+        const urlParams = new URLSearchParams(window.location.search);
+        const adId = urlParams.get('id');
 
-    async function getAdDetails() {
-        if (!adId) {
-            document.getElementById('loader').innerText = "ඇඩ් එකක් තෝරා නැත!";
-            return;
-        }
-
-        try {
-            // "ads" කියන collection එක පරීක්ෂා කරන්න
-            const docRef = doc(db, "ads", adId); 
+        // දැන්වීමේ විස්තර Load කිරීම
+        async function loadAdDetails() {
+            if (!adId) return;
+            const docRef = doc(db, "posts", adId);
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
                 const data = docSnap.data();
+                const shareUrl = window.location.href;
 
-                // දත්ත පෙන්වීම (ඔබේ Firestore Field Names මේවා විය යුතුය)
-                document.getElementById('view-name').innerText = data.name || data.title || "නමක් නැත";
-                document.getElementById('view-category').innerText = data.category || "Normal";
-                document.getElementById('view-location').innerText = data.location || "ස්ථානය සටහන් කර නැත";
-                document.getElementById('view-desc').innerText = data.description || "විස්තරයක් නැත";
-                
-                // Call & WhatsApp links
-                const phone = data.phone || data.number;
-                document.getElementById('call-link').href = "tel:" + phone;
-                document.getElementById('wa-link').href = "https://wa.me/94" + phone;
-
-                document.getElementById('loader').style.display = 'none';
-                document.getElementById('ad-page').style.display = 'block';
-            } else {
-                document.getElementById('loader').innerText = "දත්ත සොයාගත නොහැක! (ID වැරදියි)";
+                let html = `
+                    <div class="bg-white rounded-2xl shadow-lg overflow-hidden border-t-4 border-green-500">
+                        <div class="w-full bg-black">
+                            <img src="${data.imageUrl}" class="w-full h-auto max-h-[500px] object-contain mx-auto">
+                        </div>
+                        <div class="p-6">
+                            <h2 class="text-2xl font-bold text-gray-800 mb-2">${data.title}</h2>
+                            <p class="text-3xl font-bold text-green-600 mb-4">Rs. ${data.price.toLocaleString()}</p>
+                            <hr class="mb-4">
+                            <div class="grid grid-cols-2 gap-4 mb-6 text-sm text-gray-600">
+                                <div class="flex items-center space-x-2"><i class="fas fa-map-marker-alt text-green-500"></i><span>${data.district}</span></div>
+                                <div class="flex items-center space-x-2"><i class="fas fa-th-large text-green-500"></i><span>${data.category}</span></div>
+                            </div>
+                            <h3 class="font-bold text-lg mb-2">විස්තරය</h3>
+                            <p class="text-gray-700 whitespace-pre-wrap mb-8">${data.description}</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                                <a href="tel:${data.phone}" class="flex items-center justify-center space-x-2 bg-green-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-green-700 shadow-lg"><i class="fas fa-phone-alt"></i> <span>Call Seller</span></a>
+                                <a href="https://wa.me/${data.whatsapp.replace('+', '')}" target="_blank" class="flex items-center justify-center space-x-2 bg-emerald-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-emerald-600 shadow-lg"><i class="fab fa-whatsapp text-2xl"></i> <span>WhatsApp Direct</span></a>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-gray-500 font-bold mb-3 uppercase text-xs">Share</p>
+                                <div class="flex justify-center space-x-4">
+                                    <a href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}" target="_blank" class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 transition"><i class="fab fa-facebook-f"></i></a>
+                                    <a href="https://wa.me/?text=Check this: ${shareUrl}" target="_blank" class="bg-green-500 text-white w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 transition"><i class="fab fa-whatsapp"></i></a>
+                                    <button onclick="navigator.clipboard.writeText('${shareUrl}'); alert('Link Copied!');" class="bg-gray-600 text-white w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 transition"><i class="fas fa-link"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('ad-content').innerHTML = html;
+                loadComments();
             }
-        } catch (e) {
-            document.getElementById('loader').innerText = "දත්ත ලබාගැනීමේ දෝෂයක්: " + e.message;
         }
-    }
 
-    getAdDetails();
-</script>
+        // කමෙන්ට් Load කිරීම (Realtime)
+        function loadComments() {
+            const commentsRef = collection(db, "comments");
+            const q = query(commentsRef, where("adId", "==", adId), orderBy("createdAt", "desc"));
+            
+            onSnapshot(q, (snapshot) => {
+                let commentsHtml = "";
+                snapshot.forEach((doc) => {
+                    const comment = doc.data();
+                    commentsHtml += `
+                        <div class="bg-gray-50 p-4 rounded-lg border">
+                            <p class="font-bold text-sm text-green-700">${comment.userName}</p>
+                            <p class="text-gray-800">${comment.text}</p>
+                            <p class="text-xs text-gray-400">${comment.createdAt?.toDate().toLocaleString()}</p>
+                        </div>
+                    `;
+                });
+                document.getElementById('commentsList').innerHTML = commentsHtml || "<p class='text-gray-500 text-center'>තවමත් අදහස් නැත.</p>";
+            });
+        }
 
-<script>
-    function share(platform) {
-        const url = window.location.href;
-        if(platform === 'fb') window.open('https://www.facebook.com/sharer/sharer.php?u=' + url);
-        if(platform === 'wa') window.open('https://api.whatsapp.com/send?text=' + url);
-    }
-    function copyURL() {
-        navigator.clipboard.writeText(window.location.href);
-        alert("Link එක කොපි විය!");
-    }
-</script>
+        // කමෙන්ට් එකක් දැමීම
+        window.addComment = async () => {
+            const user = auth.currentUser;
+            if (!user) return alert("කරුණාකර Comment කිරීමට Log වන්න!");
+            
+            const commentInput = document.getElementById('commentInput');
+            const text = commentInput.value;
+            if (!text) return;
+
+            await addDoc(collection(db, "comments"), {
+                adId: adId,
+                userId: user.uid,
+                userName: user.displayName || "Anonymous",
+                text: text,
+                createdAt: serverTimestamp()
+            });
+            commentInput.value = "";
+        };
+
+        loadAdDetails();
+    </script>
 </body>
 </html>

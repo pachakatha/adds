@@ -3,131 +3,292 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lanka Ads - ශ්‍රී ලංකාවේ විශාලතම දැන්වීම් එකතුව</title>
+    <title>Lanka Ads - ශ්‍රී ලංකාවේ විශාලතම වෙළඳ පොළ</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#007bff">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        :root { --primary: #007bff; --secondary: #ff9900; --dark: #333; --light: #f8f9fa; }
-        body { font-family: 'Inter', sans-serif; margin: 0; background-color: var(--light); overflow-x: hidden; }
-        
-        /* Navigation */
-        nav { background: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
-        .logo { font-size: 26px; font-weight: 800; color: var(--primary); text-decoration: none; }
-        .nav-links { display: flex; gap: 20px; align-items: center; }
-        .btn-login { text-decoration: none; color: var(--dark); font-weight: 600; }
-        .btn-signup { text-decoration: none; background: var(--primary); color: white; padding: 10px 22px; border-radius: 8px; font-weight: 600; transition: 0.3s; }
-        .btn-signup:hover { background: #0056b3; }
-        #profileSection { display: none; text-decoration: none; color: var(--dark); font-weight: 600; }
-
-        /* Hero & Background */
-        .hero { 
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
-            background-size: cover; background-position: center; height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; padding: 0 20px;
+        :root {
+            --primary: #007bff;
+            --secondary: #ffc107; /* Gold for Premium */
+            --premium-red: #ff4d4d;
+            --dark: #2d3436;
+            --light: #f8f9fa;
         }
-        .hero h1 { font-size: 38px; margin-bottom: 10px; }
-        .hero p { font-size: 18px; max-width: 600px; }
 
-        /* Search Bar */
-        .search-section { display: flex; justify-content: center; margin-top: -60px; padding: 0 5%; }
-        .search-box { background: white; padding: 25px; border-radius: 15px; display: flex; flex-wrap: wrap; gap: 15px; box-shadow: 0 8px 30px rgba(0,0,0,0.15); width: 100%; max-width: 1100px; }
-        select, input { padding: 14px; border: 1px solid #ddd; border-radius: 8px; flex: 1; min-width: 200px; font-size: 15px; }
-        .btn-search { background: var(--secondary); color: white; border: none; padding: 14px 40px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 16px; transition: 0.3s; }
-        .btn-search:hover { background: #e68a00; }
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: #f0f2f5;
+            color: var(--dark);
+        }
 
-        /* Categories Section */
-        .container { padding: 40px 5%; }
-        .section-header { font-size: 24px; font-weight: 700; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; }
-        .category-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; }
-        .category-item { background: white; padding: 25px 10px; text-align: center; border-radius: 12px; cursor: pointer; transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .category-item:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-        .category-item i { font-size: 32px; color: var(--primary); margin-bottom: 15px; }
-        .category-item span { display: block; font-weight: 600; font-size: 14px; color: var(--dark); }
+        /* --- Navigation --- */
+        nav {
+            background: white;
+            padding: 12px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
 
-        /* Ad Grids - Updated Styling */
-        .ads-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-        .ad-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: relative; padding-bottom: 15px; transition: 0.3s; }
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+            letter-spacing: -1px;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .btn-login {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .btn-signup {
+            text-decoration: none;
+            background: var(--primary);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        #profile-link {
+            display: none;
+            text-decoration: none;
+            background: #e9ecef;
+            color: var(--dark);
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-weight: 600;
+            border: 1px solid #ddd;
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+                        url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 450px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .hero h1 { font-size: 42px; margin-bottom: 15px; font-weight: 800; }
+        .hero p { font-size: 19px; max-width: 700px; opacity: 0.9; }
+
+        /* --- Search Bar --- */
+        .search-container {
+            width: 90%;
+            max-width: 1000px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: -50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+
+        .search-container select, .search-container input {
+            flex: 1;
+            min-width: 180px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .btn-search {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0 35px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        /* --- Category Icons --- */
+        .categories {
+            padding: 60px 6% 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 20px;
+            text-align: center;
+        }
+
+        .cat-item {
+            background: white;
+            padding: 20px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .cat-item:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .cat-item i { font-size: 30px; color: var(--primary); margin-bottom: 10px; display: block; }
+        .cat-item span { font-size: 13px; font-weight: 600; }
+
+        /* --- Ads Display --- */
+        .ads-section { padding: 40px 6%; }
+        .section-title { font-size: 24px; font-weight: 800; margin-bottom: 25px; border-left: 5px solid var(--primary); padding-left: 15px; }
+        
+        .ads-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 25px;
+        }
+
+        .ad-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            position: relative;
+            transition: 0.3s;
+        }
+
+        /* Premium Styling */
+        .premium-card {
+            border: 3px solid var(--premium-red);
+            outline: 3px solid var(--secondary);
+        }
+
         .ad-card img { width: 100%; height: 180px; object-fit: cover; }
-        .ad-info { padding: 15px; }
-        .ad-title { font-weight: 700; font-size: 16px; margin-bottom: 5px; color: var(--dark); }
-        .ad-price { color: var(--primary); font-weight: 800; font-size: 18px; }
-        .premium-tag { position: absolute; top: 10px; left: 10px; background: var(--secondary); color: white; padding: 4px 10px; font-size: 12px; border-radius: 5px; font-weight: 700; }
-        .premium-border { border: 2px solid var(--secondary); }
-        .no-ads { text-align: center; color: #888; padding: 30px; grid-column: 1 / -1; }
+        .ad-content { padding: 15px; }
+        .ad-price { color: var(--primary); font-size: 20px; font-weight: 800; margin: 8px 0; }
+        .ad-title { font-weight: 600; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        .premium-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--premium-red);
+            color: white;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 800;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
 
-        /* Floating Post Button */
-        .post-btn { position: fixed; bottom: 30px; right: 30px; background: #28a745; color: white; width: 65px; height: 65px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4); text-decoration: none; z-index: 1001; transition: 0.3s; }
-        .post-btn:hover { transform: scale(1.1); }
+        /* --- Floating Button --- */
+        .btn-post {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 65px;
+            height: 65px;
+            background: #28a745;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            box-shadow: 0 6px 20px rgba(40,167,69,0.4);
+            text-decoration: none;
+            z-index: 1001;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .btn-post:hover { transform: scale(1.1) rotate(90deg); }
+
+        .loading-text { text-align: center; grid-column: 1/-1; padding: 40px; color: #777; }
     </style>
 </head>
 <body>
 
     <nav>
         <a href="index.html" class="logo">Lanka Ads</a>
-        <div class="nav-links" id="authSection">
+        <div class="auth-buttons" id="auth-box">
             <a href="login.html" class="btn-login">Log In</a>
             <a href="signup.html" class="btn-signup">Sign Up</a>
         </div>
-        <a href="profile.html" id="profileSection">
-            <i class="fas fa-user-circle fa-lg"></i> Profile
-        </a>
+        <a href="profile.html" id="profile-link"><i class="fas fa-user-circle"></i> Profile</a>
     </nav>
 
-    <header class="hero">
+    <section class="hero">
         <h1>Lanka Ads වෙත සාදරයෙන් පිළිගනිමු</h1>
-        <p>ශ්‍රී ලංකාවේ ඕනෑම දෙයක් විකුණා ගැනීමට හෝ මිලදී ගැනීමට ඇති ආරක්ෂිතම සහ විශ්වාසවන්තම වෙබ් අඩවිය.</p>
-    </header>
-
-    <div class="search-section">
-        <div class="search-box">
-            <select id="district">
+        <p>ශ්‍රී ලංකාවේ ඕනෑම දෙයක් ආරක්ෂිතව විකුණා ගැනීමට සහ මිලදී ගැනීමට ඇති අංක 1 වෙළඳ පොළ.</p>
+        
+        <div class="search-container">
+            <select id="district-select">
                 <option value="">සියලුම දිස්ත්‍රික්ක (25)</option>
-                <option>Ampara</option><option>Anuradhapura</option><option>Badulla</option><option>Batticaloa</option><option>Colombo</option><option>Galle</option><option>Gampaha</option><option>Hambantota</option><option>Jaffna</option><option>Kalutara</option><option>Kandy</option><option>Kegalle</option><option>Kilinochchi</option><option>Kurunegala</option><option>Mannar</option><option>Matale</option><option>Matara</option><option>Monaragala</option><option>Mullaitivu</option><option>Nuwara Eliya</option><option>Polonnaruwa</option><option>Puttalam</option><option>Ratnapura</option><option>Trincomalee</option><option>Vavuniya</option>
+                <option>Colombo</option><option>Gampaha</option><option>Kalutara</option><option>Kandy</option><option>Matale</option><option>Nuwara Eliya</option><option>Galle</option><option>Matara</option><option>Hambantota</option><option>Jaffna</option><option>Kilinochchi</option><option>Mannar</option><option>Vavuniya</option><option>Mullaitivu</option><option>Batticaloa</option><option>Ampara</option><option>Trincomalee</option><option>Kurunegala</option><option>Puttalam</option><option>Anuradhapura</option><option>Polonnaruwa</option><option>Badulla</option><option>Monaragala</option><option>Ratnapura</option><option>Kegalle</option>
             </select>
-            <select id="category">
+            <select id="category-select">
                 <option value="">සියලුම වර්ගීකරණයන්</option>
-                <option>Mobile Phones</option><option>Electronics</option><option>Vehicles</option><option>Property</option><option>Home & Garden</option><option>Fashion & Beauty</option><option>Services</option><option>Jobs</option><option>Education</option><option>Animals</option><option>Food & Agriculture</option><option>Other</option>
+                <option>Mobile Phones</option><option>Electronics</option><option>Vehicles</option><option>Property</option><option>Home & Garden</option><option>Fashion & Beauty</option><option>Services</option><option>Jobs</option><option>Animals</option><option>Education</option><option>Food & Agriculture</option>
             </select>
             <input type="text" placeholder="ඔබ සොයන දේ මෙහි ලියන්න...">
             <button class="btn-search">සොයන්න</button>
         </div>
+    </section>
+
+    <div class="categories">
+        <div class="cat-item"><i class="fas fa-mobile-alt"></i><span>Mobile</span></div>
+        <div class="cat-item"><i class="fas fa-car"></i><span>Vehicles</span></div>
+        <div class="cat-item"><i class="fas fa-home"></i><span>Property</span></div>
+        <div class="cat-item"><i class="fas fa-laptop"></i><span>Electronics</span></div>
+        <div class="cat-item"><i class="fas fa-couch"></i><span>Home</span></div>
+        <div class="cat-item"><i class="fas fa-tshirt"></i><span>Fashion</span></div>
+        <div class="cat-item"><i class="fas fa-briefcase"></i><span>Jobs</span></div>
+        <div class="cat-item"><i class="fas fa-tools"></i><span>Services</span></div>
+        <div class="cat-item"><i class="fas fa-paw"></i><span>Animals</span></div>
+        <div class="cat-item"><i class="fas fa-graduation-cap"></i><span>Education</span></div>
     </div>
 
-    <div class="container">
-        <div class="section-header">සියලුම වර්ගීකරණයන් (Categories)</div>
-        <div class="category-grid">
-            <div class="category-item"><i class="fas fa-mobile-alt"></i><span>Mobile Phones</span></div>
-            <div class="category-item"><i class="fas fa-car"></i><span>Vehicles</span></div>
-            <div class="category-item"><i class="fas fa-home"></i><span>Property</span></div>
-            <div class="category-item"><i class="fas fa-laptop"></i><span>Electronics</span></div>
-            <div class="category-item"><i class="fas fa-couch"></i><span>Home & Garden</span></div>
-            <div class="category-item"><i class="fas fa-tshirt"></i><span>Fashion</span></div>
-            <div class="category-item"><i class="fas fa-briefcase"></i><span>Jobs</span></div>
-            <div class="category-item"><i class="fas fa-tools"></i><span>Services</span></div>
-            <div class="category-item"><i class="fas fa-paw"></i><span>Animals</span></div>
-            <div class="category-item"><i class="fas fa-graduation-cap"></i><span>Education</span></div>
+    <div class="ads-section">
+        <div class="section-title">ප්‍රිමියම් දැන්වීම් (Premium Ads)</div>
+        <div class="ads-grid" id="premium-grid">
+            <div class="loading-text">පූරණය වෙමින්...</div>
         </div>
 
-        <div class="section-header" style="margin-top: 50px; color: var(--secondary);">ප්‍රිමියම් දැන්වීම් (Premium Ads)</div>
-        <div class="ads-container" id="premiumAds">
-            <div class="no-ads">දැන්වීම් පූරණය වේ...</div>
-        </div>
-
-        <div class="section-header" style="margin-top: 50px;">නවතම දැන්වීම් (Latest Ads)</div>
-        <div class="ads-container" id="latestAds">
-            <div class="no-ads">දැන්වීම් පූරණය වේ...</div>
+        <div class="section-title" style="margin-top: 50px;">නවතම දැන්වීම් (Latest Ads)</div>
+        <div class="ads-grid" id="latest-grid">
+            <div class="loading-text">පූරණය වෙමින්...</div>
         </div>
     </div>
 
-    <a href="post-ad.html" class="post-btn"><i class="fas fa-plus"></i></a>
+    <a href="post-ad.html" class="btn-post"><i class="fas fa-plus"></i></a>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
@@ -143,58 +304,58 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Auth status check
+        // Check Login Status
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                document.getElementById('authSection').style.display = 'none';
-                document.getElementById('profileSection').style.display = 'block';
+                document.getElementById('auth-box').style.display = 'none';
+                document.getElementById('profile-link').style.display = 'block';
             }
         });
 
-        // දැන්වීම් පූරණය කිරීම
-        async function loadAds() {
-            const pContainer = document.getElementById('premiumAds');
-            const lContainer = document.getElementById('latestAds');
-            
+        // Load Ads Function
+        async function fetchAds() {
+            const premiumGrid = document.getElementById('premium-grid');
+            const latestGrid = document.getElementById('latest-grid');
+
             try {
-                // දත්ත ලබාගැනීම
-                const querySnapshot = await getDocs(collection(db, "ads"));
+                // Get all ads from "ads" collection
+                const q = query(collection(db, "ads"), orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
                 
-                let pHTML = '';
-                let lHTML = '';
+                let premiumContent = "";
+                let latestContent = "";
 
                 querySnapshot.forEach((doc) => {
                     const ad = doc.data();
-                    
-                    const cardHTML = `
-                        <div class="ad-card ${ad.isPremium ? 'premium-border' : ''}">
-                            ${ad.isPremium ? '<span class="premium-tag">PREMIUM</span>' : ''}
-                            <img src="${ad.imageUrl || 'https://via.placeholder.com/300'}" alt="Ad Image">
-                            <div class="ad-info">
-                                <div class="ad-title">${ad.title || 'No Title'}</div>
-                                <div class="ad-price">Rs. ${ad.price || '0'}</div>
+                    const adHTML = `
+                        <div class="ad-card ${ad.isPremium ? 'premium-card' : ''}">
+                            ${ad.isPremium ? '<div class="premium-badge">PREMIUM</div>' : ''}
+                            <img src="${ad.imageUrl || 'https://via.placeholder.com/300'}" alt="Ad">
+                            <div class="ad-content">
+                                <div class="ad-title">${ad.title}</div>
+                                <div class="ad-price">Rs. ${parseFloat(ad.price).toLocaleString()}</div>
+                                <div style="font-size:12px; color:#666;"><i class="fas fa-map-marker-alt"></i> ${ad.district || 'Sri Lanka'}</div>
                             </div>
-                        </div>`;
+                        </div>
+                    `;
 
                     if (ad.isPremium) {
-                        pHTML += cardHTML;
+                        premiumContent += adHTML;
                     } else {
-                        lHTML += cardHTML;
+                        latestContent += adHTML;
                     }
                 });
 
-                // දර්ශනය කිරීම
-                pContainer.innerHTML = pHTML || '<div class="no-ads">Premium දැන්වීම් නොමැත</div>';
-                lContainer.innerHTML = lHTML || '<div class="no-ads">දැන්වීම් නොමැත</div>';
+                premiumGrid.innerHTML = premiumContent || '<div class="loading-text">දැනට ප්‍රිමියම් දැන්වීම් නොමැත.</div>';
+                latestGrid.innerHTML = latestContent || '<div class="loading-text">දැන්වීම් කිසිවක් හමු නොවීය.</div>';
 
             } catch (error) {
-                console.error("Error: ", error);
-                pContainer.innerHTML = '<div class="no-ads">දැන්වීම් පූරණය වීමේ දෝෂයක්</div>';
-                lContainer.innerHTML = '<div class="no-ads">දැන්වීම් පූරණය වීමේ දෝෂයක්</div>';
+                console.error("Error fetching ads:", error);
+                document.querySelectorAll('.loading-text').forEach(el => el.innerHTML = "දත්ත පූරණය කිරීමේ දෝෂයකි.");
             }
         }
 
-        loadAds();
+        fetchAds();
     </script>
 
     <script>

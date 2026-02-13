@@ -9,7 +9,9 @@
     <style>
         .input-box { @apply w-full p-3 border border-gray-300 rounded-lg outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500; }
         .label-style { @apply block font-semibold mb-1 text-gray-700; }
-        .orange-theme { border-color: #f97316; }
+        /* YouTube Shorts Embed Responsive CSS */
+        .video-container { position: relative; padding-bottom: 177.77%; height: 0; overflow: hidden; max-width: 250px; margin: auto; border-radius: 15px; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -19,7 +21,7 @@
             <i class="fas fa-plus-circle text-orange-600 mr-2"></i>නව දැන්වීමක් පළ කරන්න
         </h2>
 
-        <form id="postForm" class="space-y-5">
+        <form id="postForm" class="space-y-6">
             
             <div>
                 <label class="label-style">1. භාණ්ඩයේ නම (Title)</label>
@@ -58,13 +60,15 @@
             </div>
 
             <div class="border-2 border-blue-300 rounded-xl p-5 bg-blue-50">
-                <p class="font-bold text-blue-900 mb-2 text-center">පින්තූරය Google Drive හරහා එක් කරන්න</p>
-                <p class="text-xs text-blue-700 mb-3 text-center">
-                    ගූගල් ඩ්‍රයිව් ලින්ක් එක ලබාගන්නා හැටි: <br>
-                    <a href="https://youtube.com/shorts/xs-amsA8m0E" target="_blank" class="text-blue-600 underline font-bold">මෙහි ඇති වීඩියෝව බලන්න</a>
-                </p>
-                <input type="text" id="imageUrl" class="input-box border-blue-300" placeholder="https://drive.google.com/open?id=...">
-                <p class="text-[10px] text-blue-500 mt-2 italic text-center text-red-500">වැදගත්: ලින්ක් එක "Anyone with the link" ලෙස සකසා තිබිය යුතුය.</p>
+                <p class="font-bold text-blue-900 mb-4 text-center">Google Drive හරහා Photo එක දාන විදිය</p>
+                
+                <div class="video-container mb-4">
+                    <iframe src="https://www.youtube.com/embed/xs-amsA8m0E" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+
+                <p class="text-sm text-blue-800 font-semibold mb-2 text-center italic">ඉහත වීඩියෝව බලා Drive ලින්ක් එක පහතින් දාන්න</p>
+                <input type="text" id="imageUrl" class="input-box border-blue-400" placeholder="මෙතන ලින්ක් එක Paste කරන්න..." required>
+                <p class="text-[11px] text-red-500 mt-2 text-center font-bold italic">වැදගත්: ලින්ක් එක "Anyone with the link" ලෙස සකසා තිබිය යුතුය.</p>
             </div>
 
             <div>
@@ -82,15 +86,15 @@
                 <input type="tel" id="whatsapp" class="input-box" placeholder="+94XXXXXXXXX" required>
             </div>
 
-            <div class="border-4 border-amber-400 p-4 rounded-xl flex items-center justify-between bg-gradient-to-r from-red-600 to-amber-500 text-white shadow-md">
+            <div class="border-4 border-amber-400 p-4 rounded-xl flex items-center justify-between bg-gradient-to-r from-red-600 to-amber-500 text-white shadow-lg">
                 <div>
-                    <h4 class="font-bold text-xl uppercase italic">Premium Boost</h4>
-                    <p class="text-xs">ඔබේ දැන්වීම ඉහළින්ම පෙන්වීමට මෙය තෝරන්න.</p>
+                    <h4 class="font-bold text-xl uppercase italic tracking-wider">Premium Boost</h4>
+                    <p class="text-xs">දැන්වීම ඉහළින්ම පෙන්වීමට මෙය Tick කරන්න.</p>
                 </div>
-                <input type="checkbox" id="premiumCheck" class="w-8 h-8 cursor-pointer accent-orange-500">
+                <input type="checkbox" id="premiumCheck" class="w-10 h-10 cursor-pointer accent-orange-500">
             </div>
 
-            <button type="submit" id="submitBtn" class="w-full bg-orange-600 text-white font-bold py-4 rounded-lg hover:bg-orange-700 transition duration-300 text-xl shadow-lg">
+            <button type="submit" id="submitBtn" class="w-full bg-orange-600 text-white font-bold py-4 rounded-lg hover:bg-orange-700 transition duration-300 text-xl shadow-xl">
                 දැන්වීම පළ කරන්න
             </button>
         </form>
@@ -101,6 +105,7 @@
         import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+        // ඔබේ Firebase Config එක
         const firebaseConfig = {
             apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
             authDomain: "adds-ink.firebaseapp.com",
@@ -133,13 +138,15 @@
             submitBtn.innerText = "දැන්වීම පළ කරමින්...";
 
             try {
-                // වීඩියෝවේ ඇති පරිදි Drive Link එක Direct Image Link එකක් බවට පත් කිරීම
+                // වීඩියෝවේ පියවර අනුව Link එක Direct Image එකක් කිරීම
                 let finalImageUrl = driveLink;
                 if (driveLink.includes("drive.google.com")) {
-                    // මෙය වීඩියෝවේ පියවරයි
-                    finalImageUrl = driveLink.replace("file/d/", "uc?export=view&id=").replace("/view?usp=sharing", "");
-                    if(finalImageUrl.includes("open?id=")) {
-                        finalImageUrl = finalImageUrl.replace("open?id=", "uc?export=view&id=");
+                    // මෙය Google Drive එකේ ID එක පමණක් ගෙන Direct Link එකක් හදන ක්‍රමයයි
+                    const driveId = driveLink.match(/[-\w]{25,}/);
+                    if(driveId) {
+                        finalImageUrl = `https://lh3.googleusercontent.com/u/0/d/${driveId[0]}=w1000`;
+                        // Fallback conversion
+                        if(!finalImageUrl) finalImageUrl = driveLink.replace("file/d/", "uc?export=view&id=").replace("/view?usp=sharing", "");
                     }
                 }
 

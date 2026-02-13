@@ -3,52 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>අලුත් දැන්වීමක් පළ කරන්න | Lanka Ads</title>
+    <title>දැන්වීමක් පළ කරන්න | Lanka Ads</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .input-box { @apply w-full p-3 border border-gray-300 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500; }
+    </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-50">
 
-    <div class="max-w-xl mx-auto my-10 p-6 bg-white rounded-xl shadow-lg">
-        <h2 id="page-title" class="text-2xl font-bold text-center mb-6 text-blue-600">අලුත් දැන්වීමක් පළ කරන්න</h2>
+    <div class="max-w-2xl mx-auto my-10 p-6 bg-white rounded-2xl shadow-xl border border-gray-100">
+        <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">
+            <i class="fas fa-plus-circle text-blue-600 mr-2"></i>නව දැන්වීමක් පළ කරන්න
+        </h2>
 
-        <form id="postForm" class="space-y-4">
+        <form id="postForm" class="space-y-6">
             <div>
-                <label class="block font-semibold mb-1">දැන්වීමේ මාතෘකාව (Title)</label>
-                <input type="text" id="title" class="w-full p-3 border rounded-lg outline-none focus:border-blue-500" placeholder="උදා: iPhone 13 for sale" required>
+                <label class="block font-semibold mb-2 text-gray-700">භාණ්ඩයේ නම (Title)</label>
+                <input type="text" id="title" class="input-box" placeholder="උදා: Toyota Corolla 2020" required>
             </div>
 
             <div>
-                <label class="block font-semibold mb-1">විස්තරය (Description)</label>
-                <textarea id="description" rows="4" class="w-full p-3 border rounded-lg outline-none focus:border-blue-500" placeholder="ඔබේ භාණ්ඩය හෝ සේවාව ගැන විස්තර ලියන්න..." required></textarea>
+                <label class="block font-semibold mb-2 text-gray-700">විස්තරය (Description)</label>
+                <textarea id="description" rows="5" class="input-box" placeholder="භාණ්ඩය ගැන විස්තර (තත්වය, වර්ණය ආදිය)" required></textarea>
             </div>
 
             <div>
-                <label class="block font-semibold mb-1">මිල (Price - Rs.)</label>
-                <input type="number" id="price" class="w-full p-3 border rounded-lg outline-none focus:border-blue-500" placeholder="5000" required>
+                <label class="block font-semibold mb-2 text-gray-700">මිල (Price - Rs.)</label>
+                <input type="number" id="price" class="input-box" placeholder="උදා: 2500000" required>
             </div>
 
             <div>
-                <label class="block font-semibold mb-1">දිස්ත්‍රික්කය</label>
-                <select id="district" class="w-full p-3 border rounded-lg outline-none focus:border-blue-500">
-                    <option value="Colombo">Colombo</option>
-                    <option value="Gampaha">Gampaha</option>
-                    <option value="Kandy">Kandy</option>
-                    <option value="Kalutara">Kalutara</option>
-                    <option value="Galle">Galle</option>
-                    <option value="Matara">Matara</option>
-                    <option value="Jaffna">Jaffna</option>
-                    <option value="Kurunegala">Kurunegala</option>
+                <label class="block font-semibold mb-2 text-gray-700">දුරකථන අංකය</label>
+                <input type="tel" id="phone" class="input-box" placeholder="07XXXXXXXX" required>
+            </div>
+
+            <div>
+                <label class="block font-semibold mb-2 text-gray-700">දිස්ත්‍රික්කය</label>
+                <select id="district" class="input-box" required>
+                    <option value="">දිස්ත්‍රික්කයක් තෝරන්න</option>
+                    <option value="Colombo">Colombo</option><option value="Gampaha">Gampaha</option>
+                    <option value="Kandy">Kandy</option><option value="Kalutara">Kalutara</option>
+                    <option value="Galle">Galle</option><option value="Matara">Matara</option>
+                    <option value="Jaffna">Jaffna</option><option value="Kurunegala">Kurunegala</option>
                     <option value="Anuradhapura">Anuradhapura</option>
+                    </select>
+            </div>
+
+            <div>
+                <label class="block font-semibold mb-2 text-gray-700">ප්‍රවර්ගය (Category)</label>
+                <select id="category" class="input-box" required>
+                    <option value="">කැටගරි එකක් තෝරන්න</option>
+                    <option value="Vehicles">Vehicles</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Property">Property</option>
+                    <option value="Jobs">Jobs</option>
                 </select>
             </div>
 
-            <div>
-                <label class="block font-semibold mb-1">භාණ්ඩයේ පින්තූරයක් එක් කරන්න</label>
-                <input type="file" id="imageFile" accept="image/*" class="w-full p-2 border border-dashed rounded-lg" required>
+            <div class="border-2 border-dashed border-gray-300 rounded-xl p-5 bg-gray-50 text-center">
+                <i class="fas fa-image text-4xl text-gray-400 mb-2"></i>
+                <p class="font-semibold text-gray-600">පින්තූරයක් එක් කරන්න</p>
+                <input type="file" id="imageFile" accept="image/*" class="mt-2 w-full text-sm">
+                <p class="text-xs text-gray-500 mt-1">හෝ</p>
+                <input type="text" id="imageUrl" class="input-box mt-2 text-sm" placeholder="Google Drive/Image URL එක මෙතන දාන්න">
             </div>
 
-            <button type="submit" id="submitBtn" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition">
+            <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl flex items-center justify-between">
+                <div>
+                    <h4 class="font-bold text-blue-900">ප්‍රිමියම් දැන්වීමක් ලෙස පළ කරන්න (Boost)</h4>
+                    <p class="text-sm text-blue-700">දැන්වීම ඉහළින්ම පෙන්වයි.</p>
+                </div>
+                <input type="checkbox" id="premiumCheck" class="w-6 h-6 accent-blue-600">
+            </div>
+
+            <button type="submit" id="submitBtn" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition duration-300 text-lg">
                 දැන්වීම පළ කරන්න
             </button>
         </form>
@@ -56,7 +85,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
@@ -87,37 +116,51 @@
             }
 
             const submitBtn = document.getElementById('submitBtn');
+            const isPremium = document.getElementById('premiumCheck').checked;
             submitBtn.disabled = true;
             submitBtn.innerText = "පළ කරමින් පවතී...";
 
             try {
-                let imageUrl = "";
+                let finalImageUrl = document.getElementById('imageUrl').value;
                 const file = document.getElementById('imageFile').files[0];
                 
-                // Image Upload logic
+                // 1. ෆයිල් එකක් upload කරොත් ඒක ගන්නවා
                 if(file) {
                     const storageRef = ref(storage, `posts/${Date.now()}_${file.name}`);
                     const snapshot = await uploadBytes(storageRef, file);
-                    imageUrl = await getDownloadURL(snapshot.ref);
+                    finalImageUrl = await getDownloadURL(snapshot.ref);
+                } 
+                // 2. Drive URL එකක් දුන්නොත් එය සෘජු image link එකක් බවට පත් කරයි
+                else if (finalImageUrl.includes("drive.google.com")) {
+                    // Google Drive Link Conversion
+                    finalImageUrl = finalImageUrl.replace("open?id=", "uc?export=view&id=");
                 }
 
-                // Firestore වෙත දත්ත යැවීම
-                await addDoc(collection(db, "posts"), {
+                // දත්ත Database එකට යැවීම
+                const docRef = await addDoc(collection(db, "posts"), {
                     title: document.getElementById('title').value,
                     description: document.getElementById('description').value,
                     price: parseFloat(document.getElementById('price').value),
+                    phone: document.getElementById('phone').value,
                     district: document.getElementById('district').value,
-                    imageUrl: imageUrl,
-                    postType: "ad", // සියල්ල දැන්වීම් ලෙස සේව් වේ
+                    category: document.getElementById('category').value,
+                    imageUrl: finalImageUrl,
+                    postType: "ad",
                     authorId: user.uid,
                     authorName: user.displayName || "පරිශීලක",
-                    authorImg: user.photoURL || "",
                     createdAt: serverTimestamp(),
-                    premiumStatus: "none"
+                    status: "pending", // Admin Approve කළ පසු index එකේ පෙනේ
+                    premiumStatus: isPremium ? "pending" : "none" // Premium නම් status pending වේ
                 });
 
-                alert("දැන්වීම සාර්ථකව පළ කරන ලදී!");
-                window.location.href = "index.html";
+                alert("දැන්වීම සාර්ථකව පළ කරන ලදී! පරීක්ෂාවෙන් පසු පෙනෙනු ඇත.");
+                
+                // Premium නම් Payment එකට, නැත්නම් Index එකට
+                if(isPremium) {
+                    window.location.href = `payment.html?adId=${docRef.id}`;
+                } else {
+                    window.location.href = "index.html";
+                }
 
             } catch (err) {
                 console.error(err);

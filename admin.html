@@ -3,152 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lanka Ads - Admin Panel</title>
+    <title>Lanka Ads Admin - ඇඩ්මින් පැනලය</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root {
-            --primary: #007bff;
-            --danger: #dc3545;
-            --success: #28a745;
-            --premium: #ffc107;
-            --dark: #2d3436;
-        }
+        :root { --primary: #007bff; --danger: #ff4d4d; --success: #2ecc71; --gold: #f1c40f; }
+        body { font-family: 'Inter', sans-serif; background: #f0f2f5; margin: 0; padding: 20px; }
+        .container { max-width: 1000px; margin: auto; }
+        
+        .header { background: white; padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .header h2 { margin: 0; color: var(--primary); }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f4f7f6;
-            margin: 0;
-            padding: 20px;
-        }
+        .ad-row { background: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; display: grid; grid-template-columns: 80px 1fr auto; gap: 20px; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .ad-img { width: 80px; height: 80px; border-radius: 8px; object-fit: cover; }
+        
+        .ad-info h3 { margin: 0 0 5px 0; font-size: 16px; }
+        .ad-info p { margin: 0; font-size: 14px; color: #666; }
+        .price { color: var(--primary); font-weight: 700; margin-top: 5px; }
 
-        .admin-container {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
+        .badge { display: inline-block; padding: 3px 8px; border-radius: 5px; font-size: 10px; font-weight: 800; margin-bottom: 5px; }
+        .premium-badge { background: var(--gold); color: black; }
+        .normal-badge { background: #eee; color: #666; }
 
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            margin-bottom: 30px;
-        }
-
-        h1 { margin: 0; font-size: 24px; color: var(--primary); }
-
-        .stats-bar {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        /* --- Table Styling --- */
-        .ads-table-container {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
-
-        th {
-            background: #f8f9fa;
-            padding: 15px;
-            font-weight: 700;
-            border-bottom: 2px solid #eee;
-        }
-
-        td {
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-            vertical-align: middle;
-        }
-
-        .ad-img {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 5px;
-        }
-
-        .badge {
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .badge-premium { background: var(--premium); color: #000; }
-        .badge-normal { background: #e9ecef; color: #666; }
-
-        /* --- Buttons --- */
-        .btn {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 13px;
-            transition: 0.2s;
-            margin-right: 5px;
-        }
-
+        .actions { display: flex; gap: 10px; }
+        .btn { border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        .btn-premium { background: var(--gold); color: black; }
+        .btn-normal { background: #6c757d; color: white; }
         .btn-delete { background: var(--danger); color: white; }
-        .btn-premium { background: var(--success); color: white; }
-        .btn-remove-premium { background: #6c757d; color: white; }
         .btn:hover { opacity: 0.8; }
 
-        .loading { text-align: center; padding: 50px; font-weight: bold; }
+        #loader { text-align: center; padding: 50px; font-weight: bold; color: #888; }
     </style>
 </head>
 <body>
 
-<div class="admin-container">
-    <header>
-        <h1><i class="fas fa-user-shield"></i> Lanka Ads Admin Panel</h1>
-        <button onclick="location.reload()" class="btn" style="background: var(--primary); color:white;">Reload Data</button>
-    </header>
-
-    <div class="ads-table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>Image</th>
-                    <th>Title & Price</th>
-                    <th>Category</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="admin-ads-list">
-                </tbody>
-        </table>
-        <div id="loader" class="loading">දත්ත පූරණය වෙමින් පවතී...</div>
+<div class="container">
+    <div class="header">
+        <h2>Lanka Ads Admin</h2>
+        <div id="admin-status" style="font-size: 12px; color: #555;">සම්බන්ධ වෙමින්...</div>
     </div>
+
+    <div id="loader">දත්ත පූරණය වෙමින් පවතී...</div>
+    <div id="ads-list"></div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
+    // ඔබේ Config එක
     const firebaseConfig = {
         apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
         authDomain: "adds-ink.firebaseapp.com",
@@ -161,87 +65,93 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const auth = getAuth(app);
 
-    async function loadAdminAds() {
-        const adsList = document.getElementById('admin-ads-list');
+    // Auth Check
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            document.getElementById('admin-status').innerHTML = `<i class="fas fa-circle" style="color:green"></i> Admin Active`;
+            loadAds();
+        } else {
+            document.getElementById('admin-status').innerHTML = `<i class="fas fa-circle" style="color:red"></i> Offline (Please Login)`;
+            // මෙහිදී ඔබගේ සාමාන්‍ය Login පිටුවට යොමු කළ හැක
+        }
+    });
+
+    async function loadAds() {
+        const adsList = document.getElementById('ads-list');
         const loader = document.getElementById('loader');
-        adsList.innerHTML = "";
-
+        
         try {
+            // "posts" collection එකෙන් දත්ත ගනියි
             const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-            const querySnapshot = await getDocs(q);
+            const snapshot = await getDocs(q);
             
-            if (querySnapshot.empty) {
-                loader.innerHTML = "දැන්වීම් කිසිවක් හමු නොවීය.";
-                return;
-            }
+            adsList.innerHTML = "";
+            loader.style.display = "none";
 
-            loader.style.display = 'none';
-
-            querySnapshot.forEach((adDoc) => {
+            snapshot.forEach((adDoc) => {
                 const ad = adDoc.data();
                 const id = adDoc.id;
                 const isPremium = ad.isPremium === true || ad.isFeatured === true;
 
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td><img src="${ad.imageUrl || 'https://via.placeholder.com/60'}" class="ad-img"></td>
-                    <td>
-                        <div style="font-weight:bold;">${ad.title}</div>
-                        <div style="color:var(--primary); font-size:14px;">Rs. ${parseFloat(ad.price).toLocaleString()}</div>
-                    </td>
-                    <td>${ad.category || 'N/A'}</td>
-                    <td>
-                        <span class="badge ${isPremium ? 'badge-premium' : 'badge-normal'}">
-                            ${isPremium ? 'PREMIUM' : 'NORMAL'}
+                const adEl = document.createElement('div');
+                adEl.className = 'ad-row';
+                adEl.innerHTML = `
+                    <img src="${ad.imageUrl || 'https://via.placeholder.com/80'}" class="ad-img">
+                    <div class="ad-info">
+                        <span class="badge ${isPremium ? 'premium-badge' : 'normal-badge'}">
+                            ${isPremium ? 'PREMIUM AD' : 'NORMAL AD'}
                         </span>
-                    </td>
-                    <td>
-                        <button class="btn ${isPremium ? 'btn-remove-premium' : 'btn-premium'}" 
-                                onclick="togglePremium('${id}', ${isPremium})">
-                            ${isPremium ? 'Remove Premium' : 'Make Premium'}
+                        <h3>${ad.title}</h3>
+                        <p>${ad.district || 'Lanka'} | ${ad.category || 'General'}</p>
+                        <div class="price">Rs. ${parseFloat(ad.price).toLocaleString()}</div>
+                    </div>
+                    <div class="actions">
+                        <button class="btn ${isPremium ? 'btn-normal' : 'btn-premium'}" onclick="togglePremium('${id}', ${isPremium})">
+                            ${isPremium ? 'Demote' : 'Make Premium'}
                         </button>
-                        <button class="btn btn-delete" onclick="deleteAd('${id}')">
+                        <button class="btn btn-delete" onclick="deletePost('${id}')">
                             <i class="fas fa-trash"></i>
                         </button>
-                    </td>
+                    </div>
                 `;
-                adsList.appendChild(row);
+                adsList.appendChild(adEl);
             });
-        } catch (error) {
-            console.error(error);
-            loader.innerHTML = "දෝෂයකි: " + error.message;
+        } catch (err) {
+            loader.innerHTML = "දත්ත ලබා ගැනීමේ දෝෂයකි. (Rules පරීක්ෂා කරන්න)";
+            console.error(err);
         }
     }
 
-    // --- Actions ---
+    // --- ක්‍රියාකාරකම් ---
 
     window.togglePremium = async (id, currentStatus) => {
-        if (confirm(`මෙම දැන්වීම ${currentStatus ? 'සාමාන්‍ය' : 'ප්‍රිමියම්'} තත්වයට පත් කිරීමට අවශ්‍යද?`)) {
-            const adRef = doc(db, "posts", id);
-            try {
-                await updateDoc(adRef, {
-                    isPremium: !currentStatus,
-                    isFeatured: !currentStatus // සමහර තැන්වල භාවිතා වන නිසා දෙකම update කරයි
-                });
-                alert("තත්වය යාවත්කාලීන කරන ලදී!");
-                loadAdminAds();
-            } catch (e) { alert("දෝෂයකි!"); }
+        const adRef = doc(db, "posts", id);
+        try {
+            await updateDoc(adRef, {
+                isPremium: !currentStatus,
+                isFeatured: !currentStatus
+            });
+            alert("සාර්ථකව යාවත්කාලීන විය!");
+            loadAds();
+        } catch (e) {
+            alert("Error: " + e.message);
         }
     };
 
-    window.deleteAd = async (id) => {
-        if (confirm("මෙම දැන්වීම ස්ථිරවම මකා දැමීමට ඔබට අවශ්‍යද?")) {
+    window.deletePost = async (id) => {
+        if (confirm("මෙම දැන්වීම ස්ථිරවම මකා දමන්නද?")) {
             try {
                 await deleteDoc(doc(db, "posts", id));
-                alert("දැන්වීම මකා දමන ලදී!");
-                loadAdminAds();
-            } catch (e) { alert("මකා දැමීම අසාර්ථකයි!"); }
+                alert("මකා දමන ලදී!");
+                loadAds();
+            } catch (e) {
+                alert("Error: " + e.message);
+            }
         }
     };
 
-    loadAdminAds();
 </script>
-
 </body>
 </html>

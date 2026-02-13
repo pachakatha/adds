@@ -1,166 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="si">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Public Requests & Chat | Lanka Ads</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        .chat-bubble {
-            @apply bg-white p-4 rounded-2xl shadow-sm border border-gray-100 mb-4 transition-all hover:shadow-md;
-        }
-        .user-name { @apply font-bold text-blue-600 text-sm mb-1 flex items-center gap-2; }
-        .message-text { @apply text-gray-800 leading-relaxed; }
-        .time-stamp { @apply text-[10px] text-gray-400 mt-2 text-right uppercase; }
-        
-        /* Sticky positioning for notice */
-        #notice-box {
-            position: sticky;
-            top: 75px; 
-            z-index: 40;
-        }
-    </style>
+    <title>Comments Section</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-slate-50 font-sans h-screen flex flex-col overflow-hidden">
+<body>
 
-    <nav class="bg-white shadow-md p-4 sticky top-0 z-50 flex-none">
-        <div class="max-w-4xl mx-auto flex items-center justify-between">
-            <a href="index.html" class="text-gray-600 hover:text-blue-600 transition">
-                <i class="fas fa-arrow-left text-xl"></i>
-            </a>
-            <h1 class="font-black text-xl text-gray-800 italic">Public <span class="text-blue-600">Requests</span></h1>
-            <div class="w-6"></div>
-        </div>
-    </nav>
+    <div class="sticky-notice">
+        තමන්ට අවශ්‍ය දේවල් තිබේනම් ඉල්ලා මෙහි මැසේජ් එකක් තබන්න. 
+        අංකය සමග එය තිබෙන කෙනෙක් ඔබට කතා කරයි.
+    </div>
 
-    <div class="flex-1 overflow-y-auto p-4">
-        <div class="max-w-3xl mx-auto">
-            
-            <div id="notice-box" class="bg-white border-l-4 border-blue-500 p-4 rounded-xl shadow-lg mb-6 flex items-center gap-4">
-                <i class="fas fa-bullhorn text-blue-500 text-2xl"></i>
-                <div>
-                    <h2 class="text-sm font-bold text-gray-800">ඔබට යමක් අවශ්‍යද?</h2>
-                    <p class="text-xs text-gray-600 leading-relaxed">
-                        තමන්ට අවශ්‍ය දේවල් ඉල්ලා මෙහි මැසෙජ් එකක් සහ දුරකථන අංකය තබන්න.
-                    </p>
-                </div>
+    <div class="comment-container">
+        <div id="comments-display">
             </div>
 
-            <div id="chat-container" class="pb-20">
-                <div id="loading" class="text-center py-10 text-gray-400">
-                    <i class="fas fa-circle-notch animate-spin text-3xl mb-3"></i>
-                    <p>Loading messages...</p>
-                </div>
-                <div id="messages-list"></div>
-            </div>
+        <div class="input-area">
+            <input type="text" id="comment-input" placeholder="ඔබේ මැසේජ් එක මෙතන ටයිප් කරන්න...">
+            <button onclick="sendComment()">යවන්න</button>
         </div>
     </div>
 
-    <div class="flex-none bg-white border-t p-4 shadow-[0_-5px_20px_rgba(0,0,0,0.05)] z-50">
-        <div class="max-w-3xl mx-auto flex gap-3">
-            <input type="text" id="msgInput" placeholder="ඔබට අවශ්‍ය දේ මෙහි ටයිප් කරන්න..." 
-                   class="flex-1 p-4 bg-gray-100 rounded-2xl outline-none focus:ring-2 focus:ring-blue-400 transition border-none">
-            <button onclick="sendMessage()" id="sendBtn" 
-                    class="bg-blue-600 text-white w-14 h-14 rounded-2xl flex items-center justify-center hover:bg-blue-700 transition shadow-lg shadow-blue-200">
-                <i class="fas fa-paper-plane text-xl"></i>
-            </button>
-        </div>
-        <p id="login-warning" class="hidden text-center text-red-500 text-xs mt-2 font-bold uppercase">දැන්වීම් පළ කිරීමට ප්‍රථම කරුණාකර ලොග් වන්න!</p>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
-            authDomain: "adds-ink.firebaseapp.com",
-            projectId: "adds-ink",
-            storageBucket: "adds-ink.firebasestorage.app",
-            messagingSenderId: "638657776631",
-            appId: "1:638657776631:web:44ffdad33137bfefa57cf2"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        let currentUser = null;
-
-        // Auth State
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                currentUser = user;
-                document.getElementById('msgInput').disabled = false;
-                document.getElementById('msgInput').placeholder = "Type your request...";
-                document.getElementById('login-warning').classList.add('hidden');
-            } else {
-                document.getElementById('msgInput').disabled = true;
-                document.getElementById('msgInput').placeholder = "Log in to post a request...";
-                document.getElementById('login-warning').classList.remove('hidden');
-            }
-        });
-
-        // Load Messages Real-time
-        function loadMessages() {
-            const q = query(collection(db, "comments"), orderBy("createdAt", "asc"));
-            const messagesList = document.getElementById('messages-list');
-            const chatContainer = document.querySelector('.overflow-y-auto');
-
-            onSnapshot(q, (snapshot) => {
-                document.getElementById('loading').style.display = 'none';
-                messagesList.innerHTML = "";
-                
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const date = data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleString() : 'Just now';
-                    
-                    const html = `
-                        <div class="chat-bubble animate-in fade-in duration-500">
-                            <div class="user-name">
-                                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-                                    <i class="fas fa-user text-xs"></i>
-                                </div>
-                                ${data.userName}
-                            </div>
-                            <div class="message-text">${data.text}</div>
-                            <div class="time-stamp">${date}</div>
-                        </div>
-                    `;
-                    messagesList.innerHTML += html;
-                });
-                
-                // Scroll to bottom
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-            });
-        }
-
-        // Send Message
-        window.sendMessage = async () => {
-            const input = document.getElementById('msgInput');
-            const btn = document.getElementById('sendBtn');
-
-            if (!currentUser) return alert("Please login first!");
-            if (!input.value.trim()) return;
-
-            btn.disabled = true;
-            try {
-                await addDoc(collection(db, "comments"), {
-                    text: input.value,
-                    userName: currentUser.displayName || "LankaAds User",
-                    userId: currentUser.uid,
-                    createdAt: serverTimestamp()
-                });
-                input.value = "";
-            } catch (err) {
-                alert("Error sending message!");
-            }
-            btn.disabled = false;
-        };
-
-        loadMessages();
-    </script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>

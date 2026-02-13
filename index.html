@@ -3,102 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LankaAds | ශ්‍රී ලංකාවේ විශාලතම වෙළඳපොළ</title>
-
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#FF7F00">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="icon-192.png">
-
-    <meta name="google-site-verification" content="r8dfB82ybIIQNDVmhwz88AzJwMK_yVTbs_TAuDa53YE" />
+    <title>Lanka Ads - ශ්‍රී ලංකාවේ විශාලතම දැන්වීම් එකතුව</title>
     
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#007bff">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#FF7F00',
-                        secondary: '#0071dc',
-                        dark: '#1A1A1A',
-                    },
-                    borderRadius: { '4xl': '2rem' }
-                }
-            }
-        }
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Poppins', sans-serif; scroll-behavior: smooth; padding-bottom: 70px; }
-        .hero-bg {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?q=80&w=1600');
-            background-size: cover; background-position: center;
-        }
-        .premium-card {
-            border: 2px solid #FFD700;
-            background: linear-gradient(145deg, #ffffff, #fffef0);
-            box-shadow: 0 15px 30px rgba(255, 215, 0, 0.2);
-        }
-        .premium-tag { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
-        .glass-effect { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
-        .category-card:hover { transform: translateY(-5px); transition: 0.3s; }
+        :root { --primary: #007bff; --secondary: #ff9900; --dark: #333; --light: #f8f9fa; }
+        body { font-family: 'Inter', sans-serif; margin: 0; background-color: var(--light); overflow-x: hidden; }
         
-        /* Mobile Bottom Nav Styling */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #eee; z-index: 1000; }
-        @media (min-width: 768px) { .bottom-nav { display: none; } }
+        /* Navigation */
+        nav { background: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 26px; font-weight: 800; color: var(--primary); text-decoration: none; }
+        .nav-links { display: flex; gap: 20px; align-items: center; }
+        .btn-login { text-decoration: none; color: var(--dark); font-weight: 600; }
+        .btn-signup { text-decoration: none; background: var(--primary); color: white; padding: 10px 22px; border-radius: 8px; font-weight: 600; transition: 0.3s; }
+        .btn-signup:hover { background: #0056b3; }
+        #profileSection { display: none; text-decoration: none; color: var(--dark); font-weight: 600; }
+
+        /* Hero & Background */
+        .hero { 
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=1350&q=80');
+            background-size: cover; background-position: center; height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; padding: 0 20px;
+        }
+        .hero h1 { font-size: 38px; margin-bottom: 10px; }
+        .hero p { font-size: 18px; max-width: 600px; }
+
+        /* Search Bar */
+        .search-section { display: flex; justify-content: center; margin-top: -60px; padding: 0 5%; }
+        .search-box { background: white; padding: 25px; border-radius: 15px; display: flex; flex-wrap: wrap; gap: 15px; box-shadow: 0 8px 30px rgba(0,0,0,0.15); width: 100%; max-width: 1100px; }
+        select, input { padding: 14px; border: 1px solid #ddd; border-radius: 8px; flex: 1; min-width: 200px; font-size: 15px; }
+        .btn-search { background: var(--secondary); color: white; border: none; padding: 14px 40px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 16px; transition: 0.3s; }
+        .btn-search:hover { background: #e68a00; }
+
+        /* Categories Section */
+        .container { padding: 40px 5%; }
+        .section-header { font-size: 24px; font-weight: 700; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; }
+        .category-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; }
+        .category-item { background: white; padding: 25px 10px; text-align: center; border-radius: 12px; cursor: pointer; transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .category-item:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        .category-item i { font-size: 32px; color: var(--primary); margin-bottom: 15px; }
+        .category-item span { display: block; font-weight: 600; font-size: 14px; color: var(--dark); }
+
+        /* Ad Grids */
+        .ads-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+        .ad-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: relative; height: 200px; display: flex; align-items: center; justify-content: center; color: #888; }
+        .premium-tag { position: absolute; top: 10px; left: 10px; background: var(--secondary); color: white; padding: 4px 10px; font-size: 12px; border-radius: 5px; font-weight: 700; }
+        .premium-border { border: 2px solid var(--secondary); }
+
+        /* Floating Post Button */
+        .post-btn { position: fixed; bottom: 30px; right: 30px; background: #28a745; color: white; width: 65px; height: 65px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4); text-decoration: none; z-index: 1001; transition: 0.3s; }
+        .post-btn:hover { transform: scale(1.1); }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body>
 
-    <nav class="glass-effect sticky top-0 z-50 border-b border-gray-100 shadow-sm">
-        <div class="container mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
-            <h1 class="text-2xl md:text-3xl font-black text-dark tracking-tighter cursor-pointer" onclick="window.location.href='index.html'">Lanka<span class="text-primary">Ads</span></h1>
-            <div id="authButtons" class="flex items-center gap-2 md:gap-4"></div>
+    <nav>
+        <a href="index.html" class="logo">Lanka Ads</a>
+        <div class="nav-links" id="authSection">
+            <a href="login.html" class="btn-login">Log In</a>
+            <a href="signup.html" class="btn-signup">Sign Up</a>
         </div>
+        <a href="profile.html" id="profileSection">
+            <i class="fas fa-user-circle fa-lg"></i> Profile
+        </a>
     </nav>
 
-    <div class="hero-bg text-white relative overflow-hidden">
-        <div class="container mx-auto px-6 py-12 text-center relative z-10">
-            <h2 class="text-3xl md:text-6xl font-extrabold leading-tight mb-4">ලංකාවේ අංක එකේ <span class="text-primary">වෙළඳපොළ</span></h2>
-            
-            <div class="max-w-4xl mx-auto glass-effect p-2 md:p-3 rounded-3xl md:rounded-full shadow-2xl flex flex-col md:flex-row gap-2">
-                <input type="text" id="searchInput" onkeyup="filterAds()" placeholder="සොයන්න..." class="flex-[2] p-4 rounded-full text-dark outline-none bg-transparent px-6">
-                <select id="districtFilter" onchange="filterAds()" class="flex-1 p-4 rounded-full text-dark bg-gray-100 border-none cursor-pointer">
-                    <option value="All">දිස්ත්‍රික්කය</option>
-                    <option value="Colombo">Colombo</option>
-                    </select>
-                <button onclick="filterAds()" class="bg-primary text-white px-8 py-4 rounded-full font-bold shadow-lg">සොයන්න</button>
-            </div>
+    <header class="hero">
+        <h1>Lanka Ads වෙත සාදරයෙන් පිළිගනිමු</h1>
+        <p>ශ්‍රී ලංකාවේ ඕනෑම දෙයක් විකුණා ගැනීමට හෝ මිලදී ගැනීමට ඇති ආරක්ෂිතම සහ විශ්වාසවන්තම වෙබ් අඩවිය.</p>
+    </header>
+
+    <div class="search-section">
+        <div class="search-box">
+            <select id="district">
+                <option value="">සියලුම දිස්ත්‍රික්ක (25)</option>
+                <option>Ampara</option><option>Anuradhapura</option><option>Badulla</option><option>Batticaloa</option><option>Colombo</option><option>Galle</option><option>Gampaha</option><option>Hambantota</option><option>Jaffna</option><option>Kalutara</option><option>Kandy</option><option>Kegalle</option><option>Kilinochchi</option><option>Kurunegala</option><option>Mannar</option><option>Matale</option><option>Matara</option><option>Monaragala</option><option>Mullaitivu</option><option>Nuwara Eliya</option><option>Polonnaruwa</option><option>Puttalam</option><option>Ratnapura</option><option>Trincomalee</option><option>Vavuniya</option>
+            </select>
+            <select id="category">
+                <option value="">සියලුම වර්ගීකරණයන්</option>
+                <option>Mobile Phones</option><option>Electronics</option><option>Vehicles</option><option>Property</option><option>Home & Garden</option><option>Fashion & Beauty</option><option>Services</option><option>Jobs</option><option>Education</option><option>Animals</option><option>Food & Agriculture</option><option>Other</option>
+            </select>
+            <input type="text" placeholder="ඔබ සොයන දේ මෙහි ලියන්න...">
+            <button class="btn-search">සොයන්න</button>
         </div>
     </div>
 
-    <div class="container mx-auto px-4 py-8">
-        <div id="adsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <p class="text-gray-400 py-10 col-span-full text-center">පූරණය වෙමින්...</p>
+    <div class="container">
+        <div class="section-header">සියලුම වර්ගීකරණයන් (Categories)</div>
+        <div class="category-grid">
+            <div class="category-item"><i class="fas fa-mobile-alt"></i><span>Mobile Phones</span></div>
+            <div class="category-item"><i class="fas fa-car"></i><span>Vehicles</span></div>
+            <div class="category-item"><i class="fas fa-home"></i><span>Property</span></div>
+            <div class="category-item"><i class="fas fa-laptop"></i><span>Electronics</span></div>
+            <div class="category-item"><i class="fas fa-couch"></i><span>Home & Garden</span></div>
+            <div class="category-item"><i class="fas fa-tshirt"></i><span>Fashion</span></div>
+            <div class="category-item"><i class="fas fa-briefcase"></i><span>Jobs</span></div>
+            <div class="category-item"><i class="fas fa-tools"></i><span>Services</span></div>
+            <div class="category-item"><i class="fas fa-paw"></i><span>Animals</span></div>
+            <div class="category-item"><i class="fas fa-graduation-cap"></i><span>Education</span></div>
+        </div>
+
+        <div class="section-header" style="margin-top: 50px; color: var(--secondary);">ප්‍රිමියම් දැන්වීම් (Premium Ads)</div>
+        <div class="ads-container">
+            <div class="ad-card premium-border"><span class="premium-tag">PREMIUM</span>මෙහි දැන්වීම් දිස්වනු ඇත</div>
+            <div class="ad-card premium-border"><span class="premium-tag">PREMIUM</span>මෙහි දැන්වීම් දිස්වනු ඇත</div>
+        </div>
+
+        <div class="section-header" style="margin-top: 50px;">නවතම දැන්වීම් (Latest Ads)</div>
+        <div class="ads-container">
+            <div class="ad-card">දැන්වීම් දත්ත පූරණය වේ...</div>
+            <div class="ad-card">දැන්වීම් දත්ත පූරණය වේ...</div>
+            <div class="ad-card">දැන්වීම් දත්ත පූරණය වේ...</div>
         </div>
     </div>
 
-    <div class="bottom-nav shadow-lg">
-        <button onclick="window.location.href='index.html'" class="flex flex-col items-center text-primary">
-            <span class="text-xl">🏠</span>
-            <span class="text-[10px] font-bold uppercase">Home</span>
-        </button>
-        <button onclick="window.location.href='post-ad.html'" class="flex flex-col items-center text-gray-400">
-            <span class="text-xl">➕</span>
-            <span class="text-[10px] font-bold uppercase">Sell</span>
-        </button>
-        <button onclick="window.location.href='profile.html'" class="flex flex-col items-center text-gray-400">
-            <span class="text-xl">👤</span>
-            <span class="text-[10px] font-bold uppercase">Profile</span>
-        </button>
-    </div>
+    <a href="post-ad.html" class="post-btn"><i class="fas fa-plus"></i></a>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
         const firebaseConfig = {
             apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
             authDomain: "adds-ink.firebaseapp.com",
@@ -109,70 +136,21 @@
             measurementId: "G-Z002TVT7QX"
         };
 
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const auth = firebase.auth();
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
 
-        // Register Service Worker for PWA
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js')
-                .then(reg => console.log('Service Worker Registered'))
-                .catch(err => console.log('Service Worker Error', err));
-            });
-        }
-
-        let allAds = [];
-
-        auth.onAuthStateChanged(user => {
-            const authDiv = document.getElementById('authButtons');
+        onAuthStateChanged(auth, (user) => {
             if (user) {
-                authDiv.innerHTML = `<button onclick="auth.signOut()" class="text-xs text-red-500 font-bold">Log Out</button>`;
-            } else {
-                authDiv.innerHTML = `<a href="login.html" class="text-sm font-bold text-primary">Login</a>`;
+                document.getElementById('authSection').style.display = 'none';
+                document.getElementById('profileSection').style.display = 'block';
             }
         });
+    </script>
 
-        function fetchAds() {
-            db.collection("posts").orderBy("createdAt", "desc").onSnapshot(snapshot => {
-                allAds = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                renderAds(allAds);
-            });
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js');
         }
-
-        function renderAds(ads) {
-            const grid = document.getElementById('adsGrid');
-            grid.innerHTML = ads.length === 0 ? "<p class='col-span-full text-center'>දැන්වීම් නැත</p>" : "";
-            ads.forEach(ad => {
-                const isPremium = ad.isFeatured === true;
-                grid.innerHTML += `
-                    <div class="bg-white rounded-3xl p-3 border border-gray-100 shadow-sm ${isPremium ? 'premium-card' : ''}">
-                        <div class="relative h-40 rounded-2xl overflow-hidden mb-3">
-                            <img src="${ad.imageUrl}" class="w-full h-full object-cover">
-                            <div class="absolute bottom-2 left-2 bg-white/90 px-2 py-1 rounded-lg text-xs font-bold">
-                                රු. ${Number(ad.price).toLocaleString()}
-                            </div>
-                        </div>
-                        <h3 class="text-xs font-bold text-dark truncate px-1">${ad.title}</h3>
-                        <div class="flex justify-between items-center mt-3 px-1">
-                            <span class="text-[10px] text-gray-400 uppercase">📍 ${ad.district || 'Lanka'}</span>
-                            <a href="ad-details.html?id=${ad.id}" class="bg-dark text-white text-[10px] font-bold px-3 py-1.5 rounded-lg hover:bg-primary transition">බලන්න</a>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function filterAds() {
-            const text = document.getElementById('searchInput').value.toLowerCase();
-            const dist = document.getElementById('districtFilter').value;
-            const filtered = allAds.filter(ad => 
-                ad.title.toLowerCase().includes(text) && (dist === "All" || ad.district === dist)
-            );
-            renderAds(filtered);
-        }
-
-        window.onload = fetchAds;
     </script>
 </body>
 </html>

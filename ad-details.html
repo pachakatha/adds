@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="si">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>දැන්වීමේ විස්තර | Lanka Ads</title>
+    <title>Ad Details</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -12,9 +12,9 @@
     <nav class="bg-green-600 p-4 text-white shadow-md">
         <div class="max-w-4xl mx-auto flex items-center justify-between">
             <a href="index.html" class="flex items-center space-x-2">
-                <i class="fas fa-arrow-left"></i> <span>ආපසු</span>
+                <i class="fas fa-arrow-left"></i> <span>Back</span>
             </a>
-            <h1 class="font-bold text-lg">දැන්වීමේ විස්තර</h1>
+            <h1 class="font-bold text-lg">Ad Details</h1>
             <div></div>
         </div>
     </nav>
@@ -22,17 +22,17 @@
     <div id="ad-content" class="max-w-3xl mx-auto my-6 p-4 md:p-0">
         <div id="loader" class="text-center py-10">
             <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
-            <p class="mt-3 text-gray-500">විස්තර ලබාගනිමින්...</p>
+            <p class="mt-3 text-gray-500">Loading...</p>
         </div>
     </div>
 
     <div class="max-w-3xl mx-auto my-6 p-4 md:p-0">
         <div class="bg-white rounded-2xl shadow-lg p-6">
-            <h3 class="font-bold text-xl mb-4 border-b pb-2">අදහස් (Comments)</h3>
+            <h3 class="font-bold text-xl mb-4 border-b pb-2">Comments</h3>
             
             <div class="flex space-x-2 mb-6">
-                <input type="text" id="commentInput" placeholder="ඔබේ අදහස ලියන්න..." class="flex-1 p-3 border rounded-lg outline-none focus:border-green-500">
-                <button onclick="addComment()" class="bg-green-600 text-white px-5 py-2 rounded-lg font-bold hover:bg-green-700">යවන්න</button>
+                <input type="text" id="commentInput" placeholder="Add a comment..." class="flex-1 p-3 border rounded-lg outline-none focus:border-green-500">
+                <button onclick="addComment()" class="bg-green-600 text-white px-5 py-2 rounded-lg font-bold hover:bg-green-700">Send</button>
             </div>
 
             <div id="commentsList" class="space-y-4">
@@ -44,7 +44,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, doc, getDoc, collection, addDoc, query, where, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
@@ -62,7 +62,6 @@
         const urlParams = new URLSearchParams(window.location.search);
         const adId = urlParams.get('id');
 
-        // දැන්වීමේ විස්තර Load කිරීම
         async function loadAdDetails() {
             if (!adId) return;
             const docRef = doc(db, "posts", adId);
@@ -85,17 +84,23 @@
                                 <div class="flex items-center space-x-2"><i class="fas fa-map-marker-alt text-green-500"></i><span>${data.district}</span></div>
                                 <div class="flex items-center space-x-2"><i class="fas fa-th-large text-green-500"></i><span>${data.category}</span></div>
                             </div>
-                            <h3 class="font-bold text-lg mb-2">විස්තරය</h3>
+                            <h3 class="font-bold text-lg mb-2 border-b pb-1">Description</h3>
                             <p class="text-gray-700 whitespace-pre-wrap mb-8">${data.description}</p>
+                            
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                                <a href="tel:${data.phone}" class="flex items-center justify-center space-x-2 bg-green-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-green-700 shadow-lg"><i class="fas fa-phone-alt"></i> <span>Call Seller</span></a>
-                                <a href="https://wa.me/${data.whatsapp.replace('+', '')}" target="_blank" class="flex items-center justify-center space-x-2 bg-emerald-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-emerald-600 shadow-lg"><i class="fab fa-whatsapp text-2xl"></i> <span>WhatsApp Direct</span></a>
+                                <a href="tel:${data.phone}" class="flex items-center justify-center space-x-2 bg-green-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-green-700 shadow-lg">
+                                    <i class="fas fa-phone-alt"></i> <span>Call Seller</span>
+                                </a>
+                                <a href="https://wa.me/${data.whatsapp.replace('+', '').replace(/\s/g, '')}" target="_blank" class="flex items-center justify-center space-x-2 bg-emerald-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-emerald-600 shadow-lg">
+                                    <i class="fab fa-whatsapp text-2xl"></i> <span>WhatsApp Direct</span>
+                                </a>
                             </div>
+
                             <div class="text-center">
                                 <p class="text-gray-500 font-bold mb-3 uppercase text-xs">Share</p>
                                 <div class="flex justify-center space-x-4">
-                                    <a href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}" target="_blank" class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 transition"><i class="fab fa-facebook-f"></i></a>
-                                    <a href="https://wa.me/?text=Check this: ${shareUrl}" target="_blank" class="bg-green-500 text-white w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 transition"><i class="fab fa-whatsapp"></i></a>
+                                    <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}" target="_blank" class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 transition"><i class="fab fa-facebook-f"></i></a>
+                                    <a href="https://wa.me/?text=${encodeURIComponent(shareUrl)}" target="_blank" class="bg-green-500 text-white w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 transition"><i class="fab fa-whatsapp"></i></a>
                                     <button onclick="navigator.clipboard.writeText('${shareUrl}'); alert('Link Copied!');" class="bg-gray-600 text-white w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 transition"><i class="fas fa-link"></i></button>
                                 </div>
                             </div>
@@ -107,11 +112,8 @@
             }
         }
 
-        // කමෙන්ට් Load කිරීම (Realtime)
         function loadComments() {
-            const commentsRef = collection(db, "comments");
-            const q = query(commentsRef, where("adId", "==", adId), orderBy("createdAt", "desc"));
-            
+            const q = query(collection(db, "comments"), where("adId", "==", adId), orderBy("createdAt", "desc"));
             onSnapshot(q, (snapshot) => {
                 let commentsHtml = "";
                 snapshot.forEach((doc) => {
@@ -120,31 +122,26 @@
                         <div class="bg-gray-50 p-4 rounded-lg border">
                             <p class="font-bold text-sm text-green-700">${comment.userName}</p>
                             <p class="text-gray-800">${comment.text}</p>
-                            <p class="text-xs text-gray-400">${comment.createdAt?.toDate().toLocaleString()}</p>
                         </div>
                     `;
                 });
-                document.getElementById('commentsList').innerHTML = commentsHtml || "<p class='text-gray-500 text-center'>තවමත් අදහස් නැත.</p>";
+                document.getElementById('commentsList').innerHTML = commentsHtml || "<p class='text-center text-gray-400'>No comments yet.</p>";
             });
         }
 
-        // කමෙන්ට් එකක් දැමීම
         window.addComment = async () => {
             const user = auth.currentUser;
-            if (!user) return alert("කරුණාකර Comment කිරීමට Log වන්න!");
-            
-            const commentInput = document.getElementById('commentInput');
-            const text = commentInput.value;
-            if (!text) return;
+            if (!user) return alert("Please Login!");
+            const input = document.getElementById('commentInput');
+            if (!input.value) return;
 
             await addDoc(collection(db, "comments"), {
                 adId: adId,
-                userId: user.uid,
-                userName: user.displayName || "Anonymous",
-                text: text,
+                text: input.value,
+                userName: user.displayName || "User",
                 createdAt: serverTimestamp()
             });
-            commentInput.value = "";
+            input.value = "";
         };
 
         loadAdDetails();

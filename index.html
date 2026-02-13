@@ -123,6 +123,101 @@
             object-fit: cover;
         }
 
+        /* ----- CHAT BUTTON ----- */
+        .chat-button {
+            position: fixed;
+            bottom: 100px;  /* Above the post button */
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--secondary);
+            color: white;
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
+            text-decoration: none;
+            transition: var(--transition);
+            z-index: 100;
+            border: none;
+            cursor: pointer;
+        }
+
+        .chat-button:hover {
+            transform: scale(1.1);
+            background: #e07b0b;
+        }
+
+        /* Chat Container for X button and Chat Button */
+        .chat-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .chat-buttons-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 15px;
+            transition: var(--transition);
+        }
+
+        .chat-close-btn {
+            width: 40px;
+            height: 40px;
+            background: var(--danger);
+            color: white;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+            text-decoration: none;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+        }
+
+        .chat-close-btn:hover {
+            transform: scale(1.1);
+            background: #dc2626;
+        }
+
+        .chat-main-btn {
+            width: 60px;
+            height: 60px;
+            background: var(--secondary);
+            color: white;
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
+            text-decoration: none;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+        }
+
+        .chat-main-btn:hover {
+            transform: scale(1.1);
+            background: #e07b0b;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
         /* ----- HERO SECTION ----- */
         .hero {
             background: linear-gradient(120deg, #1e293b 0%, #0f172a 100%);
@@ -292,6 +387,8 @@
             height: 100%;
             display: flex;
             flex-direction: column;
+            text-decoration: none;
+            color: inherit;
         }
 
         .ad-card:hover {
@@ -425,7 +522,7 @@
             width: 60%;
         }
 
-        /* ----- FLOATING BUTTON ----- */
+        /* ----- FLOATING BUTTON (POST AD) ----- */
         .btn-post {
             position: fixed;
             bottom: 30px;
@@ -552,6 +649,19 @@
         </div>
     </main>
 
+    <!-- Chat Button Container with X Button -->
+    <div class="chat-container">
+        <div class="chat-buttons-wrapper" id="chatButtonsWrapper">
+            <button class="chat-close-btn" id="closeChatBtn" onclick="hideChatButton()">
+                <i class="fas fa-times"></i>
+            </button>
+            <a href="comment.html" class="chat-main-btn" id="chatMainBtn">
+                <i class="fas fa-comment"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Post Ad Button -->
     <a href="post-ad.html" class="btn-post"><i class="fas fa-plus"></i></a>
 
     <!-- Scripts -->
@@ -693,8 +803,26 @@
 
     </script>
 
-    <!-- Translation Script -->
+    <!-- Chat Button and Translation Script -->
     <script>
+        // Chat button hide/show function
+        function hideChatButton() {
+            const chatWrapper = document.getElementById('chatButtonsWrapper');
+            chatWrapper.classList.add('hidden');
+            
+            // Optional: Save to localStorage that user closed it
+            localStorage.setItem('chatButtonHidden', 'true');
+        }
+
+        // Check if chat button was previously hidden
+        window.addEventListener('load', function() {
+            const chatHidden = localStorage.getItem('chatButtonHidden');
+            if (chatHidden === 'true') {
+                document.getElementById('chatButtonsWrapper').classList.add('hidden');
+            }
+        });
+
+        // Translation System
         const translations = {
             'en': {
                 'hero-title': 'Buy & Sell Securely in Sri Lanka',

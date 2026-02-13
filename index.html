@@ -3,99 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lanka Connect | Social & Ads</title>
+    <title>Lanka Connect | Social & Market</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body { background-color: #f0f2f5; font-family: 'Segoe UI', Helvetica, Arial, sans-serif; }
-        .nav-icon { font-size: 24px; color: #65676b; cursor: pointer; padding: 10px 30px; border-bottom: 3px solid transparent; transition: 0.3s; }
-        .nav-icon:hover { background-color: #f2f2f2; border-radius: 8px; }
+        .nav-icon { font-size: 24px; color: #65676b; cursor: pointer; padding: 10px 30px; border-bottom: 3px solid transparent; }
         .active-nav { color: #1877f2; border-bottom-color: #1877f2; }
-        .sidebar-item { display: flex; align-items: center; padding: 10px; cursor: pointer; border-radius: 8px; transition: 0.2s; }
-        .sidebar-item:hover { background-color: #e4e6eb; }
         .post-card { background: white; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        .sidebar-item { display: flex; align-items: center; padding: 12px; cursor: pointer; border-radius: 10px; transition: 0.2s; }
+        .sidebar-item:hover { background-color: #e4e6eb; }
     </style>
 </head>
-<body>
+<body class="hidden" id="main-body">
 
-    <nav class="bg-white shadow-sm sticky top-0 z-50 flex justify-between items-center px-4 h-14">
+    <nav class="bg-white shadow-sm sticky top-0 z-50 flex justify-between items-center px-4 h-16">
         <div class="flex items-center space-x-2">
-            <div class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm">L</div>
-            <div class="bg-gray-100 rounded-full px-3 py-2 flex items-center ml-2">
-                <i class="fas fa-search text-gray-500 mr-2"></i>
-                <input type="text" placeholder="Search Connect..." class="bg-transparent outline-none w-32 md:w-64">
+            <div class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-2xl shadow-lg">L</div>
+            <div class="bg-gray-100 rounded-full px-4 py-2 flex items-center ml-2 hidden md:flex">
+                <i class="fas fa-search text-gray-400 mr-2"></i>
+                <input type="text" placeholder="සොයන්න..." class="bg-transparent outline-none w-64">
             </div>
         </div>
 
-        <div class="flex space-x-2">
-            <div id="btn-feed" onclick="switchTab('feed')" class="nav-icon active-nav"><i class="fas fa-home"></i></div>
-            <div id="btn-ads" onclick="switchTab('ads')" class="nav-icon"><i class="fas fa-store"></i></div>
-            <div onclick="window.location.href='post-ad.html'" class="nav-icon"><i class="fas fa-plus-circle text-green-600"></i></div>
+        <div class="flex h-full">
+            <div id="btn-feed" onclick="switchTab('feed')" class="nav-icon active-nav flex items-center"><i class="fas fa-home"></i></div>
+            <div id="btn-friends" onclick="switchTab('friends')" class="nav-icon flex items-center"><i class="fas fa-user-friends"></i></div>
+            <div id="btn-ads" onclick="switchTab('ads')" class="nav-icon flex items-center"><i class="fas fa-store"></i></div>
         </div>
 
-        <div class="flex items-center">
-            <a href="profile.html" class="flex items-center hover:bg-gray-100 p-1 rounded-full pr-3 border">
+        <div class="flex items-center space-x-2">
+            <a href="profile.html" class="flex items-center hover:bg-gray-100 p-1 rounded-full border">
                 <img id="user-img" src="https://via.placeholder.com/32" class="w-8 h-8 rounded-full">
                 <span class="ml-2 font-semibold text-sm hidden md:inline" id="user-display-name">Profile</span>
             </a>
         </div>
     </nav>
 
-    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6 mt-5 px-2">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6 mt-6 px-4">
         
         <div class="hidden md:block">
-            <div class="space-y-1">
-                <div class="sidebar-item" onclick="switchTab('feed')"><i class="fas fa-newspaper text-blue-500 w-10 text-xl"></i> <span class="font-medium">News Feed</span></div>
-                <div class="sidebar-item"><i class="fas fa-user-friends text-blue-400 w-10 text-xl"></i> <span class="font-medium">Friend Requests</span></div>
-                <div class="sidebar-item" onclick="switchTab('ads')"><i class="fas fa-shopping-bag text-orange-500 w-10 text-xl"></i> <span class="font-medium">Marketplace (Ads)</span></div>
-                <div class="sidebar-item"><i class="fas fa-bookmark text-purple-500 w-10 text-xl"></i> <span class="font-medium">Saved</span></div>
+            <div class="bg-white p-2 rounded-xl shadow-sm border sticky top-20">
+                <div class="sidebar-item" onclick="switchTab('feed')"><i class="fas fa-newspaper text-blue-500 w-10 text-xl"></i> <span>News Feed</span></div>
+                <div class="sidebar-item" onclick="switchTab('friends')"><i class="fas fa-users text-blue-400 w-10 text-xl"></i> <span>Friend Requests</span></div>
+                <div class="sidebar-item" onclick="switchTab('ads')"><i class="fas fa-shopping-bag text-orange-500 w-10 text-xl"></i> <span>Marketplace</span></div>
+                <div class="sidebar-item"><i class="fas fa-bookmark text-purple-500 w-10 text-xl"></i> <span>Saved Posts</span></div>
+                <hr class="my-2">
+                <div class="sidebar-item" onclick="logout()"><i class="fas fa-sign-out-alt text-red-500 w-10 text-xl"></i> <span>Logout</span></div>
             </div>
         </div>
 
-        <div class="md:col-span-2 space-y-4">
+        <div class="md:col-span-2">
             
-            <div class="bg-white p-4 rounded-lg shadow-sm border">
-                <div class="flex space-x-3 items-center">
-                    <img id="user-img-small" src="https://via.placeholder.com/40" class="rounded-full w-10 h-10">
-                    <button onclick="window.location.href='post-ad.html'" class="bg-gray-100 hover:bg-gray-200 text-gray-500 text-left px-4 py-2 rounded-full flex-1">ඔබේ සිතුවිලි මොනවාද?</button>
+            <div class="bg-white p-4 rounded-xl shadow-sm border mb-5">
+                <div class="flex items-center space-x-3 mb-4">
+                    <img id="user-img-post" src="https://via.placeholder.com/40" class="rounded-full w-10 h-10">
+                    <button onclick="openPostModal()" class="bg-gray-100 hover:bg-gray-200 text-gray-500 text-left px-4 py-2 rounded-full flex-1">ඔබේ හිතේ තියෙන්නේ මොනවාද?</button>
                 </div>
             </div>
 
-            <div id="section-feed" class="space-y-4">
-                <div class="post-card p-4">
-                    <div class="flex items-center mb-3">
-                        <img src="https://via.placeholder.com/40" class="rounded-full mr-3">
-                        <div><h4 class="font-bold text-sm">Lanka Ads Admin</h4><p class="text-xs text-gray-500">Just now</p></div>
-                    </div>
-                    <p class="text-gray-800 mb-3">Lanka Connect වෙත සාදරයෙන් පිළිගනිමු! මෙහිදී ඔබට මිතුරන් සමඟ සම්බන්ධ වීමට සහ දැන්වීම් පළ කිරීමට හැකිය.</p>
-                    <div class="flex border-t pt-2 mt-2">
-                        <button class="flex-1 py-2 text-gray-600 font-semibold hover:bg-gray-50 rounded"><i class="far fa-thumbs-up mr-2"></i> Like</button>
-                        <button class="flex-1 py-2 text-gray-600 font-semibold hover:bg-gray-50 rounded"><i class="far fa-comment mr-2"></i> Comment</button>
-                        <button class="flex-1 py-2 text-gray-600 font-semibold hover:bg-gray-50 rounded"><i class="fas fa-share mr-2"></i> Share</button>
-                    </div>
-                </div>
-                <div id="posts-container"></div>
-            </div>
-
-            <div id="section-ads" class="hidden space-y-4">
-                <h3 class="font-bold text-lg px-2">Marketplace (දැන්වීම්)</h3>
-                <div id="ads-container" class="grid grid-cols-1 gap-4">
-                    </div>
+            <div id="section-feed" class="space-y-4"> </div>
+            <div id="section-ads" class="hidden space-y-4"> </div>
+            <div id="section-friends" class="hidden space-y-4">
+                <h3 class="font-bold text-xl mb-4">Friend Requests</h3>
+                <p class="text-gray-500 text-center py-10">දැනට Friend Requests කිසිවක් නොමැත.</p>
             </div>
         </div>
 
         <div class="hidden md:block">
-            <div class="bg-white p-4 rounded-lg shadow-sm border mb-4">
-                <h3 class="font-bold text-gray-500 mb-2">Sponsored</h3>
-                <div class="text-sm text-gray-600">ඔබේ දැන්වීම මෙතැන Premium ලෙස පෙන්වන්න.</div>
+            <div class="bg-white p-4 rounded-xl shadow-sm border sticky top-20">
+                <h3 class="font-bold text-gray-500 border-b pb-2 mb-3">Premium Ads</h3>
+                <div id="premium-ads-sidebar" class="space-y-3">
+                    </div>
             </div>
+        </div>
+    </div>
+
+    <div id="postModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-[60] flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-md p-6">
+            <h3 class="text-xl font-bold mb-4 text-center">ඔබ පළ කරන්නේ කුමක්ද?</h3>
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="goToPost('news')" class="p-6 border-2 border-blue-100 hover:border-blue-500 rounded-xl flex flex-col items-center group">
+                    <i class="fas fa-newspaper text-blue-500 text-4xl mb-2"></i>
+                    <span class="font-bold">News Feed Post</span>
+                </button>
+                <button onclick="goToPost('ad')" class="p-6 border-2 border-orange-100 hover:border-orange-500 rounded-xl flex flex-col items-center group">
+                    <i class="fas fa-shopping-bag text-orange-500 text-4xl mb-2"></i>
+                    <span class="font-bold">Marketplace Ad</span>
+                </button>
+            </div>
+            <button onclick="closePostModal()" class="w-full mt-6 py-2 text-gray-500 font-semibold">Cancel</button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, query, orderBy, getDocs, doc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
@@ -110,72 +114,85 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Security Check
+        // Security Check & Auth
         onAuthStateChanged(auth, (user) => {
             if (!user) {
-                window.location.href = "login.html";
+                window.location.href = "login.html"; // කෙලින්ම Login එකට යවනවා
             } else {
-                document.getElementById('user-display-name').innerText = user.displayName || "පරිශීලක";
+                document.getElementById('main-body').classList.remove('hidden');
+                document.getElementById('user-display-name').innerText = user.displayName || "User";
                 if(user.photoURL) {
                     document.getElementById('user-img').src = user.photoURL;
-                    document.getElementById('user-img-small').src = user.photoURL;
+                    document.getElementById('user-img-post').src = user.photoURL;
                 }
-                fetchAds();
+                loadPosts();
             }
         });
 
-        // Tab Switching Logic
+        // Modals & Navigation
+        window.openPostModal = () => document.getElementById('postModal').classList.remove('hidden');
+        window.closePostModal = () => document.getElementById('postModal').classList.add('hidden');
+        window.goToPost = (type) => window.location.href = `post-ad.html?type=${type}`;
+        window.logout = () => signOut(auth).then(() => window.location.href = "login.html");
+
         window.switchTab = (tab) => {
-            const feedBtn = document.getElementById('btn-feed');
-            const adsBtn = document.getElementById('btn-ads');
-            const feedSec = document.getElementById('section-feed');
-            const adsSec = document.getElementById('section-ads');
+            document.querySelectorAll('.nav-icon').forEach(i => i.classList.remove('active-nav'));
+            document.getElementById('section-feed').classList.add('hidden');
+            document.getElementById('section-ads').classList.add('hidden');
+            document.getElementById('section-friends').classList.add('hidden');
 
-            if (tab === 'feed') {
-                feedBtn.classList.add('active-nav');
-                adsBtn.classList.remove('active-nav');
-                feedSec.classList.remove('hidden');
-                adsSec.classList.add('hidden');
-            } else {
-                adsBtn.classList.add('active-nav');
-                feedBtn.classList.remove('active-nav');
-                adsSec.classList.remove('hidden');
-                feedSec.classList.add('hidden');
-            }
-        }
+            document.getElementById(`btn-${tab}`).classList.add('active-nav');
+            document.getElementById(`section-${tab}`).classList.remove('hidden');
+        };
 
-        async function fetchAds() {
-            const container = document.getElementById('ads-container');
+        // Fetching Posts & Ads
+        async function loadPosts() {
+            const feedContainer = document.getElementById('section-feed');
+            const adsContainer = document.getElementById('section-ads');
             const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
             const querySnapshot = await getDocs(q);
-            container.innerHTML = "";
 
-            querySnapshot.forEach((doc) => {
-                const ad = doc.data();
-                const isPremium = ad.premiumStatus === "active";
-                
-                const card = `
-                    <div class="bg-white rounded-lg shadow-sm border overflow-hidden ${isPremium ? 'border-2 border-orange-400' : ''}">
-                        ${isPremium ? '<div class="bg-orange-400 text-white text-[10px] font-bold px-2 py-1">PREMIUM AD</div>' : ''}
-                        <div class="p-3 flex items-center">
-                            <img src="https://via.placeholder.com/30" class="rounded-full mr-2">
-                            <span class="font-bold text-xs">${ad.authorName || 'User'}</span>
-                        </div>
-                        <img src="${ad.imageUrl}" class="w-full h-64 object-cover">
-                        <div class="p-4">
-                            <h4 class="font-bold text-lg">${ad.title}</h4>
-                            <p class="text-blue-600 font-bold">Rs. ${ad.price}</p>
-                            <p class="text-sm text-gray-600 mt-2">${ad.description || ''}</p>
-                            <div class="flex border-t pt-3 mt-4 space-x-2">
-                                <button class="flex-1 bg-gray-100 py-2 rounded font-bold text-sm"><i class="fas fa-comment"></i> Chat</button>
-                                <button class="flex-1 bg-blue-600 text-white py-2 rounded font-bold text-sm">View Details</button>
+            feedContainer.innerHTML = "";
+            adsContainer.innerHTML = "";
+
+            querySnapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                const postId = docSnap.id;
+
+                if (data.postType === 'news') {
+                    // News Feed Card
+                    const card = `
+                        <div class="post-card p-4">
+                            <div class="flex items-center mb-3">
+                                <img src="${data.authorImg || 'https://via.placeholder.com/40'}" class="w-10 h-10 rounded-full mr-3">
+                                <div><h4 class="font-bold text-sm">${data.authorName}</h4><p class="text-xs text-gray-500">Public</p></div>
                             </div>
-                        </div>
-                    </div>
-                `;
-                container.innerHTML += card;
+                            <p class="mb-3">${data.description || ''}</p>
+                            ${data.imageUrl ? `<img src="${data.imageUrl}" class="w-full rounded-lg mb-3">` : ''}
+                            <div class="flex border-t pt-2 mt-2">
+                                <button onclick="likePost('${postId}')" class="flex-1 py-2 hover:bg-gray-50 font-bold text-gray-600"><i class="far fa-thumbs-up"></i> Like</button>
+                                <button class="flex-1 py-2 hover:bg-gray-50 font-bold text-gray-600"><i class="far fa-comment"></i> Comment</button>
+                            </div>
+                        </div>`;
+                    feedContainer.innerHTML += card;
+                } else {
+                    // Ad Card
+                    const adCard = `
+                        <div class="bg-white p-4 rounded-xl shadow-sm border">
+                            <img src="${data.imageUrl}" class="w-full h-48 object-cover rounded-lg mb-3">
+                            <h4 class="font-bold">${data.title}</h4>
+                            <p class="text-blue-600 font-bold">Rs. ${data.price}</p>
+                            <button class="w-full mt-3 bg-blue-600 text-white py-2 rounded-lg font-bold">Details</button>
+                        </div>`;
+                    adsContainer.innerHTML += adCard;
+                }
             });
         }
+
+        window.likePost = async (id) => {
+            alert("Liked!");
+            // මෙතනදී Firestore Update කරන කෝඩ් එක දැමිය හැක
+        };
     </script>
 </body>
 </html>

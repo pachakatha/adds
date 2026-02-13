@@ -8,10 +8,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body { background-color: #f0f2f5; font-family: 'Segoe UI', sans-serif; }
-        .cover-photo { height: 200px; background: linear-gradient(to right, #1877f2, #0056b3); border-radius: 0 0 15px 15px; position: relative; }
+        .cover-photo { height: 200px; background: linear-gradient(to right, #1877f2, #0056b3); border-radius: 0 0 15px 15px; }
         .profile-pic-container { position: relative; width: 150px; height: 150px; margin-top: -75px; }
         .profile-pic { width: 100%; height: 100%; border: 5px solid white; border-radius: 50%; object-fit: cover; background: #ddd; }
-        .camera-icon { position: absolute; bottom: 5px; right: 5px; background: #e4e6eb; padding: 8px; border-radius: 50%; cursor: pointer; }
+        .camera-icon { position: absolute; bottom: 10px; right: 10px; background: #e4e6eb; padding: 10px; border-radius: 50%; cursor: pointer; border: 1px solid #ccc; }
     </style>
 </head>
 <body>
@@ -22,40 +22,38 @@
             <div class="px-6 pb-6 flex flex-col items-center sm:items-start sm:flex-row sm:space-x-5">
                 <div class="profile-pic-container">
                     <img id="user-img" src="https://via.placeholder.com/150" class="profile-pic shadow-lg">
-                    <label for="imgUpload" class="camera-icon shadow">
+                    <label for="imgUpload" class="camera-icon shadow hover:bg-gray-300 transition">
                         <i class="fas fa-camera"></i>
                     </label>
                     <input type="file" id="imgUpload" class="hidden" accept="image/*">
                 </div>
                 <div class="mt-4 text-center sm:text-left flex-1">
-                    <h1 id="user-name" class="text-3xl font-bold text-gray-900">පරිශීලක නම...</h1>
-                    <p id="user-email" class="text-gray-600">ඊමේල් ලිපිනය...</p>
+                    <h1 id="user-name" class="text-3xl font-bold text-gray-900">පූරණය වෙමින්...</h1>
+                    <p id="user-email" class="text-gray-600">...</p>
                     <div id="verify-badge" class="mt-2 hidden">
-                        <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2.5 py-0.5 rounded-full"><i class="fas fa-check-circle"></i> තහවුරු කරන ලද ගිණුමකි</span>
+                        <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2.5 py-0.5 rounded-full"><i class="fas fa-check-circle"></i> Verified</span>
                     </div>
                 </div>
                 <div class="mt-6 flex space-x-2">
-                    <button onclick="verifyEmail()" id="verify-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg hidden">Email එක තහවුරු කරන්න</button>
-                    <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                    <button id="verify-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg hidden">Verify Email</button>
+                    <button id="logout-btn" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg">Logout</button>
                 </div>
             </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 px-4">
-            <div class="space-y-6">
-                <div class="bg-white p-4 shadow rounded-xl text-sm">
-                    <h2 class="text-xl font-bold mb-4">හැඳින්වීම (Intro)</h2>
-                    <p id="info-phone" class="mb-2"><i class="fas fa-phone mr-2"></i> දුරකථන අංකය ඇතුළත් කරන්න</p>
-                    <p id="info-address" class="mb-4"><i class="fas fa-map-marker-alt mr-2"></i> ලිපිනය ඇතුළත් කරන්න</p>
-                    <button class="w-full bg-gray-200 hover:bg-gray-300 font-semibold py-2 rounded-lg">විස්තර වෙනස් කරන්න</button>
-                </div>
+            <div class="bg-white p-4 shadow rounded-xl h-fit">
+                <h2 class="text-xl font-bold mb-4">Intro</h2>
+                <p id="info-phone" class="mb-2 text-gray-700"><i class="fas fa-phone mr-2"></i> No Phone Number</p>
+                <p id="info-address" class="mb-4 text-gray-700"><i class="fas fa-map-marker-alt mr-2"></i> No Address</p>
+                <button class="w-full bg-gray-200 hover:bg-gray-300 font-semibold py-2 rounded-lg">Edit Info</button>
             </div>
 
             <div class="md:col-span-2">
                 <div class="bg-white p-4 shadow rounded-xl">
-                    <h2 class="text-xl font-bold mb-4 text-gray-800">මගේ දැන්වීම් (My Ads)</h2>
+                    <h2 class="text-xl font-bold mb-4 text-gray-800">My Ads</h2>
                     <div id="my-ads-list" class="space-y-4">
-                        <p class="text-center py-10 text-gray-500">දැන්වීම් පූරණය වෙමින් පවතී...</p>
+                        <p class="text-center py-5 text-gray-500">පූරණය වෙමින්...</p>
                     </div>
                 </div>
             </div>
@@ -84,7 +82,7 @@
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                document.getElementById('user-name').innerText = user.displayName || "පරිශීලක";
+                document.getElementById('user-name').innerText = user.displayName || "User";
                 document.getElementById('user-email').innerText = user.email;
                 if(user.photoURL) document.getElementById('user-img').src = user.photoURL;
                 
@@ -99,90 +97,107 @@
             }
         });
 
-        // මගේ දැන්වීම් ගෙන ඒම
         async function fetchMyAds(uid) {
             const list = document.getElementById('my-ads-list');
-            const q = query(collection(db, "posts"), where("authorId", "==", uid));
-            const querySnapshot = await getDocs(q);
-            
-            list.innerHTML = "";
-            if (querySnapshot.empty) {
-                list.innerHTML = "<p class='text-center py-5'>ඔබ තවමත් දැන්වීම් පළ කර නොමැත.</p>";
-                return;
-            }
-
-            querySnapshot.forEach((adDoc) => {
-                const ad = adDoc.data();
-                const adId = adDoc.id;
+            try {
+                const q = query(collection(db, "posts"), where("authorId", "==", uid));
+                const querySnapshot = await getDocs(q);
+                list.innerHTML = "";
                 
-                const div = document.createElement('div');
-                div.className = "flex border rounded-xl p-3 bg-gray-50 space-x-4 items-center";
-                div.innerHTML = `
-                    <img src="${ad.imageUrl}" class="w-20 h-20 object-cover rounded-lg">
-                    <div class="flex-1">
-                        <h4 class="font-bold">${ad.title}</h4>
-                        <p class="text-blue-600 font-bold text-sm">Rs. ${ad.price}</p>
-                    </div>
-                    <div class="flex flex-col space-y-2">
-                        <button class="bg-orange-500 text-white text-xs px-3 py-2 rounded-md font-bold hover:bg-orange-600" onclick="handleBoost('${adId}', '${ad.title}')">🚀 Boost</button>
-                        <button class="bg-red-100 text-red-600 text-xs px-3 py-2 rounded-md font-bold hover:bg-red-200" onclick="handleDelete('${adId}')">🗑️ Delete</button>
-                    </div>
-                `;
-                list.appendChild(div);
-            });
+                if (querySnapshot.empty) {
+                    list.innerHTML = "<p class='text-center py-5'>ඔබ තවමත් දැන්වීම් පළ කර නැත.</p>";
+                    return;
+                }
+
+                querySnapshot.forEach((adDoc) => {
+                    const ad = adDoc.data();
+                    const adId = adDoc.id;
+                    const div = document.createElement('div');
+                    div.className = "flex border rounded-xl p-3 bg-gray-50 space-x-4 items-center";
+                    div.innerHTML = `
+                        <img src="${ad.imageUrl}" class="w-20 h-20 object-cover rounded-lg">
+                        <div class="flex-1">
+                            <h4 class="font-bold text-gray-800">${ad.title}</h4>
+                            <p class="text-blue-600 font-bold">Rs. ${ad.price}</p>
+                        </div>
+                        <div class="flex flex-col space-y-2">
+                            <button class="bg-orange-500 text-white text-xs px-4 py-2 rounded-md font-bold hover:bg-orange-600 boost-btn" data-id="${adId}" data-title="${ad.title}">🚀 Boost</button>
+                            <button class="bg-red-100 text-red-600 text-xs px-4 py-2 rounded-md font-bold hover:bg-red-200 delete-btn" data-id="${adId}">🗑️ Delete</button>
+                        </div>
+                    `;
+                    list.appendChild(div);
+                });
+
+                // Add Event Listeners to buttons
+                document.querySelectorAll('.boost-btn').forEach(btn => {
+                    btn.onclick = () => handleBoost(btn.dataset.id, btn.dataset.title);
+                });
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.onclick = () => handleDelete(btn.dataset.id);
+                });
+
+            } catch (error) {
+                console.error("Error fetching ads:", error);
+                list.innerHTML = "Error loading ads.";
+            }
         }
 
-        // Boost බොත්තම සඳහා Function එක
-        window.handleBoost = async (adId, title) => {
+        async function handleBoost(adId, title) {
             const user = auth.currentUser;
             try {
-                // Admin ට Notification එකක් යැවීම
+                // 1. Admin Notification එකක් යැවීම
                 await addDoc(collection(db, "notifications"), {
                     type: "boost_request",
                     adId: adId,
                     adTitle: title,
+                    userName: user.displayName,
                     userEmail: user.email,
-                    timestamp: serverTimestamp()
+                    timestamp: serverTimestamp(),
+                    status: "pending"
                 });
-                // Payment පිටුවට යාම
+                
+                console.log("Notification sent to admin");
+                // 2. Payment පිටුවට යොමු කිරීම
                 window.location.href = `payment.html?adId=${adId}`;
             } catch (err) {
-                alert("දෝෂයකි: " + err.message);
+                alert("Boost Error: " + err.message);
             }
-        };
+        }
 
-        // Delete බොත්තම සඳහා Function එක
-        window.handleDelete = async (adId) => {
+        async function handleDelete(adId) {
             if(confirm("මෙම දැන්වීම ඉවත් කිරීමට ඔබට සහතිකද?")) {
                 await deleteDoc(doc(db, "posts", adId));
                 location.reload();
             }
-        };
+        }
 
-        // Profile පින්තූරය Upload කිරීම
-        document.getElementById('imgUpload').addEventListener('change', async (e) => {
+        // Profile Photo Upload
+        document.getElementById('imgUpload').onchange = async (e) => {
             const file = e.target.files[0];
             if(!file) return;
 
             const user = auth.currentUser;
-            const storageRef = ref(storage, `profiles/${user.uid}`);
+            const storageRef = ref(storage, 'profiles/' + user.uid);
             
             try {
+                alert("පින්තූරය upload වෙමින් පවතී...");
                 await uploadBytes(storageRef, file);
                 const url = await getDownloadURL(storageRef);
                 await updateProfile(user, { photoURL: url });
                 document.getElementById('user-img').src = url;
                 alert("පින්තූරය සාර්ථකව යාවත්කාලීන විය!");
             } catch (err) {
-                alert("Upload දෝෂයකි: " + err.message);
+                alert("Upload Error: " + err.message);
             }
-        });
-
-        window.verifyEmail = () => {
-            sendEmailVerification(auth.currentUser).then(() => alert("තහවුරු කිරීමේ ඊමේල් පණිවිඩය එවනු ලැබුවා. ඔබගේ Inbox පරීක්ෂා කරන්න."));
         };
 
-        window.logout = () => signOut(auth).then(() => window.location.href = "login.html");
+        document.getElementById('logout-btn').onclick = () => {
+            signOut(auth).then(() => window.location.href = "login.html");
+        };
+
+        document.getElementById('verify-btn').onclick = () => {
+            sendEmailVerification(auth.currentUser).then(() => alert("Verification email sent!"));
+        };
 
     </script>
 </body>

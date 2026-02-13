@@ -7,78 +7,87 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background-color: #f0f2f5; font-family: 'Segoe UI', Tahoma, sans-serif; }
-        .active-tab { border-bottom: 4px solid #1877f2; color: #1877f2; }
-        .sidebar-item:hover { background-color: #e4e6eb; border-radius: 8px; }
+        body { background-color: #f0f2f5; font-family: 'Segoe UI', Helvetica, Arial, sans-serif; }
+        .nav-icon { font-size: 24px; color: #65676b; cursor: pointer; padding: 10px 30px; border-bottom: 3px solid transparent; transition: 0.3s; }
+        .nav-icon:hover { background-color: #f2f2f2; border-radius: 8px; }
+        .active-nav { color: #1877f2; border-bottom-color: #1877f2; }
+        .sidebar-item { display: flex; align-items: center; padding: 10px; cursor: pointer; border-radius: 8px; transition: 0.2s; }
+        .sidebar-item:hover { background-color: #e4e6eb; }
+        .post-card { background: white; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); margin-bottom: 15px; }
     </style>
 </head>
-<body class="hidden"> <nav class="bg-white shadow-md sticky top-0 z-50 px-4 py-1 flex justify-between items-center">
+<body>
+
+    <nav class="bg-white shadow-sm sticky top-0 z-50 flex justify-between items-center px-4 h-14">
         <div class="flex items-center space-x-2">
-            <div class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-2xl">L</div>
-            <div class="bg-gray-100 rounded-full px-3 py-2 flex items-center">
+            <div class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm">L</div>
+            <div class="bg-gray-100 rounded-full px-3 py-2 flex items-center ml-2">
                 <i class="fas fa-search text-gray-500 mr-2"></i>
-                <input type="text" placeholder="Search Connect..." class="bg-transparent outline-none w-40 md:w-64">
+                <input type="text" placeholder="Search Connect..." class="bg-transparent outline-none w-32 md:w-64">
             </div>
         </div>
 
-        <div class="hidden md:flex space-x-12">
-            <button onclick="showSection('news-feed')" class="py-3 px-8 active-tab text-2xl"><i class="fas fa-home"></i></button>
-            <button onclick="window.location.href='post-ad.html'" class="py-3 px-8 text-gray-500 text-2xl"><i class="fas fa-plus-circle"></i></button>
-            <button onclick="showSection('ads-market')" class="py-3 px-8 text-gray-500 text-2xl"><i class="fas fa-store"></i></button>
+        <div class="flex space-x-2">
+            <div id="btn-feed" onclick="switchTab('feed')" class="nav-icon active-nav"><i class="fas fa-home"></i></div>
+            <div id="btn-ads" onclick="switchTab('ads')" class="nav-icon"><i class="fas fa-store"></i></div>
+            <div onclick="window.location.href='post-ad.html'" class="nav-icon"><i class="fas fa-plus-circle text-green-600"></i></div>
         </div>
 
-        <div class="flex items-center space-x-3">
-            <a href="profile.html" class="flex items-center bg-gray-100 rounded-full p-1 pr-3">
-                <img id="nav-user-img" src="https://via.placeholder.com/32" class="w-8 h-8 rounded-full">
-                <span class="ml-2 font-semibold hidden sm:inline" id="nav-user-name">Profile</span>
+        <div class="flex items-center">
+            <a href="profile.html" class="flex items-center hover:bg-gray-100 p-1 rounded-full pr-3 border">
+                <img id="user-img" src="https://via.placeholder.com/32" class="w-8 h-8 rounded-full">
+                <span class="ml-2 font-semibold text-sm hidden md:inline" id="user-display-name">Profile</span>
             </a>
         </div>
     </nav>
 
-    <div class="max-w-[1600px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-4 mt-4 px-4">
+    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6 mt-5 px-2">
         
         <div class="hidden md:block">
-            <div class="space-y-2">
-                <div class="sidebar-item p-3 flex items-center cursor-pointer" onclick="showSection('news-feed')">
-                    <i class="fas fa-newspaper text-blue-500 text-2xl w-10"></i> <span class="font-semibold">News Feed</span>
-                </div>
-                <div class="sidebar-item p-3 flex items-center cursor-pointer">
-                    <i class="fas fa-user-friends text-blue-400 text-2xl w-10"></i> <span class="font-semibold">Friend Requests</span>
-                </div>
-                <div class="sidebar-item p-3 flex items-center cursor-pointer" onclick="showSection('ads-market')">
-                    <i class="fas fa-shopping-bag text-orange-500 text-2xl w-10"></i> <span class="font-semibold">Ads (Marketplace)</span>
-                </div>
+            <div class="space-y-1">
+                <div class="sidebar-item" onclick="switchTab('feed')"><i class="fas fa-newspaper text-blue-500 w-10 text-xl"></i> <span class="font-medium">News Feed</span></div>
+                <div class="sidebar-item"><i class="fas fa-user-friends text-blue-400 w-10 text-xl"></i> <span class="font-medium">Friend Requests</span></div>
+                <div class="sidebar-item" onclick="switchTab('ads')"><i class="fas fa-shopping-bag text-orange-500 w-10 text-xl"></i> <span class="font-medium">Marketplace (Ads)</span></div>
+                <div class="sidebar-item"><i class="fas fa-bookmark text-purple-500 w-10 text-xl"></i> <span class="font-medium">Saved</span></div>
             </div>
         </div>
 
         <div class="md:col-span-2 space-y-4">
             
-            <div id="news-feed-section" class="space-y-4">
-                <div class="bg-white p-4 rounded-xl shadow">
-                    <div class="flex space-x-3">
-                        <img src="https://via.placeholder.com/40" class="rounded-full w-10 h-10">
-                        <button onclick="window.location.href='post-ad.html'" class="bg-gray-100 hover:bg-gray-200 text-gray-500 text-left px-4 rounded-full flex-1">ඔබේ සිතුවිලි මොනවාද?</button>
+            <div class="bg-white p-4 rounded-lg shadow-sm border">
+                <div class="flex space-x-3 items-center">
+                    <img id="user-img-small" src="https://via.placeholder.com/40" class="rounded-full w-10 h-10">
+                    <button onclick="window.location.href='post-ad.html'" class="bg-gray-100 hover:bg-gray-200 text-gray-500 text-left px-4 py-2 rounded-full flex-1">ඔබේ සිතුවිලි මොනවාද?</button>
+                </div>
+            </div>
+
+            <div id="section-feed" class="space-y-4">
+                <div class="post-card p-4">
+                    <div class="flex items-center mb-3">
+                        <img src="https://via.placeholder.com/40" class="rounded-full mr-3">
+                        <div><h4 class="font-bold text-sm">Lanka Ads Admin</h4><p class="text-xs text-gray-500">Just now</p></div>
+                    </div>
+                    <p class="text-gray-800 mb-3">Lanka Connect වෙත සාදරයෙන් පිළිගනිමු! මෙහිදී ඔබට මිතුරන් සමඟ සම්බන්ධ වීමට සහ දැන්වීම් පළ කිරීමට හැකිය.</p>
+                    <div class="flex border-t pt-2 mt-2">
+                        <button class="flex-1 py-2 text-gray-600 font-semibold hover:bg-gray-50 rounded"><i class="far fa-thumbs-up mr-2"></i> Like</button>
+                        <button class="flex-1 py-2 text-gray-600 font-semibold hover:bg-gray-50 rounded"><i class="far fa-comment mr-2"></i> Comment</button>
+                        <button class="flex-1 py-2 text-gray-600 font-semibold hover:bg-gray-50 rounded"><i class="fas fa-share mr-2"></i> Share</button>
                     </div>
                 </div>
-                <div id="posts-container">
-                    </div>
+                <div id="posts-container"></div>
             </div>
 
-            <div id="ads-market-section" class="hidden space-y-4">
-                <h2 class="text-xl font-bold px-2">Marketplace Ads</h2>
-                <div id="premium-ads-container" class="grid grid-cols-2 gap-2">
-                    </div>
-                <hr>
-                <div id="regular-ads-container" class="space-y-3">
+            <div id="section-ads" class="hidden space-y-4">
+                <h3 class="font-bold text-lg px-2">Marketplace (දැන්වීම්)</h3>
+                <div id="ads-container" class="grid grid-cols-1 gap-4">
                     </div>
             </div>
-
         </div>
 
         <div class="hidden md:block">
-            <div class="bg-white p-4 rounded-xl shadow">
-                <h3 class="text-gray-500 font-bold mb-3">Sponsored</h3>
-                <p class="text-sm text-gray-600">ඔබේ ව්‍යාපාරය මෙතැන ප්‍රවර්ධනය කරන්න.</p>
+            <div class="bg-white p-4 rounded-lg shadow-sm border mb-4">
+                <h3 class="font-bold text-gray-500 mb-2">Sponsored</h3>
+                <div class="text-sm text-gray-600">ඔබේ දැන්වීම මෙතැන Premium ලෙස පෙන්වන්න.</div>
             </div>
         </div>
     </div>
@@ -88,36 +97,84 @@
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = { /* Your Config Here */ };
+        const firebaseConfig = {
+            apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
+            authDomain: "adds-ink.firebaseapp.com",
+            projectId: "adds-ink",
+            storageBucket: "adds-ink.firebasestorage.app",
+            messagingSenderId: "638657776631",
+            appId: "1:638657776631:web:44ffdad33137bfefa57cf2"
+        };
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Security Guard: Check Login
+        // Security Check
         onAuthStateChanged(auth, (user) => {
             if (!user) {
-                window.location.href = "login.html"; // Register/Login නැතුව බලන්න බැහැ
+                window.location.href = "login.html";
             } else {
-                document.body.classList.remove('hidden');
-                document.getElementById('nav-user-name').innerText = user.displayName || "User";
-                if(user.photoURL) document.getElementById('nav-user-img').src = user.photoURL;
-                loadContent();
+                document.getElementById('user-display-name').innerText = user.displayName || "පරිශීලක";
+                if(user.photoURL) {
+                    document.getElementById('user-img').src = user.photoURL;
+                    document.getElementById('user-img-small').src = user.photoURL;
+                }
+                fetchAds();
             }
         });
 
-        // Toggle Sections
-        window.showSection = (section) => {
-            if(section === 'news-feed') {
-                document.getElementById('news-feed-section').classList.remove('hidden');
-                document.getElementById('ads-market-section').classList.add('hidden');
-            } else {
-                document.getElementById('news-feed-section').classList.add('hidden');
-                document.getElementById('ads-market-section').classList.remove('hidden');
-            }
-        };
+        // Tab Switching Logic
+        window.switchTab = (tab) => {
+            const feedBtn = document.getElementById('btn-feed');
+            const adsBtn = document.getElementById('btn-ads');
+            const feedSec = document.getElementById('section-feed');
+            const adsSec = document.getElementById('section-ads');
 
-        async function loadContent() {
-            // මෙතනදී Firestore එකෙන් පෝස්ට් සහ ඇඩ්ස් වෙන වෙනම ගෙනත් පෙන්වන කේතය ලියන්න
+            if (tab === 'feed') {
+                feedBtn.classList.add('active-nav');
+                adsBtn.classList.remove('active-nav');
+                feedSec.classList.remove('hidden');
+                adsSec.classList.add('hidden');
+            } else {
+                adsBtn.classList.add('active-nav');
+                feedBtn.classList.remove('active-nav');
+                adsSec.classList.remove('hidden');
+                feedSec.classList.add('hidden');
+            }
+        }
+
+        async function fetchAds() {
+            const container = document.getElementById('ads-container');
+            const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+            const querySnapshot = await getDocs(q);
+            container.innerHTML = "";
+
+            querySnapshot.forEach((doc) => {
+                const ad = doc.data();
+                const isPremium = ad.premiumStatus === "active";
+                
+                const card = `
+                    <div class="bg-white rounded-lg shadow-sm border overflow-hidden ${isPremium ? 'border-2 border-orange-400' : ''}">
+                        ${isPremium ? '<div class="bg-orange-400 text-white text-[10px] font-bold px-2 py-1">PREMIUM AD</div>' : ''}
+                        <div class="p-3 flex items-center">
+                            <img src="https://via.placeholder.com/30" class="rounded-full mr-2">
+                            <span class="font-bold text-xs">${ad.authorName || 'User'}</span>
+                        </div>
+                        <img src="${ad.imageUrl}" class="w-full h-64 object-cover">
+                        <div class="p-4">
+                            <h4 class="font-bold text-lg">${ad.title}</h4>
+                            <p class="text-blue-600 font-bold">Rs. ${ad.price}</p>
+                            <p class="text-sm text-gray-600 mt-2">${ad.description || ''}</p>
+                            <div class="flex border-t pt-3 mt-4 space-x-2">
+                                <button class="flex-1 bg-gray-100 py-2 rounded font-bold text-sm"><i class="fas fa-comment"></i> Chat</button>
+                                <button class="flex-1 bg-blue-600 text-white py-2 rounded font-bold text-sm">View Details</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
         }
     </script>
 </body>

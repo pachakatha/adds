@@ -318,8 +318,8 @@
             const latestGrid = document.getElementById('latest-grid');
 
             try {
-                // Get all ads from "ads" collection
-                const q = query(collection(db, "ads"), orderBy("createdAt", "desc"));
+                // Get all ads from "posts" collection (Changed from ads to posts)
+                const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
                 const querySnapshot = await getDocs(q);
                 
                 let premiumContent = "";
@@ -327,19 +327,27 @@
 
                 querySnapshot.forEach((doc) => {
                     const ad = doc.data();
+                    
+                    // Firestore හි ඇති පරිදි Fields නිවැරදිව ලබාගැනීම
+                    const imageUrl = ad.imageUrl || 'https://via.placeholder.com/300';
+                    const title = ad.title || 'No Title';
+                    const price = ad.price || '0';
+                    const district = ad.district || 'Sri Lanka';
+                    const isPremium = ad.isPremium === true || ad.isFeatured === true; // PWA සඳහා දෙකම පරීක්ෂා කරයි
+
                     const adHTML = `
-                        <div class="ad-card ${ad.isPremium ? 'premium-card' : ''}">
-                            ${ad.isPremium ? '<div class="premium-badge">PREMIUM</div>' : ''}
-                            <img src="${ad.imageUrl || 'https://via.placeholder.com/300'}" alt="Ad">
+                        <div class="ad-card ${isPremium ? 'premium-card' : ''}">
+                            ${isPremium ? '<div class="premium-badge">PREMIUM</div>' : ''}
+                            <img src="${imageUrl}" alt="Ad">
                             <div class="ad-content">
-                                <div class="ad-title">${ad.title}</div>
-                                <div class="ad-price">Rs. ${parseFloat(ad.price).toLocaleString()}</div>
-                                <div style="font-size:12px; color:#666;"><i class="fas fa-map-marker-alt"></i> ${ad.district || 'Sri Lanka'}</div>
+                                <div class="ad-title">${title}</div>
+                                <div class="ad-price">Rs. ${parseFloat(price).toLocaleString()}</div>
+                                <div style="font-size:12px; color:#666;"><i class="fas fa-map-marker-alt"></i> ${district}</div>
                             </div>
                         </div>
                     `;
 
-                    if (ad.isPremium) {
+                    if (isPremium) {
                         premiumContent += adHTML;
                     } else {
                         latestContent += adHTML;

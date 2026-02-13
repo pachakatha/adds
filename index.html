@@ -25,6 +25,10 @@
         .btn-signup { background: var(--primary); color: white; padding: 10px 24px; border-radius: 8px; text-decoration: none; font-weight: 700; }
         #profile-link { display: none; text-decoration: none; background: #e9ecef; color: var(--dark); padding: 8px 18px; border-radius: 20px; font-weight: 600; border: 1px solid #ddd; }
         
+        /* CHAT Link Styling */
+        #chat-link { display: none; text-decoration: none; color: var(--dark); font-weight: 600; padding: 8px 15px; border-radius: 20px; transition: 0.3s; }
+        #chat-link:hover { color: var(--primary); background: #f0f2f5; }
+
         /* Language Selector */
         .lang-selector { padding: 5px; border-radius: 5px; border: 1px solid #ddd; cursor: pointer; }
 
@@ -66,16 +70,21 @@
 
     <nav>
         <a href="index.html" class="logo">Lanka Ads</a>
-        <div class="auth-buttons" id="auth-box">
+        <div class="auth-buttons">
             <select id="languageSelect" class="lang-selector" onchange="changeLanguage()">
                 <option value="en">English</option>
                 <option value="si">සිංහල</option>
                 <option value="ta">தமிழ்</option>
             </select>
-            <a href="login.html" style="text-decoration:none; color:var(--dark); font-weight:600;" id="login-text">Log In</a>
-            <a href="signup.html" class="btn-signup" id="signup-text">Sign Up</a>
+            
+            <a href="comment.html" id="chat-link"><i class="fas fa-comments"></i> CHAT</a>
+
+            <div id="auth-box">
+                <a href="login.html" style="text-decoration:none; color:var(--dark); font-weight:600;" id="login-text">Log In</a>
+                <a href="signup.html" class="btn-signup" id="signup-text">Sign Up</a>
+            </div>
+            <a href="profile.html" id="profile-link"><i class="fas fa-user-circle"></i> Profile</a>
         </div>
-        <a href="profile.html" id="profile-link"><i class="fas fa-user-circle"></i> Profile</a>
     </nav>
 
     <section class="hero">
@@ -136,11 +145,16 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Login Status
+        // Login Status - CHAT link visibility added here
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('auth-box').style.display = 'none';
                 document.getElementById('profile-link').style.display = 'block';
+                document.getElementById('chat-link').style.display = 'block'; // Show Chat
+            } else {
+                document.getElementById('auth-box').style.display = 'flex';
+                document.getElementById('profile-link').style.display = 'none';
+                document.getElementById('chat-link').style.display = 'none'; // Hide Chat
             }
         });
 
@@ -243,4 +257,4 @@
         }
     </script>
 </body>
-    </html>
+</html>

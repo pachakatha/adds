@@ -3,283 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lanka Ads - Classifieds in Sri Lanka</title>
-    
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#007bff">
-    <link rel="apple-touch-icon" href="icon-192.png">
-
+    <title>Lanka Ads - Buy & Sell</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
     <style>
-        :root {
-            --primary: #007bff;
-            --secondary: #ffc107; /* Gold for Premium */
-            --premium-red: #ff4d4d;
-            --dark: #2d3436;
-            --light: #f8f9fa;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            background-color: #f0f2f5;
-            color: var(--dark);
-        }
-
-        /* --- Navigation --- */
-        nav {
-            background: white;
-            padding: 12px 6%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .logo {
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--primary);
-            text-decoration: none;
-            letter-spacing: -1px;
-        }
-
-        .auth-buttons {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .btn-login {
-            text-decoration: none;
-            color: var(--dark);
-            font-weight: 600;
-            font-size: 15px;
-        }
-
-        .btn-signup {
-            text-decoration: none;
-            background: var(--primary);
-            color: white;
-            padding: 10px 24px;
-            border-radius: 8px;
-            font-weight: 700;
-            transition: 0.3s;
-        }
-
-        #profile-link {
-            display: none;
-            text-decoration: none;
-            background: #e9ecef;
-            color: var(--dark);
-            padding: 8px 18px;
-            border-radius: 20px;
-            font-weight: 600;
-            border: 1px solid #ddd;
-        }
-
-        /* --- Hero Section --- */
-        .hero {
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
-                        url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
-            background-size: cover;
-            background-position: center;
-            height: 450px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            text-align: center;
-            padding: 0 20px;
-        }
-
-        .hero h1 { font-size: 42px; margin-bottom: 15px; font-weight: 800; }
-        .hero p { font-size: 19px; max-width: 700px; opacity: 0.9; }
-
-        /* --- Search Bar --- */
-        .search-container {
-            width: 90%;
-            max-width: 1000px;
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: -50px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            z-index: 10;
-        }
-
-        .search-container select, .search-container input {
-            flex: 1;
-            min-width: 180px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 15px;
-            outline: none;
-        }
-
-        .btn-search {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0 35px;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        /* --- Category Icons --- */
-        .categories {
-            padding: 60px 6% 30px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-            gap: 20px;
-            text-align: center;
-        }
-
-        .cat-item {
-            background: white;
-            padding: 20px 10px;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .cat-item:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .cat-item i { font-size: 30px; color: var(--primary); margin-bottom: 10px; display: block; }
-        .cat-item span { font-size: 13px; font-weight: 600; }
-
-        /* --- Ads Display --- */
+        :root { --primary: #007bff; --premium-red: #ff4d4d; --dark: #2d3436; }
+        body { font-family: 'Inter', sans-serif; margin: 0; background-color: #f0f2f5; }
+        nav { background: white; padding: 12px 6%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 28px; font-weight: 800; color: var(--primary); text-decoration: none; }
         .ads-section { padding: 40px 6%; }
-        .section-title { font-size: 24px; font-weight: 800; margin-bottom: 25px; border-left: 5px solid var(--primary); padding-left: 15px; }
+        .ads-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; }
         
-        .ads-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 25px;
-        }
-
-        .ad-card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            position: relative;
-            transition: 0.3s;
-        }
-
-        /* Premium Styling */
-        .premium-card {
-            border: 3px solid var(--premium-red);
-            outline: 3px solid var(--secondary);
-        }
-
-        .ad-card img { width: 100%; height: 180px; object-fit: cover; }
+        /* Ad Card Styling */
+        .ad-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); cursor: pointer; transition: 0.3s; text-decoration: none; color: inherit; display: block; }
+        .ad-card:hover { transform: translateY(-5px); }
+        .ad-card img { width: 100%; height: 180px; object-fit: cover; background: #eee; }
         .ad-content { padding: 15px; }
         .ad-price { color: var(--primary); font-size: 20px; font-weight: 800; margin: 8px 0; }
-        .ad-title { font-weight: 600; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        
-        .premium-badge {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: var(--premium-red);
-            color: white;
-            padding: 4px 12px;
-            font-size: 12px;
-            font-weight: 800;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        /* --- Floating Button --- */
-        .btn-post {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 65px;
-            height: 65px;
-            background: #28a745;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 30px;
-            box-shadow: 0 6px 20px rgba(40,167,69,0.4);
-            text-decoration: none;
-            z-index: 1001;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .btn-post:hover { transform: scale(1.1) rotate(90deg); }
-
-        .loading-text { text-align: center; grid-column: 1/-1; padding: 40px; color: #777; }
+        .ad-title { font-weight: 600; font-size: 16px; margin-bottom: 5px; }
+        .loading-text { text-align: center; grid-column: 1/-1; padding: 40px; }
+        .btn-post { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: #28a745; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); text-decoration: none; }
     </style>
 </head>
 <body>
 
     <nav>
         <a href="index.html" class="logo">Lanka Ads</a>
-        <div class="auth-buttons" id="auth-box">
-            <a href="login.html" class="btn-login">Log In</a>
-            <a href="signup.html" class="btn-signup">Sign Up</a>
+        <div id="auth-box">
+            <a href="post-ad.html" style="text-decoration:none; font-weight:700; color:var(--primary);">Post Your Ad</a>
         </div>
-        <a href="profile.html" id="profile-link"><i class="fas fa-user-circle"></i> Profile</a>
     </nav>
 
-    <section class="hero">
-        <h1>Welcome to Lanka Ads</h1>
-        <p>No. 1 marketplace in Sri Lanka to buy and sell securely.</p>
-        
-        <div class="search-container">
-            <select id="district-select">
-                <option value="">All Districts (25)</option>
-                <option>Colombo</option><option>Gampaha</option><option>Kalutara</option><option>Kandy</option><option>Matale</option><option>Nuwara Eliya</option><option>Galle</option><option>Matara</option><option>Hambantota</option><option>Jaffna</option><option>Kilinochchi</option><option>Mannar</option><option>Vavuniya</option><option>Mullaitivu</option><option>Batticaloa</option><option>Ampara</option><option>Trincomalee</option><option>Kurunegala</option><option>Puttalam</option><option>Anuradhapura</option><option>Polonnaruwa</option><option>Badulla</option><option>Monaragala</option><option>Ratnapura</option><option>Kegalle</option>
-            </select>
-            <select id="category-select">
-                <option value="">All Categories</option>
-                <option>Mobile Phones</option><option>Electronics</option><option>Vehicles</option><option>Property</option><option>Home & Garden</option><option>Fashion & Beauty</option><option>Services</option><option>Jobs</option><option>Animals</option><option>Education</option><option>Food & Agriculture</option>
-            </select>
-            <input type="text" placeholder="Search for anything...">
-            <button class="btn-search">Search</button>
-        </div>
-    </section>
-
-    <div class="categories">
-        <div class="cat-item"><i class="fas fa-mobile-alt"></i><span>Mobile</span></div>
-        <div class="cat-item"><i class="fas fa-car"></i><span>Vehicles</span></div>
-        <div class="cat-item"><i class="fas fa-home"></i><span>Property</span></div>
-        <div class="cat-item"><i class="fas fa-laptop"></i><span>Electronics</span></div>
-        <div class="cat-item"><i class="fas fa-couch"></i><span>Home</span></div>
-        <div class="cat-item"><i class="fas fa-tshirt"></i><span>Fashion</span></div>
-        <div class="cat-item"><i class="fas fa-briefcase"></i><span>Jobs</span></div>
-        <div class="cat-item"><i class="fas fa-tools"></i><span>Services</span></div>
-        <div class="cat-item"><i class="fas fa-paw"></i><span>Animals</span></div>
-        <div class="cat-item"><i class="fas fa-graduation-cap"></i><span>Education</span></div>
-    </div>
-
     <div class="ads-section">
-        <div class="section-title">Premium Ads</div>
-        <div class="ads-grid" id="premium-grid">
-            <div class="loading-text">Loading...</div>
-        </div>
-
-        <div class="section-title" style="margin-top: 50px;">Latest Ads</div>
-        <div class="ads-grid" id="latest-grid">
-            <div class="loading-text">Loading...</div>
+        <h2 style="margin-bottom:20px;">Latest Ads</h2>
+        <div class="ads-grid" id="ads-grid">
+            <div class="loading-text">Fetching ads...</div>
         </div>
     </div>
 
@@ -287,7 +45,6 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -296,82 +53,58 @@
             projectId: "adds-ink",
             storageBucket: "adds-ink.firebasestorage.app",
             messagingSenderId: "638657776631",
-            appId: "1:638657776631:web:44ffdad33137bfefa57cf2",
-            measurementId: "G-Z002TVT7QX"
+            appId: "1:638657776631:web:44ffdad33137bfefa57cf2"
         };
 
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Check Login Status
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                document.getElementById('auth-box').style.display = 'none';
-                document.getElementById('profile-link').style.display = 'block';
+        // 🛑 Google Drive Photo Fix 🛑
+        function convertDriveLink(url) {
+            if (url && url.includes('drive.google.com')) {
+                let id = "";
+                if (url.includes('/d/')) {
+                    id = url.split('/d/')[1].split('/')[0];
+                } else if (url.includes('id=')) {
+                    id = url.split('id=')[1].split('&')[0];
+                }
+                return id ? `https://drive.google.com/uc?export=view&id=${id}` : url;
             }
-        });
+            return url;
+        }
 
-        // Load Ads Function
         async function fetchAds() {
-            const premiumGrid = document.getElementById('premium-grid');
-            const latestGrid = document.getElementById('latest-grid');
-
+            const adsGrid = document.getElementById('ads-grid');
             try {
-                // 🛑 Fetching from "posts" collection 🛑
                 const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
                 const querySnapshot = await getDocs(q);
-                
-                let premiumContent = "";
-                let latestContent = "";
+                let html = "";
 
                 querySnapshot.forEach((doc) => {
                     const ad = doc.data();
-                    
-                    // Fields from Firestore structure
-                    const imageUrl = ad.imageUrl || 'https://via.placeholder.com/300';
-                    const title = ad.title || 'No Title';
-                    const price = ad.price || '0';
-                    const district = ad.district || 'Sri Lanka';
-                    
-                    // Check Premium Status
-                    const isPremium = ad.premiumStatus === "active" || ad.isFeatured === true;
+                    const adId = doc.id; // Document ID එක ගන්නවා details බලන්න
+                    const imageUrl = convertDriveLink(ad.imageUrl);
 
-                    const adHTML = `
-                        <div class="ad-card ${isPremium ? 'premium-card' : ''}">
-                            ${isPremium ? '<div class="premium-badge">PREMIUM</div>' : ''}
-                            <img src="${imageUrl}" alt="Ad">
+                    html += `
+                        <a href="ad-details.html?id=${adId}" class="ad-card">
+                            <img src="${imageUrl}" onerror="this.src='https://via.placeholder.com/300?text=No+Image'">
                             <div class="ad-content">
-                                <div class="ad-title">${title}</div>
-                                <div class="ad-price">Rs. ${parseFloat(price).toLocaleString()}</div>
-                                <div style="font-size:12px; color:#666;"><i class="fas fa-map-marker-alt"></i> ${district}</div>
+                                <div class="ad-title">${ad.title}</div>
+                                <div class="ad-price">Rs. ${parseFloat(ad.price).toLocaleString()}</div>
+                                <div style="font-size:12px; color:#666;"><i class="fas fa-map-marker-alt"></i> ${ad.district}</div>
                             </div>
-                        </div>
+                        </a>
                     `;
-
-                    if (isPremium) {
-                        premiumContent += adHTML;
-                    } else {
-                        latestContent += adHTML;
-                    }
                 });
 
-                premiumGrid.innerHTML = premiumContent || '<div class="loading-text">No premium ads at the moment.</div>';
-                latestGrid.innerHTML = latestContent || '<div class="loading-text">No ads found.</div>';
-
+                adsGrid.innerHTML = html || '<div class="loading-text">No ads found.</div>';
             } catch (error) {
-                console.error("Error fetching ads:", error);
-                document.querySelectorAll('.loading-text').forEach(el => el.innerHTML = "Error loading data.");
+                console.error(error);
+                adsGrid.innerHTML = '<div class="loading-text">Error loading ads. Check Console.</div>';
             }
         }
 
         fetchAds();
-    </script>
-
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js');
-        }
     </script>
 </body>
 </html>

@@ -7,198 +7,951 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background-color: #f0f2f5; font-family: 'Segoe UI', sans-serif; }
-        .cover-photo { height: 200px; background: linear-gradient(to right, #1877f2, #0056b3); border-radius: 0 0 15px 15px; }
-        .profile-pic-container { position: relative; width: 150px; height: 150px; margin-top: -75px; }
-        .profile-pic { width: 100%; height: 100%; border: 5px solid white; border-radius: 50%; object-fit: cover; background: #ddd; }
-        .camera-icon { position: absolute; bottom: 10px; right: 10px; background: #e4e6eb; padding: 10px; border-radius: 50%; cursor: pointer; border: 1px solid #ccc; }
+        body { 
+            background-color: #f0f2f5; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+        
+        /* Facebook-style cover */
+        .cover-photo { 
+            height: 350px; 
+            background: linear-gradient(145deg, #1877f2 0%, #0056b3 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cover-photo::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            opacity: 0.2;
+        }
+
+        .cover-edit {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e293b;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        .cover-edit:hover {
+            background: white;
+            transform: scale(1.05);
+        }
+
+        /* Profile picture - Facebook style */
+        .profile-pic-container { 
+            position: relative; 
+            width: 168px; 
+            height: 168px; 
+            margin-top: -84px;
+            margin-left: 20px;
+            border-radius: 50%;
+            background: white;
+            padding: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 20;
+        }
+        
+        .profile-pic { 
+            width: 100%; 
+            height: 100%; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            background: #ddd;
+            border: 2px solid white;
+        }
+        
+        .camera-icon { 
+            position: absolute; 
+            bottom: 15px; 
+            right: 15px; 
+            background: #e4e6eb; 
+            padding: 10px; 
+            border-radius: 50%; 
+            cursor: pointer; 
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            z-index: 30;
+        }
+
+        .camera-icon:hover {
+            background: #d8dadf;
+            transform: scale(1.1);
+        }
+
+        /* Story circles - Facebook style */
+        .story-container {
+            display: flex;
+            gap: 15px;
+            padding: 20px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .story-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            padding: 3px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .story-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: white;
+            padding: 2px;
+        }
+
+        .story-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white;
+        }
+
+        /* Friend request card */
+        .request-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .request-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* Create post box - Facebook style */
+        .create-post {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .post-input {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            padding: 12px;
+            background: #f0f2f5;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .post-input:hover {
+            background: #e4e6e9;
+        }
+
+        .post-input img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .post-input span {
+            color: #65676b;
+            font-size: 17px;
+            flex: 1;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #e4e6eb;
+        }
+
+        .post-action-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #65676b;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .post-action-btn:hover {
+            background: #f0f2f5;
+        }
+
+        .post-action-btn i {
+            font-size: 20px;
+        }
+
+        .live-video { color: #f02849; }
+        .photo-video { color: #45bd62; }
+        .feeling { color: #f7b928; }
+
+        /* Ad card - Facebook style */
+        .ad-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .ad-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .ad-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .ad-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .ad-header h4 {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .ad-header p {
+            font-size: 12px;
+            color: #65676b;
+        }
+
+        .ad-content {
+            margin-bottom: 12px;
+        }
+
+        .ad-content img {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .ad-stats {
+            display: flex;
+            gap: 20px;
+            padding: 12px 0;
+            color: #65676b;
+            font-size: 14px;
+            border-bottom: 1px solid #e4e6eb;
+        }
+
+        .ad-actions {
+            display: flex;
+            gap: 8px;
+            padding-top: 8px;
+        }
+
+        .ad-action-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #65676b;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .ad-action-btn:hover {
+            background: #f0f2f5;
+        }
+
+        .ad-action-btn.like:hover { color: #1877f2; }
+        .ad-action-btn.comment:hover { color: #45bd62; }
+        .ad-action-btn.share:hover { color: #1877f2; }
+
+        /* Chat button - Messenger style */
+        .chat-button {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: #0084ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(0,132,255,0.4);
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 1000;
+            border: none;
+        }
+
+        .chat-button:hover {
+            transform: scale(1.1);
+            background: #0073e6;
+        }
+
+        .chat-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #f02849;
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            border: 2px solid white;
+        }
+
+        /* Post Ad Modal - Facebook style */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 16px;
+            border-bottom: 1px solid #e4e6eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .modal-body {
+            padding: 16px;
+        }
+
+        .close-modal {
+            width: 36px;
+            height: 36px;
+            background: #e4e6eb;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .cover-photo { height: 200px; }
+            .profile-pic-container { 
+                width: 120px; 
+                height: 120px; 
+                margin-top: -60px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .profile-info { text-align: center; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="max-w-4xl mx-auto pb-10">
-        <div class="bg-white shadow rounded-b-xl overflow-hidden">
-            <div class="cover-photo"></div>
-            <div class="px-6 pb-6 flex flex-col items-center sm:items-start sm:flex-row sm:space-x-5">
+<!-- Facebook-style Navigation Bar -->
+<nav class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            <!-- Logo -->
+            <div class="flex items-center space-x-4">
+                <a href="index.html" class="text-3xl font-black text-blue-600">🇱🇰 Lanka Ads</a>
+            </div>
+
+            <!-- Search -->
+            <div class="hidden md:flex flex-1 max-w-md mx-8">
+                <div class="w-full bg-gray-100 rounded-full px-4 py-2 flex items-center">
+                    <i class="fas fa-search text-gray-400 mr-2"></i>
+                    <input type="text" placeholder="Lanka Ads හරහා සොයන්න..." class="bg-transparent outline-none flex-1 text-sm">
+                </div>
+            </div>
+
+            <!-- Right Menu -->
+            <div class="flex items-center space-x-3">
+                <a href="index.html" class="p-2 hover:bg-gray-100 rounded-full">
+                    <i class="fas fa-home text-xl text-gray-600"></i>
+                </a>
+                <a href="#" class="p-2 hover:bg-gray-100 rounded-full relative">
+                    <i class="fas fa-bell text-xl text-gray-600"></i>
+                    <span class="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full text-white text-xs flex items-center justify-center">3</span>
+                </a>
+                <a href="#" class="p-2 hover:bg-gray-100 rounded-full relative">
+                    <i class="fas fa-comment-dots text-xl text-gray-600"></i>
+                    <span class="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full text-white text-xs flex items-center justify-center">5</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Profile Container -->
+<div class="max-w-6xl mx-auto px-4 py-6">
+    <!-- Cover Photo Section (Facebook Style) -->
+    <div class="bg-white rounded-2xl shadow overflow-hidden">
+        <div class="cover-photo">
+            <button class="cover-edit">
+                <i class="fas fa-camera mr-2"></i> Edit Cover Photo
+            </button>
+        </div>
+
+        <!-- Profile Info Bar (Facebook Style) -->
+        <div class="relative px-6 pb-4">
+            <div class="flex flex-col md:flex-row md:items-end md:space-x-6">
+                <!-- Profile Picture -->
                 <div class="profile-pic-container">
-                    <img id="user-img" src="https://via.placeholder.com/150" class="profile-pic shadow-lg">
-                    <label for="imgUpload" class="camera-icon shadow hover:bg-gray-300 transition">
+                    <img id="user-img" src="https://via.placeholder.com/168" class="profile-pic">
+                    <label for="imgUpload" class="camera-icon">
                         <i class="fas fa-camera"></i>
                     </label>
                     <input type="file" id="imgUpload" class="hidden" accept="image/*">
                 </div>
-                <div class="mt-4 text-center sm:text-left flex-1">
-                    <h1 id="user-name" class="text-3xl font-bold text-gray-900">පූරණය වෙමින්...</h1>
+
+                <!-- User Info -->
+                <div class="mt-2 md:mt-0 flex-1 profile-info">
+                    <h1 id="user-name" class="text-3xl font-bold text-gray-900">Loading...</h1>
                     <p id="user-email" class="text-gray-600">...</p>
-                    <div id="verify-badge" class="mt-2 hidden">
-                        <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2.5 py-0.5 rounded-full"><i class="fas fa-check-circle"></i> Verified</span>
+                    <div class="flex items-center gap-2 mt-1">
+                        <span class="text-gray-500"><i class="fas fa-users mr-1"></i> 1,234 followers</span>
+                        <span class="text-gray-300">•</span>
+                        <span class="text-gray-500"><i class="fas fa-calendar mr-1"></i> Joined March 2024</span>
                     </div>
                 </div>
-                <div class="mt-6 flex space-x-2">
-                    <button id="verify-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg hidden">Verify Email</button>
-                    <button id="logout-btn" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg">Logout</button>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-2 mt-4 md:mt-0">
+                    <button id="verify-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold hidden">
+                        <i class="fas fa-check-circle mr-2"></i> Verify
+                    </button>
+                    <button id="logout-btn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-lg font-semibold">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                    </button>
+                </div>
+            </div>
+
+            <!-- Profile Tabs (Facebook Style) -->
+            <div class="flex gap-6 mt-6 border-t pt-4">
+                <a href="#" class="text-blue-600 font-semibold border-b-2 border-blue-600 pb-2 px-2">Posts</a>
+                <a href="#" class="text-gray-600 hover:text-gray-900 font-semibold px-2">About</a>
+                <a href="#" class="text-gray-600 hover:text-gray-900 font-semibold px-2">Friends</a>
+                <a href="#" class="text-gray-600 hover:text-gray-900 font-semibold px-2">Photos</a>
+                <a href="#" class="text-gray-600 hover:text-gray-900 font-semibold px-2">Videos</a>
+                <a href="#" class="text-gray-600 hover:text-gray-900 font-semibold px-2">Check-ins</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Story Circles (Facebook Style) -->
+    <div class="story-container mt-6 bg-white rounded-2xl shadow p-4">
+        <div class="story-circle">
+            <div class="story-inner">
+                <img src="https://via.placeholder.com/80" class="story-image">
+            </div>
+            <p class="text-xs text-center mt-1 font-semibold">Your Story</p>
+        </div>
+        <div class="story-circle">
+            <div class="story-inner">
+                <img src="https://via.placeholder.com/80" class="story-image">
+            </div>
+            <p class="text-xs text-center mt-1 font-semibold">Friend 1</p>
+        </div>
+        <div class="story-circle">
+            <div class="story-inner">
+                <img src="https://via.placeholder.com/80" class="story-image">
+            </div>
+            <p class="text-xs text-center mt-1 font-semibold">Friend 2</p>
+        </div>
+        <div class="story-circle">
+            <div class="story-inner">
+                <img src="https://via.placeholder.com/80" class="story-image">
+            </div>
+            <p class="text-xs text-center mt-1 font-semibold">Friend 3</p>
+        </div>
+        <div class="story-circle">
+            <div class="story-inner">
+                <img src="https://via.placeholder.com/80" class="story-image">
+            </div>
+            <p class="text-xs text-center mt-1 font-semibold">Friend 4</p>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+        <!-- Left Sidebar (Facebook Style) -->
+        <div class="lg:col-span-1">
+            <!-- Intro Card -->
+            <div class="bg-white rounded-2xl shadow p-4 mb-4">
+                <h3 class="font-bold text-lg mb-4">Intro</h3>
+                <div class="space-y-3">
+                    <p id="info-phone" class="text-gray-700">
+                        <i class="fas fa-phone w-6 text-gray-400"></i> +94 77 123 4567
+                    </p>
+                    <p id="info-address" class="text-gray-700">
+                        <i class="fas fa-map-marker-alt w-6 text-gray-400"></i> Colombo, Sri Lanka
+                    </p>
+                    <p class="text-gray-700">
+                        <i class="fas fa-briefcase w-6 text-gray-400"></i> Works at Lanka Ads
+                    </p>
+                    <p class="text-gray-700">
+                        <i class="fas fa-graduation-cap w-6 text-gray-400"></i> Studied at University of Colombo
+                    </p>
+                    <button class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 rounded-lg mt-2">
+                        Edit Details
+                    </button>
+                </div>
+            </div>
+
+            <!-- Friends Card -->
+            <div class="bg-white rounded-2xl shadow p-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-lg">Friends</h3>
+                    <a href="#" class="text-blue-600 text-sm">See all</a>
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                    <div>
+                        <img src="https://via.placeholder.com/100" class="rounded-lg w-full">
+                        <p class="text-xs font-semibold mt-1">Amal</p>
+                    </div>
+                    <div>
+                        <img src="https://via.placeholder.com/100" class="rounded-lg w-full">
+                        <p class="text-xs font-semibold mt-1">Kamal</p>
+                    </div>
+                    <div>
+                        <img src="https://via.placeholder.com/100" class="rounded-lg w-full">
+                        <p class="text-xs font-semibold mt-1">Nimal</p>
+                    </div>
+                    <div>
+                        <img src="https://via.placeholder.com/100" class="rounded-lg w-full">
+                        <p class="text-xs font-semibold mt-1">Supun</p>
+                    </div>
+                    <div>
+                        <img src="https://via.placeholder.com/100" class="rounded-lg w-full">
+                        <p class="text-xs font-semibold mt-1">Kasun</p>
+                    </div>
+                    <div>
+                        <img src="https://via.placeholder.com/100" class="rounded-lg w-full">
+                        <p class="text-xs font-semibold mt-1">Chamara</p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 px-4">
-            <div class="bg-white p-4 shadow rounded-xl h-fit">
-                <h2 class="text-xl font-bold mb-4">Intro</h2>
-                <p id="info-phone" class="mb-2 text-gray-700"><i class="fas fa-phone mr-2"></i> No Phone Number</p>
-                <p id="info-address" class="mb-4 text-gray-700"><i class="fas fa-map-marker-alt mr-2"></i> No Address</p>
-                <button class="w-full bg-gray-200 hover:bg-gray-300 font-semibold py-2 rounded-lg">Edit Info</button>
+        <!-- Right Content - Main Feed (Facebook Style) -->
+        <div class="lg:col-span-2">
+            <!-- Create Post Box -->
+            <div class="create-post">
+                <div class="post-input" onclick="openPostModal()">
+                    <img id="post-user-img" src="https://via.placeholder.com/40">
+                    <span>What's on your mind?</span>
+                </div>
+                <div class="post-actions">
+                    <div class="post-action-btn live-video" onclick="openPostModal('live')">
+                        <i class="fas fa-video"></i>
+                        <span class="hidden md:inline">Live Video</span>
+                    </div>
+                    <div class="post-action-btn photo-video" onclick="openPostModal('photo')">
+                        <i class="fas fa-images"></i>
+                        <span class="hidden md:inline">Photo/Video</span>
+                    </div>
+                    <div class="post-action-btn feeling" onclick="openPostModal('feeling')">
+                        <i class="fas fa-smile"></i>
+                        <span class="hidden md:inline">Feeling</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="md:col-span-2">
-                <div class="bg-white p-4 shadow rounded-xl">
-                    <h2 class="text-xl font-bold mb-4 text-gray-800">My Ads</h2>
-                    <div id="my-ads-list" class="space-y-4">
-                        <p class="text-center py-5 text-gray-500">පූරණය වෙමින්...</p>
+            <!-- My Ads Section (Facebook Style Feed) -->
+            <div class="bg-white rounded-2xl shadow p-4">
+                <h3 class="font-bold text-lg mb-4">My Ads</h3>
+                <div id="my-ads-list" class="space-y-4">
+                    <div class="text-center py-8 text-gray-500">
+                        <i class="fas fa-spinner fa-spin text-3xl mb-2"></i>
+                        <p>Loading your ads...</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, sendEmailVerification, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, collection, query, where, getDocs, deleteDoc, doc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+<!-- Post Ad Modal (Facebook Style) -->
+<div id="postModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span>Create Post</span>
+            <div class="close-modal" onclick="closePostModal()">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        <div class="modal-body">
+            <form id="postForm">
+                <div class="flex items-center gap-3 mb-4">
+                    <img id="modal-user-img" src="https://via.placeholder.com/50" class="w-12 h-12 rounded-full">
+                    <div>
+                        <h4 id="modal-user-name" class="font-bold">User Name</h4>
+                        <select class="text-sm bg-gray-100 rounded-md px-2 py-1">
+                            <option>Public</option>
+                            <option>Friends</option>
+                            <option>Only me</option>
+                        </select>
+                    </div>
+                </div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
-            authDomain: "adds-ink.firebaseapp.com",
-            projectId: "adds-ink",
-            storageBucket: "adds-ink.firebasestorage.app",
-            messagingSenderId: "638657776631",
-            appId: "1:638657776631:web:44ffdad33137bfefa57cf2"
-        };
+                <textarea id="postDescription" rows="4" class="w-full p-3 border rounded-lg mb-4" placeholder="What's on your mind?"></textarea>
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const storage = getStorage(app);
+                <!-- Image Upload -->
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 mb-4 text-center">
+                    <input type="file" id="postImage" accept="image/*" class="hidden">
+                    <button type="button" onclick="document.getElementById('postImage').click()" class="text-blue-600">
+                        <i class="fas fa-cloud-upload-alt text-2xl mb-2"></i><br>
+                        Upload Photo
+                    </button>
+                    <div id="imagePreview" class="hidden mt-2"></div>
+                </div>
 
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                document.getElementById('user-name').innerText = user.displayName || "User";
-                document.getElementById('user-email').innerText = user.email;
-                if(user.photoURL) document.getElementById('user-img').src = user.photoURL;
-                
-                if(user.emailVerified) {
-                    document.getElementById('verify-badge').classList.remove('hidden');
-                } else {
-                    document.getElementById('verify-btn').classList.remove('hidden');
-                }
-                fetchMyAds(user.uid);
-            } else {
-                window.location.href = "login.html";
-            }
-        });
+                <!-- Ad Details -->
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <select id="postCategory" class="p-2 border rounded-lg">
+                        <option value="">Category</option>
+                        <option value="Vehicles">Vehicles</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Property">Property</option>
+                    </select>
 
-        async function fetchMyAds(uid) {
-            const list = document.getElementById('my-ads-list');
-            try {
-                const q = query(collection(db, "posts"), where("authorId", "==", uid));
-                const querySnapshot = await getDocs(q);
-                list.innerHTML = "";
-                
-                if (querySnapshot.empty) {
-                    list.innerHTML = "<p class='text-center py-5'>ඔබ තවමත් දැන්වීම් පළ කර නැත.</p>";
-                    return;
-                }
+                    <select id="postDistrict" class="p-2 border rounded-lg">
+                        <option value="">District</option>
+                        <option value="Colombo">Colombo</option>
+                        <option value="Gampaha">Gampaha</option>
+                        <option value="Kandy">Kandy</option>
+                    </select>
+                </div>
 
-                querySnapshot.forEach((adDoc) => {
-                    const ad = adDoc.data();
-                    const adId = adDoc.id;
-                    const div = document.createElement('div');
-                    div.className = "flex border rounded-xl p-3 bg-gray-50 space-x-4 items-center";
-                    div.innerHTML = `
-                        <img src="${ad.imageUrl}" class="w-20 h-20 object-cover rounded-lg">
-                        <div class="flex-1">
-                            <h4 class="font-bold text-gray-800">${ad.title}</h4>
-                            <p class="text-blue-600 font-bold">Rs. ${ad.price}</p>
-                        </div>
-                        <div class="flex flex-col space-y-2">
-                            <button class="bg-orange-500 text-white text-xs px-4 py-2 rounded-md font-bold hover:bg-orange-600 boost-btn" data-id="${adId}" data-title="${ad.title}">🚀 Boost</button>
-                            <button class="bg-red-100 text-red-600 text-xs px-4 py-2 rounded-md font-bold hover:bg-red-200 delete-btn" data-id="${adId}">🗑️ Delete</button>
-                        </div>
-                    `;
-                    list.appendChild(div);
-                });
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <input type="number" id="postPrice" class="p-2 border rounded-lg" placeholder="Price (Rs.)">
+                    <input type="tel" id="postPhone" class="p-2 border rounded-lg" placeholder="Phone Number">
+                </div>
 
-                // Add Event Listeners to buttons
-                document.querySelectorAll('.boost-btn').forEach(btn => {
-                    btn.onclick = () => handleBoost(btn.dataset.id, btn.dataset.title);
-                });
-                document.querySelectorAll('.delete-btn').forEach(btn => {
-                    btn.onclick = () => handleDelete(btn.dataset.id);
-                });
+                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700">
+                    Post Ad
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
 
-            } catch (error) {
-                console.error("Error fetching ads:", error);
-                list.innerHTML = "Error loading ads.";
-            }
-        }
+<!-- Chat Button (Messenger Style) -->
+<button class="chat-button" onclick="window.location.href='comment.html'">
+    <i class="fas fa-comment"></i>
+    <span class="chat-badge">3</span>
+</button>
 
-        async function handleBoost(adId, title) {
-            const user = auth.currentUser;
-            try {
-                // 1. Admin Notification එකක් යැවීම
-                await addDoc(collection(db, "notifications"), {
-                    type: "boost_request",
-                    adId: adId,
-                    adTitle: title,
-                    userName: user.displayName,
-                    userEmail: user.email,
-                    timestamp: serverTimestamp(),
-                    status: "pending"
-                });
-                
-                console.log("Notification sent to admin");
-                // 2. Payment පිටුවට යොමු කිරීම
-                window.location.href = `payment.html?adId=${adId}`;
-            } catch (err) {
-                alert("Boost Error: " + err.message);
-            }
-        }
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, sendEmailVerification, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, collection, query, where, getDocs, deleteDoc, doc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
-        async function handleDelete(adId) {
-            if(confirm("මෙම දැන්වීම ඉවත් කිරීමට ඔබට සහතිකද?")) {
-                await deleteDoc(doc(db, "posts", adId));
-                location.reload();
-            }
-        }
+    const firebaseConfig = {
+        apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
+        authDomain: "adds-ink.firebaseapp.com",
+        projectId: "adds-ink",
+        storageBucket: "adds-ink.firebasestorage.app",
+        messagingSenderId: "638657776631",
+        appId: "1:638657776631:web:44ffdad33137bfefa57cf2"
+    };
 
-        // Profile Photo Upload
-        document.getElementById('imgUpload').onchange = async (e) => {
-            const file = e.target.files[0];
-            if(!file) return;
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
 
-            const user = auth.currentUser;
-            const storageRef = ref(storage, 'profiles/' + user.uid);
+    // Global variable for current user
+    let currentUser = null;
+
+    // Check authentication
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            currentUser = user;
             
-            try {
-                alert("පින්තූරය upload වෙමින් පවතී...");
-                await uploadBytes(storageRef, file);
-                const url = await getDownloadURL(storageRef);
-                await updateProfile(user, { photoURL: url });
-                document.getElementById('user-img').src = url;
-                alert("පින්තූරය සාර්ථකව යාවත්කාලීන විය!");
-            } catch (err) {
-                alert("Upload Error: " + err.message);
+            // Update UI with user info
+            document.getElementById('user-name').innerText = user.displayName || "Lanka Ads User";
+            document.getElementById('user-email').innerText = user.email;
+            
+            // Update all profile images
+            const userImg = user.photoURL || 'https://via.placeholder.com/150';
+            document.getElementById('user-img').src = userImg;
+            document.getElementById('post-user-img').src = userImg;
+            document.getElementById('modal-user-img').src = userImg;
+            document.getElementById('modal-user-name').innerText = user.displayName || "User";
+            
+            // Show verify button if email not verified
+            if(!user.emailVerified) {
+                document.getElementById('verify-btn').classList.remove('hidden');
             }
-        };
+            
+            // Load user's ads
+            fetchMyAds(user.uid);
+        } else {
+            window.location.href = "login.html";
+        }
+    });
 
-        document.getElementById('logout-btn').onclick = () => {
-            signOut(auth).then(() => window.location.href = "login.html");
-        };
+    // Fetch user's ads
+    async function fetchMyAds(uid) {
+        const list = document.getElementById('my-ads-list');
+        try {
+            const q = query(collection(db, "posts"), where("authorId", "==", uid));
+            const querySnapshot = await getDocs(q);
+            
+            if (querySnapshot.empty) {
+                list.innerHTML = `
+                    <div class="text-center py-8">
+                        <i class="fas fa-box-open text-5xl text-gray-300 mb-3"></i>
+                        <p class="text-gray-500">You haven't posted any ads yet.</p>
+                        <button onclick="openPostModal()" class="mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold">
+                            Create Your First Ad
+                        </button>
+                    </div>
+                `;
+                return;
+            }
 
-        document.getElementById('verify-btn').onclick = () => {
-            sendEmailVerification(auth.currentUser).then(() => alert("Verification email sent!"));
-        };
+            let html = '';
+            querySnapshot.forEach((adDoc) => {
+                const ad = adDoc.data();
+                const adId = adDoc.id;
+                
+                html += `
+                    <div class="ad-card">
+                        <div class="ad-header">
+                            <img src="${currentUser?.photoURL || 'https://via.placeholder.com/40'}">
+                            <div>
+                                <h4>${currentUser?.displayName || 'User'}</h4>
+                                <p>${new Date().toLocaleDateString()} • <i class="fas fa-globe"></i></p>
+                            </div>
+                        </div>
+                        
+                        <div class="ad-content">
+                            <p class="mb-3">${ad.description || ''}</p>
+                            <img src="${ad.imageUrl || 'https://via.placeholder.com/400'}" onerror="this.src='https://via.placeholder.com/400'">
+                        </div>
+                        
+                        <div class="ad-stats">
+                            <span><i class="fas fa-heart"></i> 24 likes</span>
+                            <span><i class="fas fa-comment"></i> 6 comments</span>
+                            <span><i class="fas fa-share"></i> 2 shares</span>
+                        </div>
+                        
+                        <div class="ad-actions">
+                            <div class="ad-action-btn like">
+                                <i class="fas fa-thumbs-up"></i>
+                                <span>Like</span>
+                            </div>
+                            <div class="ad-action-btn comment" onclick="window.location.href='comment.html'">
+                                <i class="fas fa-comment"></i>
+                                <span>Comment</span>
+                            </div>
+                            <div class="ad-action-btn share">
+                                <i class="fas fa-share"></i>
+                                <span>Share</span>
+                            </div>
+                            <div class="ad-action-btn delete" onclick="deleteAd('${adId}')">
+                                <i class="fas fa-trash text-red-500"></i>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            list.innerHTML = html;
+        } catch (error) {
+            console.error("Error fetching ads:", error);
+            list.innerHTML = '<p class="text-center text-red-500">Error loading ads</p>';
+        }
+    }
 
-    </script>
+    // Post new ad
+    document.getElementById('postForm').onsubmit = async (e) => {
+        e.preventDefault();
+        
+        if (!currentUser) {
+            alert('Please login first');
+            return;
+        }
+
+        const description = document.getElementById('postDescription').value;
+        const category = document.getElementById('postCategory').value;
+        const district = document.getElementById('postDistrict').value;
+        const price = document.getElementById('postPrice').value;
+        const phone = document.getElementById('postPhone').value;
+
+        if (!description || !category || !district || !price || !phone) {
+            alert('Please fill all fields');
+            return;
+        }
+
+        try {
+            // Create ad in Firestore
+            await addDoc(collection(db, "posts"), {
+                title: description.substring(0, 50),
+                description: description,
+                category: category,
+                district: district,
+                price: parseFloat(price),
+                phone: phone,
+                authorId: currentUser.uid,
+                authorName: currentUser.displayName || 'Anonymous',
+                authorPhoto: currentUser.photoURL || '',
+                createdAt: serverTimestamp(),
+                status: 'pending',
+                likes: 0,
+                comments: 0
+            });
+
+            alert('Ad posted successfully!');
+            closePostModal();
+            fetchMyAds(currentUser.uid);
+            
+        } catch (error) {
+            alert('Error posting ad: ' + error.message);
+        }
+    };
+
+    // Delete ad
+    window.deleteAd = async (adId) => {
+        if (confirm('Are you sure you want to delete this ad?')) {
+            try {
+                await deleteDoc(doc(db, "posts", adId));
+                fetchMyAds(currentUser.uid);
+            } catch (error) {
+                alert('Error deleting ad: ' + error.message);
+            }
+        }
+    };
+
+    // Profile photo upload
+    document.getElementById('imgUpload').onchange = async (e) => {
+        const file = e.target.files[0];
+        if(!file || !currentUser) return;
+
+        const storageRef = ref(storage, 'profiles/' + currentUser.uid);
+        
+        try {
+            await uploadBytes(storageRef, file);
+            const url = await getDownloadURL(storageRef);
+            await updateProfile(currentUser, { photoURL: url });
+            
+            // Update all profile images
+            document.getElementById('user-img').src = url;
+            document.getElementById('post-user-img').src = url;
+            document.getElementById('modal-user-img').src = url;
+            
+            alert('Profile photo updated!');
+        } catch (error) {
+            alert('Error uploading: ' + error.message);
+        }
+    };
+
+    // Modal functions
+    window.openPostModal = (type = '') => {
+        document.getElementById('postModal').style.display = 'flex';
+    };
+
+    window.closePostModal = () => {
+        document.getElementById('postModal').style.display = 'none';
+        document.getElementById('postForm').reset();
+    };
+
+    // Logout
+    document.getElementById('logout-btn').onclick = () => {
+        signOut(auth).then(() => {
+            window.location.href = "login.html";
+        });
+    };
+
+    // Verify email
+    document.getElementById('verify-btn').onclick = () => {
+        sendEmailVerification(auth.currentUser).then(() => {
+            alert('Verification email sent!');
+        });
+    };
+
+    // Image preview
+    document.getElementById('postImage').onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const preview = document.getElementById('imagePreview');
+                preview.innerHTML = `<img src="${e.target.result}" class="max-h-40 mx-auto rounded-lg">`;
+                preview.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    // Close modal when clicking outside
+    window.onclick = (event) => {
+        const modal = document.getElementById('postModal');
+        if (event.target === modal) {
+            closePostModal();
+        }
+    };
+</script>
+
 </body>
 </html>

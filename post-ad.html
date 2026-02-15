@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Modern Glassmorphism effect for inputs */
+        /* Modern Glassmorphism & custom styles */
         .input-box { 
             @apply w-full p-4 bg-white border border-gray-200 rounded-xl outline-none transition-all duration-300 shadow-inner;
         }
@@ -16,39 +16,36 @@
         }
         .label-style { @apply block font-bold mb-2 text-gray-700 text-sm tracking-wide; }
         
-        /* Video Container Styling */
-        .video-container { 
-            position: relative; padding-bottom: 177.77%; height: 0; overflow: hidden; 
-            max-width: 240px; margin: auto; border-radius: 20px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        /* Upload area styling */
+        .upload-area {
+            @apply border-2 border-dashed border-green-300 rounded-[2rem] p-8 text-center cursor-pointer transition-all duration-300 bg-gradient-to-br from-green-50/80 to-blue-50/80 hover:from-green-100 hover:to-blue-100 hover:border-green-400;
         }
-        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-
-        /* Image Preview Styling */
-        .image-preview {
-            @apply mt-4 rounded-xl overflow-hidden border-2 border-dashed border-green-200 p-2;
+        .upload-area.drag-over {
+            @apply border-green-600 bg-green-100 scale-[1.02] shadow-lg;
         }
-        .image-preview img {
-            @apply w-full h-48 object-cover rounded-lg;
+        
+        /* Image preview card */
+        .preview-card {
+            @apply mt-6 rounded-2xl overflow-hidden border-2 border-green-200 bg-white shadow-md relative;
         }
-
-        /* Loading Animation */
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        
+        /* Progress bar */
+        .progress-bar {
+            @apply w-full h-2 bg-gray-200 rounded-full overflow-hidden;
         }
-        .animate-spin {
-            animation: spin 1s linear infinite;
+        .progress-fill {
+            @apply h-full bg-gradient-to-r from-green-500 to-emerald-500 transition-all duration-300;
         }
-
-        /* Error Message Styling */
-        .error-message {
-            @apply text-red-500 text-xs mt-1 font-medium;
+        
+        /* Success modal animation */
+        #modalContent {
+            transition: transform 0.3s ease-out;
         }
     </style>
 </head>
 <body class="bg-gradient-to-br from-slate-50 to-green-50 font-sans">
 
-    <!-- Navigation Bar (Added for consistency) -->
+    <!-- Navigation Bar -->
     <nav class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
@@ -145,35 +142,46 @@
                 </div>
             </div>
 
-            <!-- Google Drive Section with Preview -->
-            <div class="bg-gradient-to-br from-green-50 to-blue-50 border-2 border-dashed border-green-300 rounded-[2rem] p-6 text-center">
-                <p class="font-black text-green-800 mb-4 flex items-center justify-center">
-                    <i class="fab fa-google-drive mr-2 text-2xl"></i> 
-                    Google Drive Photo Setup
-                </p>
+            <!-- 📸 NEW: Direct Image Upload with Preview & Drag & Drop -->
+            <div class="space-y-3">
+                <label class="label-style">
+                    <i class="fas fa-camera text-green-600 mr-2"></i>
+                    Ad Images (Required)
+                </label>
                 
-                <div class="video-container mb-4">
-                    <iframe src="https://www.youtube.com/embed/xs-amsA8m0E" frameborder="0" allowfullscreen></iframe>
+                <!-- Hidden file input -->
+                <input type="file" id="imageUpload" accept="image/png, image/jpeg, image/jpg, image/gif, image/webp" class="hidden" required>
+                
+                <!-- Upload area (clickable) -->
+                <div id="uploadArea" class="upload-area">
+                    <i class="fas fa-cloud-upload-alt text-5xl text-green-400 mb-3"></i>
+                    <p class="text-lg font-bold text-gray-700">Click to upload or drag & drop</p>
+                    <p class="text-sm text-gray-500 mt-1">PNG, JPG, GIF, WEBP up to 5MB</p>
                 </div>
 
-                <div class="relative">
-                    <input type="url" id="imageUrl" class="input-box border-green-200 pr-12" 
-                           placeholder="Paste Shared Link Here..." required>
-                    <button type="button" id="previewBtn" 
-                            class="absolute right-3 top-1/2 -translate-y-1/2 text-green-600 hover:text-green-700">
-                        <i class="fas fa-eye"></i>
-                    </button>
+                <!-- Image preview & progress -->
+                <div id="previewContainer" class="hidden preview-card">
+                    <img id="previewImage" src="#" alt="Preview" class="w-full h-56 object-cover">
+                    <div class="absolute top-2 right-2 flex gap-2">
+                        <button type="button" id="changeImageBtn" class="bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-md hover:bg-white text-green-600 transition">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <button type="button" id="removeImageBtn" class="bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-md hover:bg-white text-red-500 transition">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <!-- Upload progress (hidden initially) -->
+                    <div id="progressWrapper" class="absolute bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm p-3 hidden">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-spinner fa-spin text-green-600"></i>
+                            <span class="text-sm font-medium text-gray-700">Uploading...</span>
+                        </div>
+                        <div class="progress-bar mt-1">
+                            <div id="uploadProgress" class="progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
                 </div>
-                
-                <!-- Image Preview -->
-                <div id="imagePreview" class="image-preview hidden">
-                    <img src="" alt="Preview" id="previewImage">
-                    <p class="text-xs text-green-600 mt-2">✓ Image loaded successfully</p>
-                </div>
-
-                <p class="text-[10px] text-red-500 mt-3 font-medium uppercase tracking-tighter">
-                    ⚠️ Must be: "Anyone with the link can view"
-                </p>
+                <p class="text-xs text-gray-400 mt-1">First image will be used as cover. You can upload one image now (multi-image coming soon).</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -261,7 +269,9 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
+        // Firebase config
         const firebaseConfig = {
             apiKey: "AIzaSyDtOz0AMlrjcN7xfmkFuhQUU8Zl0MfQMSE",
             authDomain: "adds-ink.firebaseapp.com",
@@ -274,6 +284,30 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        // DOM elements
+        const fileInput = document.getElementById('imageUpload');
+        const uploadArea = document.getElementById('uploadArea');
+        const previewContainer = document.getElementById('previewContainer');
+        const previewImage = document.getElementById('previewImage');
+        const changeBtn = document.getElementById('changeImageBtn');
+        const removeBtn = document.getElementById('removeImageBtn');
+        const progressWrapper = document.getElementById('progressWrapper');
+        const uploadProgress = document.getElementById('uploadProgress');
+        const submitBtn = document.getElementById('submitBtn');
+        const titleInput = document.getElementById('title');
+        const descInput = document.getElementById('description');
+        const titleCount = document.getElementById('titleCount');
+        const descCount = document.getElementById('descCount');
+        const phoneInput = document.getElementById('phone');
+        const whatsappInput = document.getElementById('whatsapp');
+        const priceInput = document.getElementById('price');
+        const categorySelect = document.getElementById('category');
+        const districtSelect = document.getElementById('district');
+        const termsCheck = document.getElementById('terms');
+        const premiumCheck = document.getElementById('premiumCheck');
+        const postForm = document.getElementById('postForm');
 
         // Check authentication
         onAuthStateChanged(auth, (user) => {
@@ -287,114 +321,185 @@
         });
 
         // Character counters
-        document.getElementById('title').addEventListener('input', function() {
-            document.getElementById('titleCount').textContent = this.value.length + '/100';
+        titleInput.addEventListener('input', () => {
+            titleCount.textContent = titleInput.value.length + '/100';
         });
-
-        document.getElementById('description').addEventListener('input', function() {
-            document.getElementById('descCount').textContent = this.value.length + '/1000';
+        descInput.addEventListener('input', () => {
+            descCount.textContent = descInput.value.length + '/1000';
         });
-
-        // Image preview
-        document.getElementById('previewBtn').addEventListener('click', function() {
-            const driveLink = document.getElementById('imageUrl').value;
-            const preview = document.getElementById('imagePreview');
-            const previewImg = document.getElementById('previewImage');
-            
-            if (driveLink) {
-                const finalUrl = convertDriveLink(driveLink);
-                previewImg.src = finalUrl;
-                preview.classList.remove('hidden');
-            }
-        });
-
-        // Convert Google Drive Link
-        function convertDriveLink(url) {
-            if (!url) return '';
-            
-            // Google Drive direct link conversion
-            let fileId = '';
-            
-            // Match /d/ID format
-            const match1 = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-            if (match1) fileId = match1[1];
-            
-            // Match id=ID format
-            const match2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-            if (match2) fileId = match2[1];
-            
-            if (fileId) {
-                // Use multiple formats for reliability
-                return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`;
-            }
-            
-            return url;
-        }
 
         // Toggle premium checkbox
-        window.togglePremium = function() {
-            const checkbox = document.getElementById('premiumCheck');
-            checkbox.checked = !checkbox.checked;
+        window.togglePremium = () => {
+            premiumCheck.checked = !premiumCheck.checked;
         };
 
-        const postForm = document.getElementById('postForm');
-        
-        postForm.onsubmit = async (e) => {
+        // ----- Image Upload Logic (Drag & Drop / Click) -----
+        let selectedFile = null;
+        let uploadedImageUrl = null; // will hold the Firebase URL after upload
+
+        // Click on upload area triggers file input
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        // Drag & drop events
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        });
+
+        uploadArea.addEventListener('dragenter', () => uploadArea.classList.add('drag-over'));
+        uploadArea.addEventListener('dragover', () => uploadArea.classList.add('drag-over'));
+        uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('drag-over'));
+        uploadArea.addEventListener('drop', (e) => {
+            uploadArea.classList.remove('drag-over');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileSelect(files[0]);
+            }
+        });
+
+        // File input change
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileSelect(e.target.files[0]);
+            }
+        });
+
+        // Validate and preview file
+        function handleFileSelect(file) {
+            // Validation
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp'];
+            
+            if (!allowedTypes.includes(file.type)) {
+                alert('Please select a valid image file (PNG, JPG, GIF, WEBP).');
+                fileInput.value = '';
+                return;
+            }
+            if (file.size > maxSize) {
+                alert('File size exceeds 5MB. Please choose a smaller image.');
+                fileInput.value = '';
+                return;
+            }
+
+            selectedFile = file;
+            
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImage.src = e.target.result;
+                previewContainer.classList.remove('hidden');
+                uploadArea.classList.add('hidden'); // hide upload area
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Change image (go back to upload area)
+        changeBtn.addEventListener('click', () => {
+            resetImageSelection();
+            fileInput.click();
+        });
+
+        // Remove image
+        removeBtn.addEventListener('click', () => {
+            resetImageSelection();
+        });
+
+        function resetImageSelection() {
+            selectedFile = null;
+            uploadedImageUrl = null;
+            fileInput.value = '';
+            previewContainer.classList.add('hidden');
+            uploadArea.classList.remove('hidden');
+            progressWrapper.classList.add('hidden');
+            uploadProgress.style.width = '0%';
+        }
+
+        // ----- Form Submission with Upload -----
+        postForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
+            // Authentication check
             const user = auth.currentUser;
-            
             if (!user) {
                 alert("Please log in first!");
                 window.location.href = "login.html";
                 return;
             }
 
-            // Validate phone numbers
-            const phone = document.getElementById('phone').value;
-            const whatsapp = document.getElementById('whatsapp').value || phone;
-            
+            // Basic validations
+            if (!selectedFile) {
+                alert("Please select an image for your ad.");
+                return;
+            }
+
             // Phone validation
+            const phone = phoneInput.value.trim();
             const phoneRegex = /^(?:0|94|\+94)?[0-9]{9,10}$/;
             if (!phoneRegex.test(phone.replace(/\s/g, ''))) {
                 alert("Please enter a valid Sri Lankan phone number");
                 return;
             }
 
-            // Validate price
-            const price = parseFloat(document.getElementById('price').value);
+            // Price validation
+            const price = parseFloat(priceInput.value);
             if (price <= 0) {
-                alert("Please enter a valid price");
+                alert("Please enter a valid price greater than 0");
                 return;
             }
 
-            // Check terms
-            if (!document.getElementById('terms').checked) {
+            // Terms check
+            if (!termsCheck.checked) {
                 alert("Please accept the terms and conditions");
                 return;
             }
 
-            const submitBtn = document.getElementById('submitBtn');
-            const driveLink = document.getElementById('imageUrl').value;
-            const isPremium = document.getElementById('premiumCheck').checked;
-            
+            // Disable submit button and show uploading state
             submitBtn.disabled = true;
-            submitBtn.innerHTML = `<i class="fas fa-circle-notch animate-spin mr-2"></i> Posting...`;
+            submitBtn.innerHTML = `<i class="fas fa-circle-notch animate-spin mr-2"></i> Uploading...`;
 
+            // Show progress bar
+            progressWrapper.classList.remove('hidden');
+
+            // 1. Upload image to Firebase Storage
+            const timestamp = Date.now();
+            const fileName = `ads/${user.uid}_${timestamp}_${selectedFile.name}`;
+            const storageRef = ref(storage, fileName);
+            const uploadTask = uploadBytesResumable(storageRef, selectedFile);
+
+            // Wait for upload to complete
             try {
-                // Convert Google Drive link
-                const finalImageUrl = convertDriveLink(driveLink);
+                await new Promise((resolve, reject) => {
+                    uploadTask.on('state_changed',
+                        (snapshot) => {
+                            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                            uploadProgress.style.width = progress + '%';
+                        },
+                        (error) => {
+                            reject(error);
+                        },
+                        async () => {
+                            // Upload completed successfully
+                            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                            uploadedImageUrl = downloadURL;
+                            resolve();
+                        }
+                    );
+                });
 
-                // Create post object
+                // 2. Save post to Firestore
+                const whatsapp = whatsappInput.value.trim() || phone;
+                
                 const postData = {
-                    title: document.getElementById('title').value.trim(),
-                    description: document.getElementById('description').value.trim(),
-                    category: document.getElementById('category').value,
-                    district: document.getElementById('district').value,
-                    imageUrl: finalImageUrl,
+                    title: titleInput.value.trim(),
+                    description: descInput.value.trim(),
+                    category: categorySelect.value,
+                    district: districtSelect.value,
+                    imageUrl: uploadedImageUrl, // stored URL
                     price: price,
-                    phone: phone.trim(),
-                    whatsapp: whatsapp.trim(),
+                    phone: phone,
+                    whatsapp: whatsapp,
                     authorId: user.uid,
                     authorName: user.displayName || 'Anonymous',
                     authorEmail: user.email,
@@ -402,12 +507,12 @@
                     status: "approved",
                     views: 0,
                     likes: 0,
-                    premiumStatus: isPremium ? "pending" : "none"
+                    premiumStatus: premiumCheck.checked ? "pending" : "none"
                 };
 
                 const docRef = await addDoc(collection(db, "posts"), postData);
 
-                // Show success modal
+                // 3. Show success modal
                 const modal = document.getElementById('successModal');
                 const modalContent = document.getElementById('modalContent');
                 modal.classList.remove('hidden');
@@ -415,23 +520,24 @@
                     modalContent.classList.remove('scale-0');
                 }, 10);
 
-                // Set view ad button
+                // Set view ad button link
                 document.getElementById('viewAdBtn').href = `ad-details.html?id=${docRef.id}`;
 
-                // Redirect to payment if premium
-                if (isPremium) {
+                // If premium, redirect to payment after 2 seconds
+                if (premiumCheck.checked) {
                     setTimeout(() => {
                         window.location.href = `payment.html?adId=${docRef.id}`;
                     }, 2000);
                 }
 
-            } catch (err) {
-                console.error("Error posting ad:", err);
-                alert("Error posting ad: " + err.message);
+            } catch (error) {
+                console.error("Upload error:", error);
+                alert("Error uploading image or posting ad: " + error.message);
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = `<span>Post Now</span> <i class="fas fa-paper-plane text-sm"></i>`;
+                progressWrapper.classList.add('hidden');
             }
-        };
+        });
 
         // Close modal when clicking outside
         document.getElementById('successModal').addEventListener('click', function(e) {
